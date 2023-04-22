@@ -1,8 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Bruno+Ace&display=swap");
 
+body {
+  padding: 0;
+  margin: 0;
+}
 .navbar {
   font-family: "Bruno Ace", cursive;
   display: flex;
+  margin-left: 10px;
 }
 
 .navbarHeader {
@@ -37,6 +42,7 @@
   height: 4vmin;
   pointer-events: none;
   margin-top: 2px;
+  margin-left: 2px;
 }
 /*This animation will only be applied if the user has not set a preference for motion reduction in the OS or browser*/
 @media (prefers-reduced-motion: no-preference) {
