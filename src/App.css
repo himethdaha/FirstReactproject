@@ -3,10 +3,11 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 7vmin;
   pointer-events: none;
 }
 
+/*This animation will only be applied if the user has not set a preference for motion reduction in the OS or browser*/
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -17,9 +18,9 @@
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -27,7 +28,7 @@
 .App-link {
   color: #61dafb;
 }
-
+/**/
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
