@@ -1,3 +1,4 @@
+import "./css/Navbar.css";
 import logo from "./logo.svg";
 
 const Navbar = () => {
@@ -5,7 +6,10 @@ const Navbar = () => {
     <nav className="navbar">
       {/* navbar header*/}
       <h1 className="navbarHeader">
-        AlgoNoob <img src={logo} className="App-logo" alt="logo" />
+        AlgoNoob
+        <span>
+          <img src={logo} className="Nav-logo" alt="logo" />
+        </span>
       </h1>
       <ul className="navbar-ul">
         {/*navbar searching algorithm */}

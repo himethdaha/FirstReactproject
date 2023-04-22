@@ -1,0 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=Bruno+Ace&display=swap");
+
+.navbar {
+  font-family: "Bruno Ace", cursive;
+  display: flex;
+}
+
+.navbarHeader {
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+}
+.navbar-ul {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: 15px;
+}
+
+.navbar-ul-item {
+  margin-right: 25px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.navbar-ul-item li:last-child {
+  margin-right: 0;
+}
+
+.navbar-ul-item:hover {
+  cursor: pointer;
+  color: #61dafb;
+  transform: scale(1.1);
+}
+
+.Nav-logo {
+  height: 4vmin;
+  pointer-events: none;
+  margin-top: 2px;
+}
+/*This animation will only be applied if the user has not set a preference for motion reduction in the OS or browser*/
+@media (prefers-reduced-motion: no-preference) {
+  .Nav-logo {
+    animation: Nav-logo-spin infinite 20s linear;
+  }
+}
+/**/
+@keyframes Nav-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
