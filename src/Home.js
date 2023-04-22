@@ -1,7 +1,9 @@
 import "./css/Main.css";
-
 const Home = () => {
-  return <h1 className="home">HOME</h1>;
+  return (
+    /* navbar header*/
+    <h1 className="title">HOME</h1>
+  );
 };
 
 export default Home;

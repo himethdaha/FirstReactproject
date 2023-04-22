@@ -1,13 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Bruno+Ace&display=swap");
 
-body {
-  padding: 0;
-  margin: 0;
-}
 .navbar {
   font-family: "Bruno Ace", cursive;
   display: flex;
-  margin-left: 10px;
+  position: sticky;
+  top: 0;
 }
 
 .navbarHeader {
@@ -38,10 +35,27 @@ body {
   transform: scale(1.1);
 }
 
+.navbar-ul-user {
+  margin-left: 30px;
+  display: flex;
+}
+.navbar-ul-btn {
+  text-decoration: none;
+  border: 2px solid aqua;
+  padding: 2px 8px;
+  border-radius: 4px;
+  color: white;
+  /* background-color: aqua; */
+}
+
+.navbar-ul-btn:hover {
+  color: aqua;
+  border: 2px solid white;
+}
 .Nav-logo {
-  height: 4vmin;
+  height: 3vmin;
   pointer-events: none;
-  margin-top: 2px;
+  margin-top: 4px;
   margin-left: 2px;
 }
 /*This animation will only be applied if the user has not set a preference for motion reduction in the OS or browser*/

@@ -33,6 +33,18 @@ const Navbar = () => {
           <span className="navbar-ul-item-dropdown">&#9662;</span>
         </li>
       </ul>
+      <ul className="navbar-ul-user navbar-ul">
+        <li className="navbar-ul-item">
+          <a href="/" className="navbar-ul-btn navbar-ul-login-btn">
+            Login
+          </a>
+        </li>
+        <li className="navbar-ul-item">
+          <a href="/" className="navbar-ul-btn navbar-ul-signin-btn">
+            SignIn
+          </a>
+        </li>
+      </ul>
     </nav>
   );
 };
