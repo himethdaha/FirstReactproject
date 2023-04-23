@@ -1,7 +1,11 @@
 import "./css/Navbar.css";
 import logo from "./logo.svg";
+import SignUp from "./signup";
+import LogIn from "./LogIn";
 
-const Navbar = () => {
+const Navbar = (props) => {
+  //Get the setShowForm prop to be sent to the signUp function
+  const setShowForm = props.setShowForm;
   return (
     <nav className="navbar">
       {/* navbar header*/}
@@ -34,16 +38,8 @@ const Navbar = () => {
         </li>
       </ul>
       <ul className="navbar-ul-user navbar-ul">
-        <li className="navbar-ul-item">
-          <a href="/" className="navbar-ul-btn navbar-ul-login-btn">
-            Login
-          </a>
-        </li>
-        <li className="navbar-ul-item">
-          <a href="/" className="navbar-ul-btn navbar-ul-signin-btn">
-            SignIn
-          </a>
-        </li>
+        <LogIn />
+        <SignUp setShowForm={setShowForm} />
       </ul>
     </nav>
   );
