@@ -140,4 +140,36 @@
   height: 2rem;
   color: black;
 }
-/*Social icons individually*/
+
+/*Form Submit btn*/
+.form-submit-btn {
+  margin-top: 1.4rem;
+  position: relative;
+  width: 20%;
+  align-self: center;
+  border: none;
+  border-radius: 0.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #130218;
+  color: #ffffff;
+}
+
+/*Pseudo element for submit-btn*/
+.form-submit-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 90%;
+  border: none;
+  border-radius: 0.5rem;
+  transition: width 0.3s ease-in-out;
+}
+
+.form-submit-btn:hover::before {
+  width: 98%;
+  border: 2px solid aqua;
+  cursor: pointer;
+}

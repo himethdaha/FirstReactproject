@@ -93,6 +93,9 @@ function App() {
                 signup with google
               </button>
             </div>
+            <button className="form-submit-btn">
+              <span>Create Account</span>
+            </button>
           </form>
         </div>
       )}
