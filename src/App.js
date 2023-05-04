@@ -1,5 +1,7 @@
 import "./css/App.css";
 import "./css/Form.css";
+import close from "./logos/register/close.svg";
+
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import Home from "./Home";
@@ -7,13 +9,25 @@ import Home from "./Home";
 function App() {
   //"useState" hook
   const [showForm, setShowForm] = useState(false);
+  const handleCloseForm = (e) => {
+    e.preventDefault();
+    setShowForm(false);
+  };
   return (
     <React.Fragment>
       {/*If ShowForm state is true*/}
       {showForm && (
         <div className="form-container">
           <form className="form signUp-form">
-            <h1 className="form-header">create an account</h1>
+            <div className="form-header-btn">
+              <h1 className="form-header">create an account</h1>
+              <img
+                src={close}
+                alt="Form close button"
+                className="form-close-btn"
+                onClick={(e) => handleCloseForm(e)}
+              ></img>
+            </div>
             <span className="form-tns">
               By creating an account, you agree to our <br />
               <a className="form-tns-link" href="/">

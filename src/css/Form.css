@@ -22,6 +22,26 @@
   gap: 1rem;
 }
 
+.form-header-btn {
+  display: flex;
+  flex-direction: row;
+}
+
+.form-close-btn {
+  width: 2rem;
+  height: 2rem;
+  color: black;
+  /*Horizontal (positive to the right)
+    Vertical (positive to the down)
+  */
+  transform: translate(20%, -35%);
+  transition: transform 0.2s ease-in-out;
+}
+.form-close-btn:hover {
+  cursor: pointer;
+  transform: translate(20%, -35%) scale(1.2);
+}
+
 .form-header {
   text-transform: uppercase;
   font-weight: 300;

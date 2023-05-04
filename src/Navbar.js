@@ -1,5 +1,5 @@
 import "./css/Navbar.css";
-import logo from "./logo.svg";
+import logo from "./logos/navbar/logo.svg";
 import SignUp from "./signup";
 import LogIn from "./LogIn";
 
