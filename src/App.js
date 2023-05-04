@@ -14,6 +14,16 @@ function App() {
         <div className="form-container">
           <form className="form signUp-form">
             <h1 className="form-header">create an account</h1>
+            <span className="form-tns">
+              By creating an account, you agree to our <br />
+              <a className="form-tns-link" href="/">
+                Terms Of Service
+              </a>{" "}
+              and{" "}
+              <a className="form-tns-link" href="/">
+                Privacy Policy
+              </a>
+            </span>
             <label className="form-label form-label-signup" htmlFor="email">
               Email
             </label>
