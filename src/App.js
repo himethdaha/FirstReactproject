@@ -1,6 +1,9 @@
 import "./css/App.css";
 import "./css/Form.css";
 import close from "./logos/register/close.svg";
+import facebook from "./logos/register/facebook.svg";
+import instagram from "./logos/register/instagram.svg";
+import google from "./logos/register/google.svg";
 
 import React, { useState } from "react";
 import Navbar from "./Navbar";
@@ -64,6 +67,32 @@ function App() {
               className="form-input form-input-signup"
               id="password"
             ></input>
+            <div className="form-social-signup">
+              <button className="form-social-signup-btn facebook">
+                <img
+                  src={facebook}
+                  alt="Form Facebook button"
+                  className="form-socials-icon facebook-icon"
+                ></img>
+                signup with facebook
+              </button>
+              <button className="form-social-signup-btn instagram">
+                <img
+                  src={instagram}
+                  alt="Form Instagram button"
+                  className="form-socials-icon instagram-icon"
+                ></img>
+                signup with instagram
+              </button>
+              <button className="form-social-signup-btn google">
+                <img
+                  src={google}
+                  alt="Form Google button"
+                  className="form-socials-icon google-icon"
+                ></img>
+                signup with google
+              </button>
+            </div>
           </form>
         </div>
       )}

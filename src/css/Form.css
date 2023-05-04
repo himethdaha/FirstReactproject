@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300&display=swap");
 
+/*Main container*/
 .form-container {
   position: fixed;
   top: 0;
@@ -11,6 +12,7 @@
   backdrop-filter: blur(10px);
 }
 
+/*Container for form elements*/
 .form {
   position: absolute;
   top: 40%;
@@ -21,12 +23,12 @@
   justify-content: center;
   gap: 1rem;
 }
-
+/*Container for header and close btn*/
 .form-header-btn {
   display: flex;
   flex-direction: row;
 }
-
+/*Close btn*/
 .form-close-btn {
   width: 2rem;
   height: 2rem;
@@ -42,29 +44,36 @@
   transform: translate(20%, -35%) scale(1.2);
 }
 
+/*Header*/
 .form-header {
   text-transform: uppercase;
   font-weight: 300;
   font-size: 5rem;
 }
+/*Terms and Services section*/
 .form-tns {
   margin-top: -2rem;
   margin-bottom: 1.2rem;
   font-size: 1.5rem;
   text-align: center;
+  transform: translateX(-12%);
 }
 .form-tns-link {
   color: black;
 }
 
+/*Form labels*/
 .form-label {
   font-size: 1.4rem;
 }
+/*Form Input*/
 .form-input {
   width: 60%;
   height: 2.3rem;
   margin-bottom: 0.7rem;
   user-select: none;
+  border: none;
+  border-radius: 0.2rem;
 }
 /*To remove the inside border when clicking on label*/
 .form-input:focus {
@@ -73,3 +82,62 @@
 .form-input:last-child {
   margin-bottom: 0;
 }
+/*Container for socials sign up*/
+.form-social-signup {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-top: 1.2rem;
+}
+/*Socials sign up buttons*/
+.form-social-signup-btn {
+  text-transform: uppercase;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+  border: none;
+  border-radius: 0.5rem;
+  color: black;
+  font-weight: 400;
+  transition: transform 0.2s ease-in-out;
+  transform-origin: top;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.form-social-signup-btn:hover {
+  cursor: pointer;
+  transform: scale(1.01);
+  box-shadow: 3px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/*Social btns individually*/
+.facebook {
+  background: linear-gradient(to bottom right, #4c669f, #3b5998);
+}
+.instagram {
+  /* Start color of gradient */
+  background: linear-gradient(
+    45deg,
+    #f58529,
+    #dd2a7b,
+    #8134af,
+    #515bd4,
+    #0f52ba
+  );
+  color: black;
+}
+
+.google {
+  background: linear-gradient(to bottom right, #d93025, #dd4b39, #e8593b);
+}
+
+/*Socials sign up button icons*/
+.form-socials-icon {
+  width: 2rem;
+  height: 2rem;
+  color: black;
+}
+/*Social icons individually*/
