@@ -99,8 +99,9 @@
   padding-bottom: 0.4rem;
   border: none;
   border-radius: 0.5rem;
-  color: black;
-  font-weight: 400;
+  color: white;
+  height: 4rem;
+  font-size: 1.1rem;
   transition: transform 0.2s ease-in-out;
   transform-origin: top;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
@@ -114,7 +115,7 @@
 
 /*Social btns individually*/
 .facebook {
-  background: linear-gradient(to bottom right, #4c669f, #3b5998);
+  background: rgb(59, 89, 152);
 }
 .instagram {
   /* Start color of gradient */
@@ -137,7 +138,11 @@
 .form-socials-icon {
   width: 2rem;
   height: 2rem;
-  color: black;
+}
+
+.facebook-icon {
+  height: 5rem;
+  width: 3rem;
 }
 
 /*Form Submit btn*/

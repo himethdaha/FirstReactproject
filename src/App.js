@@ -1,9 +1,12 @@
 import "./css/App.css";
 import "./css/Form.css";
 import close from "./logos/register/close.svg";
-import facebook from "./logos/register/facebook.svg";
+// import facebook from "./logos/register/facebook.svg";
 import instagram from "./logos/register/instagram.svg";
 import jwt_decode from "jwt-decode";
+import { LoginSocialFacebook } from "reactjs-social-login";
+import { FacebookLoginButton } from "react-social-login-buttons";
+import { TiSocialFacebookCircular } from "react-icons/ti";
 
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
@@ -25,12 +28,21 @@ function App() {
     window.google.accounts.id.prompt();
   }
 
-  const hanleCallbackResponse = (response) => {
+  //Callback for google login
+  const handleGoogleCallbackResponse = (response) => {
     console.log("response " + JSON.stringify(response));
     //Decode the JWT from the response
     const userObject = jwt_decode(response.credential);
     //Set user state
     setUser(userObject);
+  };
+
+  //Callback for facebook login
+  const handleFacebookCallbackResponse = (response) => {
+    console.log("response " + response);
+    //Decode the JWT from the response
+    //Set user state
+    setUser(response);
   };
 
   //UseEffect hook
@@ -40,7 +52,7 @@ function App() {
       client_id:
         "151653347062-bsi5vgnsd1bt3e84802e0ufjsh9smlom.apps.googleusercontent.com",
       //Function to handle the response from google API
-      callback: hanleCallbackResponse,
+      callback: handleGoogleCallbackResponse,
     });
   }, []);
 
@@ -107,14 +119,18 @@ function App() {
               id="password"
             ></input>
             <div className="form-social-signup">
-              <button className="form-social-signup-btn facebook">
-                <img
-                  src={facebook}
-                  alt="Form Facebook button"
-                  className="form-socials-icon facebook-icon"
-                ></img>
-                signup with facebook
-              </button>
+              {/*Facebook login*/}
+              <LoginSocialFacebook
+                appId="904821693907392"
+                autoLoad={true}
+                fields="name,email,picture"
+                callback={handleFacebookCallbackResponse}
+              >
+                <button className="form-social-signup-btn facebook">
+                  <TiSocialFacebookCircular className="form-socials-icon facebook-icon" />
+                  signup with facebook
+                </button>
+              </LoginSocialFacebook>
               <button className="form-social-signup-btn instagram">
                 <img
                   src={instagram}
@@ -123,14 +139,7 @@ function App() {
                 ></img>
                 signup with instagram
               </button>
-              <div id="google-OAuth-btn">
-                {/* <img
-                  src={google_logo}
-                  alt="Form Google button"
-                  className="form-socials-icon google-icon"
-                ></img>
-                signup with google */}
-              </div>
+              <div id="google-OAuth-btn"></div>
             </div>
             <button className="form-submit-btn">
               <span>Create Account</span>
