@@ -3,9 +3,9 @@ import "./css/Form.css";
 import close from "./logos/register/close.svg";
 import facebook from "./logos/register/facebook.svg";
 import instagram from "./logos/register/instagram.svg";
-import google from "./logos/register/google.svg";
+import jwt_decode from "jwt-decode";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Home from "./Home";
 
@@ -16,6 +16,45 @@ function App() {
     e.preventDefault();
     setShowForm(false);
   };
+
+  //State to check if a user is logged in
+  const [user, setUser] = useState({});
+
+  //One-tap prompt
+  if (Object.keys(user).length === 0) {
+    window.google.accounts.id.prompt();
+  }
+
+  const hanleCallbackResponse = (response) => {
+    console.log("response " + JSON.stringify(response));
+    //Decode the JWT from the response
+    const userObject = jwt_decode(response.credential);
+    //Set user state
+    setUser(userObject);
+  };
+
+  //UseEffect hook
+  useEffect(() => {
+    //Initialize google client
+    window.google.accounts.id.initialize({
+      client_id:
+        "151653347062-bsi5vgnsd1bt3e84802e0ufjsh9smlom.apps.googleusercontent.com",
+      //Function to handle the response from google API
+      callback: hanleCallbackResponse,
+    });
+  }, []);
+
+  useEffect(() => {
+    // Create google sign in button
+    window.google.accounts.id.renderButton(
+      document.getElementById("google-OAuth-btn"),
+      {
+        theme: "outline",
+        size: "large",
+      }
+    );
+  });
+
   return (
     <React.Fragment>
       {/*If ShowForm state is true*/}
@@ -84,14 +123,14 @@ function App() {
                 ></img>
                 signup with instagram
               </button>
-              <button className="form-social-signup-btn google">
-                <img
-                  src={google}
+              <div id="google-OAuth-btn">
+                {/* <img
+                  src={google_logo}
                   alt="Form Google button"
                   className="form-socials-icon google-icon"
                 ></img>
-                signup with google
-              </button>
+                signup with google */}
+              </div>
             </div>
             <button className="form-submit-btn">
               <span>Create Account</span>
@@ -101,11 +140,11 @@ function App() {
       )}
       <div className="App">
         <header className="App-header">
-          {/*Send in the setShowForm value as a prop to Navbar*/}
-          <Navbar setShowForm={setShowForm} />
+          {/*Send in the setShowForm and user state as props to Navbar*/}
+          <Navbar setShowForm={setShowForm} user={user} setUser={setUser} />
         </header>
         <main className="Main">
-          <Home />
+          <Home user={user} />
         </main>
       </div>
     </React.Fragment>

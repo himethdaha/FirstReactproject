@@ -3,9 +3,8 @@ import logo from "./logos/navbar/logo.svg";
 import SignUp from "./signup";
 import LogIn from "./LogIn";
 
-const Navbar = (props) => {
+const Navbar = ({ setShowForm, user, setUser }) => {
   //Get the setShowForm prop to be sent to the signUp function
-  const setShowForm = props.setShowForm;
   return (
     <nav className="navbar">
       {/* navbar header*/}
@@ -39,7 +38,7 @@ const Navbar = (props) => {
       </ul>
       <ul className="navbar-ul-user navbar-ul">
         <LogIn />
-        <SignUp setShowForm={setShowForm} />
+        <SignUp setShowForm={setShowForm} user={user} setUser={setUser} />
       </ul>
     </nav>
   );
