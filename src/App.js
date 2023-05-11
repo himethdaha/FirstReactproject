@@ -1,6 +1,14 @@
+// My modules
+import Navbar from "./Navbar";
+import Home from "./Home";
+import ErrorAlert from "./Components/ErrorAlert";
+
+// Styles
 import "./css/App.css";
 import "./css/Form.css";
 import close from "./logos/register/close.svg";
+
+// 3rd party modules
 import jwt_decode from "jwt-decode";
 import {
   LoginSocialFacebook,
@@ -12,8 +20,6 @@ import {
 } from "react-social-login-buttons";
 
 import React, { useEffect, useState } from "react";
-import Navbar from "./Navbar";
-import Home from "./Home";
 
 // Env variables
 const facebookAppId = process.env.REACT_APP_FACEBOOK_APPID;
@@ -42,17 +48,20 @@ const formSocialSignupBtn = {
 
 function App() {
   // HOOKS //
-  //"useState" hook to close form
+  //"useState"
+
+  //hook to close form
   const [showForm, setShowForm] = useState(false);
-  const handleCloseForm = (e) => {
-    e.preventDefault();
-    setShowForm(false);
-  };
 
   //State to check if a user is logged in
   const [user, setUser] = useState({});
 
-  // UseEffect hook
+  //State to be triggered by errors in forms
+  const [error, setError] = useState({});
+
+  // "useEffect"
+
+  // hook to initialize google accounts
   useEffect(() => {
     window.google.accounts.id.initialize({
       client_id: googleClientId,
@@ -60,6 +69,7 @@ function App() {
     });
   }, []);
 
+  // hook to initialize one-tamp prompt and render google button
   useEffect(() => {
     // One-tap prompt
     if (Object.keys(user).length === 0) {
@@ -104,24 +114,69 @@ function App() {
 
   // To handle form inputs
   const handleInputOnChange = (event) => {
-    console.log(event);
     const eventName = event.target.name;
     const eventValue = event.target.value;
 
-    // Validate the inputs
-    if (
-      (eventName === "email" ||
-        eventName === "username" ||
-        eventName === "password" ||
-        eventName === "password-confirm") &&
-      eventValue.length === 0
-    ) {
-      console.log("empty val");
+    let passwd;
+    let currPasswd;
+    let errors = {};
+
+    // Validate the email address
+    if (eventName === "email") {
+      if (eventValue.length === 0) {
+        errors.email = "Email is missing";
+      } else if (
+        !eventValue.match(
+          /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+        )
+      ) {
+        errors.email = "Email is invalid";
+      }
     }
+    // Validate the username
+    else if (eventName === "username") {
+      if (eventValue.length === 0) {
+        errors.username = "Username is missing";
+      }
+    }
+    // Validate the password
+    else if (eventName === "password") {
+      if (eventValue.length === 0) {
+        errors.password = "Password is missing";
+      } else if (
+        !eventValue.match(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/gm
+        )
+      ) {
+        errors.password =
+          "Password must contain at least one lowercase letter, one uppercase letter, one number and at least 6 characters";
+      } else {
+      }
+    }
+    // Validate the confirm password
+    else if (eventName === "password-confirm") {
+      if (!("password" in errors)) {
+        passwd = document.getElementById("password");
+        currPasswd = passwd.value;
+      }
+
+      if (eventValue.length === 0) {
+        errors.passwordConfirm = "Confirm Password is missing";
+      } else if (eventValue !== currPasswd) {
+        errors.passwordConfirm = "Confirm Password invalid";
+      }
+    }
+    setError(errors);
   };
 
   // To handle form submission
   const handleFormSubmit = (response) => {};
+
+  // To close the form
+  const handleCloseForm = (e) => {
+    e.preventDefault();
+    setShowForm(false);
+  };
 
   return (
     <React.Fragment>
@@ -160,6 +215,7 @@ function App() {
               required={true}
               onChange={handleInputOnChange}
             ></input>
+            {error?.email && <ErrorAlert message={error.email} />}
             <label className="form-label form-label-signup" htmlFor="username">
               Username
             </label>
@@ -172,6 +228,7 @@ function App() {
               required={true}
               onChange={handleInputOnChange}
             ></input>
+            {error?.username && <ErrorAlert message={error.username} />}
             <label className="form-label form-label-signup" htmlFor="password">
               Password
             </label>
@@ -183,6 +240,7 @@ function App() {
               required={true}
               onChange={handleInputOnChange}
             ></input>
+            {error?.password && <ErrorAlert message={error.password} />}
             <label
               className="form-label form-label-signup"
               htmlFor="password-confirm"
@@ -197,6 +255,9 @@ function App() {
               required={true}
               onChange={handleInputOnChange}
             ></input>
+            {error?.passwordConfirm && (
+              <ErrorAlert message={error.passwordConfirm} />
+            )}
             <div className="form-social-signup">
               {/* Login from Facebook */}
               <LoginSocialFacebook
