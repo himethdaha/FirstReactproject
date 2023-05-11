@@ -15,6 +15,12 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Home from "./Home";
 
+// Env variables
+const facebookAppId = process.env.REACT_APP_FACEBOOK_APPID;
+const instagramClientId = process.env.REACT_APP_INSTAGRAM_CLIENTID;
+const instagramClientSecret = process.env.REACT_APP_INSTAGRAM_CLIENTSECRET;
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENTID;
+
 // Stylings
 const formSocialSignupBtn = {
   textTransform: "uppercase",
@@ -44,10 +50,13 @@ function App() {
 
   //State to check if a user is logged in
   const [user, setUser] = useState({});
+  console.log(user);
 
   //Callback for google login
   const handleGoogleCallbackResponse = (response) => {
     console.log("response " + JSON.stringify(response));
+    console.log("response.credential");
+    console.log(response.credential);
     //Decode the JWT from the response
     const userObject = jwt_decode(response.credential);
     //Set user state
@@ -70,10 +79,8 @@ function App() {
 
   // UseEffect hook
   useEffect(() => {
-    //Initialize google client
     window.google.accounts.id.initialize({
-      client_id:
-        "151653347062-bsi5vgnsd1bt3e84802e0ufjsh9smlom.apps.googleusercontent.com",
+      client_id: googleClientId,
       callback: handleGoogleCallbackResponse,
     });
   }, []);
@@ -148,7 +155,7 @@ function App() {
             <div className="form-social-signup">
               {/* Login from Facebook */}
               <LoginSocialFacebook
-                appId="904821693907392"
+                appId={facebookAppId}
                 autoLoad={true}
                 fields="name,email,picture"
                 callback={handleFacebookCallbackResponse}
@@ -157,26 +164,14 @@ function App() {
               </LoginSocialFacebook>
               {/* Login from Instagram */}
               <LoginSocialInstagram
-                client_id="204841035647325"
-                client_secret="16d3ab3180134c11adb207114d3db486"
+                client_id={instagramClientId}
+                client_secret={instagramClientSecret}
                 redirect_uri="https://localhost:3000/"
                 callback={handleInstagramCallbackResponse}
               >
                 <InstagramLoginButton style={formSocialSignupBtn} />
               </LoginSocialInstagram>
               {/* Login from Google */}
-              {/* <LoginSocialGoogle
-                client_id="151653347062-bsi5vgnsd1bt3e84802e0ufjsh9smlom.apps.googleusercontent.com"
-                autoLoad={true}
-                fields="name,email,picture"
-                onResolve={({ provider, data }) => {
-                  console.log("provider: " + provider);
-                  console.log("typeof" + typeof provider);
-                  setUser(data);
-                }}
-              >
-                <GoogleLoginButton style={formSocialSignupBtn} />
-              </LoginSocialGoogle> */}
               <div id="google-OAuth-btn" style={formSocialSignupBtn}></div>
             </div>
             <button className="form-submit-btn">
