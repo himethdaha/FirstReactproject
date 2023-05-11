@@ -1,16 +1,38 @@
 import "./css/App.css";
 import "./css/Form.css";
 import close from "./logos/register/close.svg";
-// import facebook from "./logos/register/facebook.svg";
-import instagram from "./logos/register/instagram.svg";
 import jwt_decode from "jwt-decode";
-import { LoginSocialFacebook } from "reactjs-social-login";
-import { FacebookLoginButton } from "react-social-login-buttons";
-import { TiSocialFacebookCircular } from "react-icons/ti";
+import {
+  LoginSocialFacebook,
+  LoginSocialInstagram,
+} from "reactjs-social-login";
+import {
+  FacebookLoginButton,
+  InstagramLoginButton,
+} from "react-social-login-buttons";
 
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Home from "./Home";
+
+// Stylings
+const formSocialSignupBtn = {
+  textTransform: "uppercase",
+  display: "flex",
+  flexDirection: "row",
+  alignSelf: "center",
+  gap: "0.5rem",
+  alignItems: "center",
+  paddingTop: "0.4rem",
+  paddingBottom: "0.4rem",
+  border: "none",
+  borderRadius: "0.5rem",
+  height: "4rem",
+  fontSize: "1rem",
+  transition: "transform 0.2s ease-in-out",
+  transformOrigin: "top",
+  boxShadow: "1px 2px 3px rgba(0, 0, 0, 0.3)",
+};
 
 function App() {
   //"useState" hook
@@ -22,11 +44,6 @@ function App() {
 
   //State to check if a user is logged in
   const [user, setUser] = useState({});
-
-  //One-tap prompt
-  if (Object.keys(user).length === 0) {
-    window.google.accounts.id.prompt();
-  }
 
   //Callback for google login
   const handleGoogleCallbackResponse = (response) => {
@@ -45,18 +62,28 @@ function App() {
     setUser(response);
   };
 
-  //UseEffect hook
+  //Callback for instagram login
+  const handleInstagramCallbackResponse = (response) => {
+    console.log("response ");
+    console.log(response);
+  };
+
+  // UseEffect hook
   useEffect(() => {
     //Initialize google client
     window.google.accounts.id.initialize({
       client_id:
         "151653347062-bsi5vgnsd1bt3e84802e0ufjsh9smlom.apps.googleusercontent.com",
-      //Function to handle the response from google API
       callback: handleGoogleCallbackResponse,
     });
   }, []);
 
   useEffect(() => {
+    // One-tap prompt
+    if (Object.keys(user).length === 0) {
+      window.google.accounts.id.prompt();
+    }
+
     // Create google sign in button
     window.google.accounts.id.renderButton(
       document.getElementById("google-OAuth-btn"),
@@ -119,27 +146,38 @@ function App() {
               id="password"
             ></input>
             <div className="form-social-signup">
-              {/*Facebook login*/}
+              {/* Login from Facebook */}
               <LoginSocialFacebook
                 appId="904821693907392"
                 autoLoad={true}
                 fields="name,email,picture"
                 callback={handleFacebookCallbackResponse}
               >
-                <button className="form-social-signup-btn facebook">
-                  <TiSocialFacebookCircular className="form-socials-icon facebook-icon" />
-                  signup with facebook
-                </button>
+                <FacebookLoginButton style={formSocialSignupBtn} />
               </LoginSocialFacebook>
-              <button className="form-social-signup-btn instagram">
-                <img
-                  src={instagram}
-                  alt="Form Instagram button"
-                  className="form-socials-icon instagram-icon"
-                ></img>
-                signup with instagram
-              </button>
-              <div id="google-OAuth-btn"></div>
+              {/* Login from Instagram */}
+              <LoginSocialInstagram
+                client_id="204841035647325"
+                client_secret="16d3ab3180134c11adb207114d3db486"
+                redirect_uri="https://localhost:3000/"
+                callback={handleInstagramCallbackResponse}
+              >
+                <InstagramLoginButton style={formSocialSignupBtn} />
+              </LoginSocialInstagram>
+              {/* Login from Google */}
+              {/* <LoginSocialGoogle
+                client_id="151653347062-bsi5vgnsd1bt3e84802e0ufjsh9smlom.apps.googleusercontent.com"
+                autoLoad={true}
+                fields="name,email,picture"
+                onResolve={({ provider, data }) => {
+                  console.log("provider: " + provider);
+                  console.log("typeof" + typeof provider);
+                  setUser(data);
+                }}
+              >
+                <GoogleLoginButton style={formSocialSignupBtn} />
+              </LoginSocialGoogle> */}
+              <div id="google-OAuth-btn" style={formSocialSignupBtn}></div>
             </div>
             <button className="form-submit-btn">
               <span>Create Account</span>

@@ -101,7 +101,7 @@
   border-radius: 0.5rem;
   color: white;
   height: 4rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   transition: transform 0.2s ease-in-out;
   transform-origin: top;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
@@ -109,29 +109,55 @@
 
 .form-social-signup-btn:hover {
   cursor: pointer;
-  transform: scale(1.01);
-  box-shadow: 3px 2px 5px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+  box-shadow: 13px 12px 5px rgba(0, 0, 0, 0.3);
 }
 
 /*Social btns individually*/
-.facebook {
-  background: rgb(59, 89, 152);
-}
-.instagram {
-  /* Start color of gradient */
-  background: linear-gradient(
-    45deg,
-    #f58529,
-    #dd2a7b,
-    #8134af,
-    #515bd4,
-    #0f52ba
-  );
+.google-btn {
+  display: flex;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: rgba(0, 0, 0, 0.3) 1px 2px 3px;
   color: black;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 5px;
+  width: calc(100% - 10px);
+  overflow: hidden;
+  padding: 0.4rem 10px;
+  user-select: none;
+  height: 4rem;
+  background: rgb(239, 240, 238);
+  text-transform: uppercase;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+  transition: transform 0.2s ease-in-out 0s;
+  transform-origin: center top;
 }
 
-.google {
-  background: linear-gradient(to bottom right, #d93025, #dd4b39, #e8593b);
+.google-btn:hover {
+  background-color: rgb(206, 200, 200);
+}
+
+.google-div-one {
+  align-items: center;
+  display: flex;
+  height: 100%;
+}
+.google-div-two {
+  display: flex;
+  justify-content: center;
+  min-width: 26px;
+}
+.google-div-three {
+  width: 10px;
+}
+
+.google-div-four {
+  text-align: left;
+  width: 100%;
 }
 
 /*Socials sign up button icons*/
