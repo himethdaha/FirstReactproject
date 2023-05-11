@@ -41,7 +41,8 @@ const formSocialSignupBtn = {
 };
 
 function App() {
-  //"useState" hook
+  // HOOKS //
+  //"useState" hook to close form
   const [showForm, setShowForm] = useState(false);
   const handleCloseForm = (e) => {
     e.preventDefault();
@@ -50,8 +51,32 @@ function App() {
 
   //State to check if a user is logged in
   const [user, setUser] = useState({});
-  console.log(user);
 
+  // UseEffect hook
+  useEffect(() => {
+    window.google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: handleGoogleCallbackResponse,
+    });
+  }, []);
+
+  useEffect(() => {
+    // One-tap prompt
+    if (Object.keys(user).length === 0) {
+      window.google.accounts.id.prompt();
+    }
+
+    // Create google sign in button
+    window.google.accounts.id.renderButton(
+      document.getElementById("google-OAuth-btn"),
+      {
+        theme: "outline",
+        size: "large",
+      }
+    );
+  });
+
+  // Event handlers //
   //Callback for google login
   const handleGoogleCallbackResponse = (response) => {
     console.log("response " + JSON.stringify(response));
@@ -77,29 +102,26 @@ function App() {
     console.log(response);
   };
 
-  // UseEffect hook
-  useEffect(() => {
-    window.google.accounts.id.initialize({
-      client_id: googleClientId,
-      callback: handleGoogleCallbackResponse,
-    });
-  }, []);
+  // To handle form inputs
+  const handleInputOnChange = (event) => {
+    console.log(event);
+    const eventName = event.target.name;
+    const eventValue = event.target.value;
 
-  useEffect(() => {
-    // One-tap prompt
-    if (Object.keys(user).length === 0) {
-      window.google.accounts.id.prompt();
+    // Validate the inputs
+    if (
+      (eventName === "email" ||
+        eventName === "username" ||
+        eventName === "password" ||
+        eventName === "password-confirm") &&
+      eventValue.length === 0
+    ) {
+      console.log("empty val");
     }
+  };
 
-    // Create google sign in button
-    window.google.accounts.id.renderButton(
-      document.getElementById("google-OAuth-btn"),
-      {
-        theme: "outline",
-        size: "large",
-      }
-    );
-  });
+  // To handle form submission
+  const handleFormSubmit = (response) => {};
 
   return (
     <React.Fragment>
@@ -133,7 +155,10 @@ function App() {
               type="email"
               className="form-input form-input-signup"
               id="email"
+              name="email"
               placeholder="pain@gmail.com"
+              required={true}
+              onChange={handleInputOnChange}
             ></input>
             <label className="form-label form-label-signup" htmlFor="username">
               Username
@@ -142,7 +167,10 @@ function App() {
               type="text"
               className="form-input form-input-signup"
               id="username"
+              name="username"
               placeholder="Kaiokenx10"
+              required={true}
+              onChange={handleInputOnChange}
             ></input>
             <label className="form-label form-label-signup" htmlFor="password">
               Password
@@ -151,6 +179,23 @@ function App() {
               type="password"
               className="form-input form-input-signup"
               id="password"
+              name="password"
+              required={true}
+              onChange={handleInputOnChange}
+            ></input>
+            <label
+              className="form-label form-label-signup"
+              htmlFor="password-confirm"
+            >
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              className="form-input form-input-signup"
+              id="password-confirm"
+              name="password-confirm"
+              required={true}
+              onChange={handleInputOnChange}
             ></input>
             <div className="form-social-signup">
               {/* Login from Facebook */}
@@ -174,7 +219,10 @@ function App() {
               {/* Login from Google */}
               <div id="google-OAuth-btn" style={formSocialSignupBtn}></div>
             </div>
-            <button className="form-submit-btn">
+            <button
+              className="form-submit-btn"
+              onClick={(e) => handleFormSubmit(e)}
+            >
               <span>Create Account</span>
             </button>
           </form>
