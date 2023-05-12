@@ -59,6 +59,22 @@ function App() {
   //State to be triggered by errors in forms
   const [error, setError] = useState({});
 
+  // State to save form data
+  const [data, setForm] = useState({
+    email: "",
+    username: "",
+    password: "",
+    passwordConfirm: "",
+  });
+
+  // State to see if every field has been validated
+  const [validData, validateData] = useState({
+    email: false,
+    username: false,
+    password: false,
+    passwordConfirm: false,
+  });
+
   // "useEffect"
 
   // hook to initialize google accounts
@@ -86,16 +102,33 @@ function App() {
     );
   });
 
+  // Run this hook every time 'validData' object changes to make sure the asynchronous state changes are rendered correctly
+  useEffect(() => {
+    const allIsValid = Object.values(validData).every((element) => {
+      return element === true ? true : false;
+    });
+    const submitBtn = document.getElementById("submit-btn");
+
+    if (allIsValid && submitBtn) {
+      console.log("VALID");
+      submitBtn.disabled = false;
+      submitBtn.classList.add("enabled");
+    }
+    if (!allIsValid && submitBtn) {
+      const submitBtn = document.getElementById("submit-btn");
+      submitBtn.disabled = true;
+      submitBtn.classList.remove("enabled");
+    }
+  }, [validData]);
+
   // Event handlers //
   //Callback for google login
   const handleGoogleCallbackResponse = (response) => {
-    console.log("response " + JSON.stringify(response));
-    console.log("response.credential");
-    console.log(response.credential);
-    //Decode the JWT from the response
     const userObject = jwt_decode(response.credential);
     //Set user state
     setUser(userObject);
+    // Close form
+    setShowForm(false);
   };
 
   //Callback for facebook login
@@ -104,12 +137,16 @@ function App() {
     //Decode the JWT from the response
     //Set user state
     setUser(response);
+    // Close form
+    setShowForm(false);
   };
 
   //Callback for instagram login
   const handleInstagramCallbackResponse = (response) => {
     console.log("response ");
     console.log(response);
+    // Close form
+    setShowForm(false);
   };
 
   // To handle form inputs
@@ -131,6 +168,8 @@ function App() {
         )
       ) {
         errors.email = "Email is invalid";
+      } else {
+        validateData({ ...validData, email: true });
       }
     }
     // Validate the username
@@ -138,6 +177,7 @@ function App() {
       if (eventValue.length === 0) {
         errors.username = "Username is missing";
       }
+      validateData({ ...validData, username: true });
     }
     // Validate the password
     else if (eventName === "password") {
@@ -151,10 +191,11 @@ function App() {
         errors.password =
           "Password must contain at least one lowercase letter, one uppercase letter, one number and at least 6 characters";
       } else {
+        validateData({ ...validData, password: true });
       }
     }
     // Validate the confirm password
-    else if (eventName === "password-confirm") {
+    else if (eventName === "passwordConfirm") {
       if (!("password" in errors)) {
         passwd = document.getElementById("password");
         currPasswd = passwd.value;
@@ -162,15 +203,27 @@ function App() {
 
       if (eventValue.length === 0) {
         errors.passwordConfirm = "Confirm Password is missing";
+        validateData({ ...validData, passwordConfirm: false });
       } else if (eventValue !== currPasswd) {
         errors.passwordConfirm = "Confirm Password invalid";
+        validateData({ ...validData, passwordConfirm: false });
+      } else {
+        validateData({ ...validData, passwordConfirm: true });
       }
     }
     setError(errors);
+    // Save form data
+    setForm({ ...data, [eventName]: eventValue });
+
+    console.log("valid data");
+    console.log(validData);
   };
 
   // To handle form submission
-  const handleFormSubmit = (response) => {};
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    console.log(data);
+  };
 
   // To close the form
   const handleCloseForm = (e) => {
@@ -243,15 +296,15 @@ function App() {
             {error?.password && <ErrorAlert message={error.password} />}
             <label
               className="form-label form-label-signup"
-              htmlFor="password-confirm"
+              htmlFor="passwordConfirm"
             >
               Confirm Password
             </label>
             <input
               type="password"
               className="form-input form-input-signup"
-              id="password-confirm"
-              name="password-confirm"
+              id="passwordConfirm"
+              name="passwordConfirm"
               required={true}
               onChange={handleInputOnChange}
             ></input>
@@ -282,6 +335,7 @@ function App() {
             </div>
             <button
               className="form-submit-btn"
+              id="submit-btn"
               onClick={(e) => handleFormSubmit(e)}
             >
               <span>Create Account</span>

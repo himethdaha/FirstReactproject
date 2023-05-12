@@ -198,7 +198,7 @@
   transition: width 0.3s ease-in-out;
 }
 
-.form-submit-btn:hover::before {
+.form-submit-btn.enabled:hover::before {
   width: 98%;
   border: 2px solid aqua;
   cursor: pointer;
