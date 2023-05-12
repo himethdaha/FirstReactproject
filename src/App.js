@@ -220,9 +220,25 @@ function App() {
   };
 
   // To handle form submission
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
     console.log(data);
+
+    // Send data to server
+    const response = await fetch("http://localhost:8000", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    console.log("Response is " + response);
+    //Get the data from server response
+    const responseData = await response.json();
+    console.log("responseData is " + JSON.stringify(responseData));
+
+    console.log(responseData);
   };
 
   // To close the form
