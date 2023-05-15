@@ -252,7 +252,10 @@ function App() {
       {/*If ShowForm state is true*/}
       {showForm && (
         <div className="form-container">
-          <form className="form signUp-form">
+          <form
+            className="form signUp-form"
+            onSubmit={(e) => handleFormSubmit(e)}
+          >
             <div className="form-header-btn">
               <h1 className="form-header">create an account</h1>
               <img
@@ -349,11 +352,7 @@ function App() {
               {/* Login from Google */}
               <div id="google-OAuth-btn" style={formSocialSignupBtn}></div>
             </div>
-            <button
-              className="form-submit-btn"
-              id="submit-btn"
-              onClick={(e) => handleFormSubmit(e)}
-            >
+            <button className="form-submit-btn" id="submit-btn" type="submit">
               <span>Create Account</span>
             </button>
           </form>
