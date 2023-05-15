@@ -127,8 +127,6 @@ function App() {
     const userObject = jwt_decode(response.credential);
     //Set user state
     setUser(userObject);
-    // Close form
-    setShowForm(false);
   };
 
   //Callback for facebook login
@@ -161,7 +159,7 @@ function App() {
     // Validate the email address
     if (eventName === "email") {
       if (eventValue.length === 0) {
-        errors.email = "Email is missing";
+        errors.email = "Email address is required";
       } else if (
         !eventValue.match(
           /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
@@ -175,21 +173,23 @@ function App() {
     // Validate the username
     else if (eventName === "username") {
       if (eventValue.length === 0) {
-        errors.username = "Username is missing";
+        errors.username = "Username is required";
+      } else if (eventValue.length > 10) {
+        errors.username = "Username can't be longer than 10 characters";
       }
       validateData({ ...validData, username: true });
     }
     // Validate the password
     else if (eventName === "password") {
       if (eventValue.length === 0) {
-        errors.password = "Password is missing";
+        errors.password = "Password is required";
       } else if (
         !eventValue.match(
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$/gm
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\-=+{};:,<.>|[\]/?]).{6,}$/gm
         )
       ) {
         errors.password =
-          "Password must contain at least one lowercase letter, one uppercase letter, one number and at least 6 characters";
+          "Password must contain at least one lowercase letter, one uppercase letter, one number, one special character and at least 6 characters";
       } else {
         validateData({ ...validData, password: true });
       }
@@ -202,7 +202,7 @@ function App() {
       }
 
       if (eventValue.length === 0) {
-        errors.passwordConfirm = "Confirm Password is missing";
+        errors.passwordConfirm = "Confirm Password is required";
         validateData({ ...validData, passwordConfirm: false });
       } else if (eventValue !== currPasswd) {
         errors.passwordConfirm = "Confirm Password invalid";
@@ -222,7 +222,6 @@ function App() {
   // To handle form submission
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(data);
 
     // Send data to server
     const response = await fetch("http://localhost:8000", {
@@ -233,12 +232,13 @@ function App() {
       body: JSON.stringify(data),
     });
 
-    console.log("Response is " + response);
     //Get the data from server response
     const responseData = await response.json();
-    console.log("responseData is " + JSON.stringify(responseData));
-
     console.log(responseData);
+
+    setUser(responseData);
+
+    setShowForm(false);
   };
 
   // To close the form
@@ -255,6 +255,7 @@ function App() {
           <form
             className="form signUp-form"
             onSubmit={(e) => handleFormSubmit(e)}
+            method="POST"
           >
             <div className="form-header-btn">
               <h1 className="form-header">create an account</h1>
