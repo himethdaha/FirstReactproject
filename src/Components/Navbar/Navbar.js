@@ -1,9 +1,18 @@
-import "./css/Navbar.css";
-import logo from "./logos/navbar/logo.svg";
-import SignUp from "./signup";
-import LogIn from "./LogIn";
+import "../../css/Navbar.css";
+import logo from "../../logos/navbar/logo.svg";
+import SignUp from "./signupNavbar";
+import LogIn from "./LogInNavbar";
 
-const Navbar = ({ setShowForm, user, setUser }) => {
+const Navbar = ({
+  setShowForm,
+  setShowLoginForm,
+  user,
+  setUser,
+  setHideSignUpButton,
+  setHideLoginButton,
+  signUpHidden,
+  loginHidden,
+}) => {
   //Get the setShowForm prop to be sent to the signUp function
   return (
     <nav className="navbar">
@@ -37,8 +46,23 @@ const Navbar = ({ setShowForm, user, setUser }) => {
         </li>
       </ul>
       <ul className="navbar-ul-user navbar-ul">
-        <LogIn />
-        <SignUp setShowForm={setShowForm} user={user} setUser={setUser} />
+        {!loginHidden && (
+          <LogIn
+            setShowLoginForm={setShowLoginForm}
+            user={user}
+            setUser={setUser}
+            setHideSignUpButton={setHideSignUpButton}
+          />
+        )}
+        {!signUpHidden && (
+          <SignUp
+            setShowForm={setShowForm}
+            user={user}
+            setUser={setUser}
+            setHideLoginButton={setHideLoginButton}
+            loginHidden={loginHidden}
+          />
+        )}
       </ul>
     </nav>
   );

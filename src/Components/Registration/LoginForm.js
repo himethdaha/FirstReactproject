@@ -1,5 +1,5 @@
 // Imports
-import ErrorAlert from "../../Components/ErrorAlert";
+import ErrorAlert from "../ErrorAlert";
 
 // 3rd party libraries
 import React from "react";
@@ -38,7 +38,7 @@ const facebookAppId = process.env.REACT_APP_FACEBOOK_APPID;
 const instagramClientId = process.env.REACT_APP_INSTAGRAM_CLIENTID;
 const instagramClientSecret = process.env.REACT_APP_INSTAGRAM_CLIENTSECRET;
 
-const SignUpForm = ({
+const LoginForm = ({
   handleFacebookCallbackResponse,
   handleInstagramCallbackResponse,
   handleInputOnChange,
@@ -54,7 +54,7 @@ const SignUpForm = ({
         method="POST"
       >
         <div className="form-header-btn">
-          <h1 className="form-header">create an account</h1>
+          <h1 className="form-header">Welcome Back</h1>
           <img
             src={close}
             alt="Form close button"
@@ -72,19 +72,6 @@ const SignUpForm = ({
             Privacy Policy
           </a>
         </span>
-        <label className="form-label form-label-signup" htmlFor="email">
-          Email
-        </label>
-        <input
-          type="email"
-          className="form-input form-input-signup"
-          id="email"
-          name="email"
-          placeholder="pain@gmail.com"
-          required={true}
-          onChange={handleInputOnChange}
-        ></input>
-        {error?.email && <ErrorAlert message={error.email} />}
         <label className="form-label form-label-signup" htmlFor="username">
           Username
         </label>
@@ -110,23 +97,6 @@ const SignUpForm = ({
           onChange={handleInputOnChange}
         ></input>
         {error?.password && <ErrorAlert message={error.password} />}
-        <label
-          className="form-label form-label-signup"
-          htmlFor="passwordConfirm"
-        >
-          Confirm Password
-        </label>
-        <input
-          type="password"
-          className="form-input form-input-signup"
-          id="passwordConfirm"
-          name="passwordConfirm"
-          required={true}
-          onChange={handleInputOnChange}
-        ></input>
-        {error?.passwordConfirm && (
-          <ErrorAlert message={error.passwordConfirm} />
-        )}
         <div className="form-social-signup">
           {/* Login from Facebook */}
           <LoginSocialFacebook
@@ -150,11 +120,11 @@ const SignUpForm = ({
           <div id="google-OAuth-btn" style={formSocialSignupBtn}></div>
         </div>
         <button className="form-submit-btn" id="submit-btn" type="submit">
-          <span>Create Account</span>
+          <span>Login</span>
         </button>
       </form>
     </div>
   );
 };
 
-export default SignUpForm;
+export default LoginForm;

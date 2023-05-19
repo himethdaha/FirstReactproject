@@ -1,7 +1,8 @@
 // My modules
-import Navbar from "./Navbar";
+import Navbar from "./Components/Navbar/Navbar";
 import Home from "./Home";
-import SignUpForm from "./Components/Registration/Signup";
+import SignUpForm from "./Components/Registration/SignupForm";
+import LoginForm from "./Components/Registration/LoginForm";
 
 // Styles
 import "./css/App.css";
@@ -20,8 +21,17 @@ function App() {
   // HOOKS //
   //"useState"
 
-  //hook to close form
+  //hook to open/close sign up form
   const [showForm, setShowForm] = useState(false);
+
+  // hook to open/close login form
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
+  // To hide signup button when user logged in
+  const [signUpHidden, setHideSignUpButton] = useState(false);
+
+  // To hide login button when user signed in
+  const [loginHidden, setHideLoginButton] = useState(false);
 
   //State to check if a user is logged in
   const [user, setUser] = useState({});
@@ -215,13 +225,25 @@ function App() {
   const handleCloseForm = (e) => {
     e.preventDefault();
     setShowForm(false);
+    setShowLoginForm(false);
   };
 
   return (
     <React.Fragment>
-      {/*If ShowForm state is true*/}
+      {/*If ShowForm state for signup is true*/}
       {showForm && (
         <SignUpForm
+          handleFacebookCallbackResponse={handleFacebookCallbackResponse}
+          handleInstagramCallbackResponse={handleInstagramCallbackResponse}
+          handleInputOnChange={handleInputOnChange}
+          handleFormSubmit={handleFormSubmit}
+          handleCloseForm={handleCloseForm}
+          error={error}
+        />
+      )}
+      {/*If ShowForm state for login is true*/}
+      {showLoginForm && (
+        <LoginForm
           handleFacebookCallbackResponse={handleFacebookCallbackResponse}
           handleInstagramCallbackResponse={handleInstagramCallbackResponse}
           handleInputOnChange={handleInputOnChange}
@@ -233,7 +255,16 @@ function App() {
       <div className="App">
         <header className="App-header">
           {/*Send in the setShowForm and user state as props to Navbar*/}
-          <Navbar setShowForm={setShowForm} user={user} setUser={setUser} />
+          <Navbar
+            setShowForm={setShowForm}
+            setShowLoginForm={setShowLoginForm}
+            user={user}
+            setUser={setUser}
+            setHideSignUpButton={setHideSignUpButton}
+            setHideLoginButton={setHideLoginButton}
+            signUpHidden={signUpHidden}
+            loginHidden={loginHidden}
+          />
         </header>
         <main className="Main">
           <Home user={user} />
