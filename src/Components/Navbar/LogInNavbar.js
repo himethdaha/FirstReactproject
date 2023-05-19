@@ -1,10 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "../../css/Navbar.css";
 
 const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
   // Variables
   const isUserSet = Object.keys(user).length;
 
+  useEffect(() => {
+    const signinBtn = document.querySelector(".navbar-ul-signin-btn");
+    if (signinBtn) {
+      if (isUserSet !== 0) {
+        console.log("disabled");
+        signinBtn.disabled = true;
+        signinBtn.classList.add("hidden");
+      } else {
+        console.log("enabled");
+
+        signinBtn.classList.remove("hidden");
+        signinBtn.disabled = false;
+      }
+    }
+  }, [isUserSet]);
   //Event handler on signup button which changes the "state"
   const handleOnClick = (e) => {
     e.preventDefault();
@@ -17,37 +32,19 @@ const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
       setShowLoginForm(false);
       // When user object is the 'state' is empty the LogOut button text will change to SignIn because isUserSet === 0
       setUser({});
-      // Enable SignUp Button
-      setHideSignUpButton(false);
     }
   };
-  if (isUserSet === 0) {
-    return (
-      <li className="navbar-ul-item">
-        <a
-          href="/"
-          className="navbar-ul-btn navbar-ul-login-btn"
-          onClick={(e) => handleOnClick(e)}
-        >
-          LogIn
-        </a>
-      </li>
-    );
-  } else {
-    // To sign up button
-    setHideSignUpButton(true);
-    return (
-      <li className="navbar-ul-item">
-        <a
-          href="/"
-          className="navbar-ul-btn navbar-ul-login-btn"
-          onClick={(e) => handleOnClick(e)}
-        >
-          LogOut
-        </a>
-      </li>
-    );
-  }
+  return (
+    <li className="navbar-ul-item">
+      <a
+        href="/"
+        className="navbar-ul-btn navbar-ul-signin-btn"
+        onClick={(e) => handleOnClick(e)}
+      >
+        {isUserSet === 0 ? "LogIn" : "LogOut"}
+      </a>
+    </li>
+  );
 };
 
 export default LogIn;

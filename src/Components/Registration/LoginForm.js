@@ -120,7 +120,7 @@ const LoginForm = ({
           {/* Login from Google */}
           <div id="google-OAuth-btn" style={formSocialSignupBtn}></div>
         </div>
-        <button className="form-submit-btn" id="submit-btn" type="submit">
+        <button className="form-submit-btn" id="submit-btn-login" type="submit">
           <span>Login</span>
         </button>
       </form>

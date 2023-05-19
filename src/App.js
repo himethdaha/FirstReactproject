@@ -100,23 +100,39 @@ function App() {
       return element === true ? true : false;
     });
 
+    const signupSubmitBtn = document.getElementById("submit-btn-signup");
+
+    if (signupAllIsValid && signupSubmitBtn) {
+      console.log("VALID signup");
+      signupSubmitBtn.disabled = false;
+      signupSubmitBtn.classList.add("enabled");
+    }
+    if (!signupAllIsValid && signupSubmitBtn) {
+      console.log("INVALID");
+      signupSubmitBtn.disabled = true;
+      signupSubmitBtn.classList.remove("enabled");
+    }
+  }, [validData]);
+
+  // Hook for login form to enable/disable submit button
+  useEffect(() => {
     const loginAllIsValid = Object.values(validLoginData).every((element) => {
       return element === true ? true : false;
     });
-    const submitBtn = document.getElementById("submit-btn");
 
-    if ((signupAllIsValid || loginAllIsValid) && submitBtn) {
-      console.log("VALID");
-      submitBtn.disabled = false;
-      submitBtn.classList.add("enabled");
+    const loginSubmitBtn = document.getElementById("submit-btn-login");
+
+    if (loginAllIsValid && loginSubmitBtn) {
+      console.log("VALID login");
+      loginSubmitBtn.disabled = false;
+      loginSubmitBtn.classList.add("enabled");
     }
-    if (!signupAllIsValid && !loginAllIsValid && submitBtn) {
+    if (!loginAllIsValid && loginSubmitBtn) {
       console.log("INVALID");
-      const submitBtn = document.getElementById("submit-btn");
-      submitBtn.disabled = true;
-      submitBtn.classList.remove("enabled");
+      loginSubmitBtn.disabled = true;
+      loginSubmitBtn.classList.remove("enabled");
     }
-  }, [validData, validLoginData]);
+  }, [validLoginData]);
 
   // Event handlers //
   //Callback for google login
@@ -217,13 +233,16 @@ function App() {
     setForm({ ...data, [eventName]: eventValue });
     setLoginForm({ ...loginData, [eventName]: eventValue });
 
-    console.log("valid data");
+    console.log("valid sign up data");
     console.log(validData);
+
+    console.log("valid login data");
     console.log(validLoginData);
   };
 
   // To handle SignUp form submission
   const handleFormSubmit = async (event) => {
+    console.log("signup form submission", event);
     event.preventDefault();
 
     // Send data to server
@@ -246,6 +265,7 @@ function App() {
 
   // To handle Login form submission
   const handleLoginFormSubmit = async (event) => {
+    console.log("login form submission", event);
     event.preventDefault();
 
     const response = await fetch("http://localhost:8000/login", {

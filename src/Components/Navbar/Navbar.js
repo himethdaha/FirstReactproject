@@ -45,7 +45,7 @@ const Navbar = ({
           <span className="navbar-ul-item-dropdown">&#9662;</span>
         </li>
       </ul>
-      <ul className="navbar-ul-user navbar-ul">
+      <ul className="navbar-ul-user navbar-ul" id="navbar-ul-user-registry">
         {!loginHidden && (
           <LogIn
             setShowLoginForm={setShowLoginForm}
@@ -60,7 +60,6 @@ const Navbar = ({
             user={user}
             setUser={setUser}
             setHideLoginButton={setHideLoginButton}
-            loginHidden={loginHidden}
           />
         )}
       </ul>
