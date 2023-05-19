@@ -1,7 +1,6 @@
 import "./css/Main.css";
 const Home = ({ user }) => {
   let initialText = "";
-  console.log("in home", user.userName?.toUpperCase());
   if (Object.keys(user).length !== 0) {
     if (user.name) {
       initialText = `WELCOME ${user.name.toUpperCase()}`;

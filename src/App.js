@@ -39,7 +39,7 @@ function App() {
   //State to be triggered by errors in forms
   const [error, setError] = useState({});
 
-  // State to save form data
+  // State to save signup form data
   const [data, setForm] = useState({
     email: "",
     username: "",
@@ -47,12 +47,24 @@ function App() {
     passwordConfirm: "",
   });
 
-  // State to see if every field has been validated
+  // State to save login form data
+  const [loginData, setLoginForm] = useState({
+    username: "",
+    password: "",
+  });
+
+  // State to see if every field has been validated in signup form
   const [validData, validateData] = useState({
     email: false,
     username: false,
     password: false,
     passwordConfirm: false,
+  });
+
+  // State to see if every field has been validated in login form
+  const [validLoginData, validateLoginData] = useState({
+    username: false,
+    password: false,
   });
 
   // "useEffect"
@@ -84,22 +96,27 @@ function App() {
 
   // Run this hook every time 'validData' object changes to make sure the asynchronous state changes are rendered correctly
   useEffect(() => {
-    const allIsValid = Object.values(validData).every((element) => {
+    const signupAllIsValid = Object.values(validData).every((element) => {
+      return element === true ? true : false;
+    });
+
+    const loginAllIsValid = Object.values(validLoginData).every((element) => {
       return element === true ? true : false;
     });
     const submitBtn = document.getElementById("submit-btn");
 
-    if (allIsValid && submitBtn) {
+    if ((signupAllIsValid || loginAllIsValid) && submitBtn) {
       console.log("VALID");
       submitBtn.disabled = false;
       submitBtn.classList.add("enabled");
     }
-    if (!allIsValid && submitBtn) {
+    if (!signupAllIsValid && !loginAllIsValid && submitBtn) {
+      console.log("INVALID");
       const submitBtn = document.getElementById("submit-btn");
       submitBtn.disabled = true;
       submitBtn.classList.remove("enabled");
     }
-  }, [validData]);
+  }, [validData, validLoginData]);
 
   // Event handlers //
   //Callback for google login
@@ -151,16 +168,18 @@ function App() {
       }
     }
     // Validate the username
-    else if (eventName === "username") {
+    else if (eventName === "username" || eventName === "login-username") {
       if (eventValue.length === 0) {
         errors.username = "Username is required";
       } else if (eventValue.length > 10) {
         errors.username = "Username can't be longer than 10 characters";
+      } else {
+        validateData({ ...validData, username: true });
+        validateLoginData({ ...validLoginData, username: true });
       }
-      validateData({ ...validData, username: true });
     }
     // Validate the password
-    else if (eventName === "password") {
+    else if (eventName === "password" || eventName === "login-password") {
       if (eventValue.length === 0) {
         errors.password = "Password is required";
       } else if (
@@ -172,6 +191,7 @@ function App() {
           "Password must contain at least one lowercase letter, one uppercase letter, one number, one special character and at least 6 characters";
       } else {
         validateData({ ...validData, password: true });
+        validateLoginData({ ...validLoginData, password: true });
       }
     }
     // Validate the confirm password
@@ -191,15 +211,18 @@ function App() {
         validateData({ ...validData, passwordConfirm: true });
       }
     }
+    console.log("errors", errors);
     setError(errors);
     // Save form data
     setForm({ ...data, [eventName]: eventValue });
+    setLoginForm({ ...loginData, [eventName]: eventValue });
 
     console.log("valid data");
     console.log(validData);
+    console.log(validLoginData);
   };
 
-  // To handle form submission
+  // To handle SignUp form submission
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -217,6 +240,24 @@ function App() {
     console.log(responseData);
 
     setUser(responseData);
+
+    setShowForm(false);
+  };
+
+  // To handle Login form submission
+  const handleLoginFormSubmit = async (event) => {
+    event.preventDefault();
+
+    const response = await fetch("http://localhost:8000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(validLoginData),
+    });
+
+    const responseData = await response.json();
+    console.log(responseData);
 
     setShowForm(false);
   };
@@ -247,7 +288,7 @@ function App() {
           handleFacebookCallbackResponse={handleFacebookCallbackResponse}
           handleInstagramCallbackResponse={handleInstagramCallbackResponse}
           handleInputOnChange={handleInputOnChange}
-          handleFormSubmit={handleFormSubmit}
+          handleLoginFormSubmit={handleLoginFormSubmit}
           handleCloseForm={handleCloseForm}
           error={error}
         />

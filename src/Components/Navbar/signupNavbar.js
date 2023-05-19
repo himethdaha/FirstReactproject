@@ -10,7 +10,6 @@ const SignUp = ({
 }) => {
   // Variables
   const isUserSet = Object.keys(user).length;
-  console.log(isUserSet);
 
   //Event handler on signup button which changes the "state"
   const handleOnClick = (e) => {

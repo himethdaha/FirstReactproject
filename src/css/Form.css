@@ -61,6 +61,10 @@
   color: black;
 }
 
+.login-tns {
+  transform: translateX(-20%);
+}
+
 /*Form labels*/
 .form-label {
   font-size: 1.4rem;

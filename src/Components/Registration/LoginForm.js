@@ -15,6 +15,7 @@ import {
 // Styles
 import "../../css/Form.css";
 import close from "../../logos/register/close.svg";
+
 const formSocialSignupBtn = {
   textTransform: "uppercase",
   display: "flex",
@@ -42,7 +43,7 @@ const LoginForm = ({
   handleFacebookCallbackResponse,
   handleInstagramCallbackResponse,
   handleInputOnChange,
-  handleFormSubmit,
+  handleLoginFormSubmit,
   handleCloseForm,
   error,
 }) => {
@@ -50,7 +51,7 @@ const LoginForm = ({
     <div className="form-container">
       <form
         className="form signUp-form"
-        onSubmit={(e) => handleFormSubmit(e)}
+        onSubmit={(e) => handleLoginFormSubmit(e)}
         method="POST"
       >
         <div className="form-header-btn">
@@ -62,7 +63,7 @@ const LoginForm = ({
             onClick={(e) => handleCloseForm(e)}
           ></img>
         </div>
-        <span className="form-tns">
+        <span className="form-tns login-tns">
           By creating an account, you agree to our <br />
           <a className="form-tns-link" href="/">
             Terms Of Service
@@ -79,7 +80,7 @@ const LoginForm = ({
           type="text"
           className="form-input form-input-signup"
           id="username"
-          name="username"
+          name="login-username"
           placeholder="Kaiokenx10"
           required={true}
           onChange={handleInputOnChange}
@@ -92,7 +93,7 @@ const LoginForm = ({
           type="password"
           className="form-input form-input-signup"
           id="password"
-          name="password"
+          name="login-password"
           required={true}
           onChange={handleInputOnChange}
         ></input>
