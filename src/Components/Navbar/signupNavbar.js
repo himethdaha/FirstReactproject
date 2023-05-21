@@ -5,18 +5,14 @@ const SignUp = ({ setShowForm, user, setUser }) => {
   // Variables
   const isUserSet = Object.keys(user).length;
 
+  // When isUserSet is changed run the below hook to disable/enable login btn
   useEffect(() => {
     const loginBtn = document.querySelector(".navbar-ul-login-btn");
-    console.log(loginBtn);
     if (loginBtn) {
-      console.log("login btn");
       if (isUserSet !== 0) {
-        console.log("disabled");
         loginBtn.disabled = true;
         loginBtn.classList.add("hidden");
       } else {
-        console.log("enabled");
-
         loginBtn.classList.remove("hidden");
         loginBtn.disabled = false;
       }

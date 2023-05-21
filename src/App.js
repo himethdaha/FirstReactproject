@@ -49,8 +49,8 @@ function App() {
 
   // State to save login form data
   const [loginData, setLoginForm] = useState({
-    username: "",
-    password: "",
+    "login-username": "",
+    "login-password": "",
   });
 
   // State to see if every field has been validated in signup form
@@ -160,7 +160,7 @@ function App() {
     setShowForm(false);
   };
 
-  // To handle form inputs
+  // To handle signin form inputs
   const handleInputOnChange = (event) => {
     const eventName = event.target.name;
     const eventValue = event.target.value;
@@ -184,18 +184,17 @@ function App() {
       }
     }
     // Validate the username
-    else if (eventName === "username" || eventName === "login-username") {
+    else if (eventName === "username") {
       if (eventValue.length === 0) {
         errors.username = "Username is required";
       } else if (eventValue.length > 10) {
         errors.username = "Username can't be longer than 10 characters";
       } else {
         validateData({ ...validData, username: true });
-        validateLoginData({ ...validLoginData, username: true });
       }
     }
     // Validate the password
-    else if (eventName === "password" || eventName === "login-password") {
+    else if (eventName === "password") {
       if (eventValue.length === 0) {
         errors.password = "Password is required";
       } else if (
@@ -207,7 +206,6 @@ function App() {
           "Password must contain at least one lowercase letter, one uppercase letter, one number, one special character and at least 6 characters";
       } else {
         validateData({ ...validData, password: true });
-        validateLoginData({ ...validLoginData, password: true });
       }
     }
     // Validate the confirm password
@@ -231,10 +229,49 @@ function App() {
     setError(errors);
     // Save form data
     setForm({ ...data, [eventName]: eventValue });
-    setLoginForm({ ...loginData, [eventName]: eventValue });
 
     console.log("valid sign up data");
     console.log(validData);
+  };
+
+  // To handle login form inputs
+  const handleInputOnLoginChange = (event) => {
+    const eventName = event.target.name;
+    console.log(eventName);
+    const eventValue = event.target.value;
+
+    let errors = {};
+
+    // Validate the username
+    if (eventName === "login-username") {
+      if (eventValue.length === 0) {
+        errors.username = "Username is required";
+      } else if (eventValue.length > 10) {
+        errors.username = "Username can't be longer than 10 characters";
+      } else {
+        validateLoginData({ ...validLoginData, username: true });
+      }
+    }
+    // Validate the password
+    else if (eventName === "login-password") {
+      if (eventValue.length === 0) {
+        errors.password = "Password is required";
+      } else if (
+        !eventValue.match(
+          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*()\-=+{};:,<.>|[\]/?]).{6,}$/gm
+        )
+      ) {
+        errors.password =
+          "Password must contain at least one lowercase letter, one uppercase letter, one number, one special character and at least 6 characters";
+      } else {
+        validateLoginData({ ...validLoginData, password: true });
+      }
+    }
+
+    console.log("errors", errors);
+    setError(errors);
+    // Save form data
+    setLoginForm({ ...loginData, [eventName]: eventValue });
 
     console.log("valid login data");
     console.log(validLoginData);
@@ -265,7 +302,7 @@ function App() {
 
   // To handle Login form submission
   const handleLoginFormSubmit = async (event) => {
-    console.log("login form submission", event);
+    console.log("login form submission", loginData);
     event.preventDefault();
 
     const response = await fetch("http://localhost:8000/login", {
@@ -273,13 +310,14 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(validLoginData),
+      body: JSON.stringify(loginData),
     });
 
     const responseData = await response.json();
-    console.log(responseData);
 
-    setShowForm(false);
+    setUser(responseData);
+
+    setShowLoginForm(false);
   };
 
   // To close the form
@@ -307,7 +345,7 @@ function App() {
         <LoginForm
           handleFacebookCallbackResponse={handleFacebookCallbackResponse}
           handleInstagramCallbackResponse={handleInstagramCallbackResponse}
-          handleInputOnChange={handleInputOnChange}
+          handleInputOnLoginChange={handleInputOnLoginChange}
           handleLoginFormSubmit={handleLoginFormSubmit}
           handleCloseForm={handleCloseForm}
           error={error}

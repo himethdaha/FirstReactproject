@@ -42,7 +42,7 @@ const instagramClientSecret = process.env.REACT_APP_INSTAGRAM_CLIENTSECRET;
 const LoginForm = ({
   handleFacebookCallbackResponse,
   handleInstagramCallbackResponse,
-  handleInputOnChange,
+  handleInputOnLoginChange,
   handleLoginFormSubmit,
   handleCloseForm,
   error,
@@ -79,11 +79,11 @@ const LoginForm = ({
         <input
           type="text"
           className="form-input form-input-signup"
-          id="username"
+          id="login-username"
           name="login-username"
           placeholder="Kaiokenx10"
           required={true}
-          onChange={handleInputOnChange}
+          onChange={handleInputOnLoginChange}
         ></input>
         {error?.username && <ErrorAlert message={error.username} />}
         <label className="form-label form-label-signup" htmlFor="password">
@@ -92,10 +92,10 @@ const LoginForm = ({
         <input
           type="password"
           className="form-input form-input-signup"
-          id="password"
+          id="login-password"
           name="login-password"
           required={true}
-          onChange={handleInputOnChange}
+          onChange={handleInputOnLoginChange}
         ></input>
         {error?.password && <ErrorAlert message={error.password} />}
         <div className="form-social-signup">
