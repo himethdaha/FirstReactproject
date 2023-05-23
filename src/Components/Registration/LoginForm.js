@@ -1,5 +1,5 @@
 // Imports
-import ErrorAlert from "../ErrorAlert";
+import ErrorAlert from "../Alerts/ErrorAlert";
 
 // 3rd party libraries
 import React from "react";

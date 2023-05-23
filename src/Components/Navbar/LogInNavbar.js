@@ -4,12 +4,12 @@ import "../../css/Navbar.css";
 const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
   // Variables
   const isUserSet = Object.keys(user).length;
-
+  console.log("user", user.status);
   // When isUserSet is changed run the below hook to disable/enable signin btn
   useEffect(() => {
     const signinBtn = document.querySelector(".navbar-ul-signin-btn");
     if (signinBtn) {
-      if (isUserSet !== 0) {
+      if (isUserSet !== 0 && user.status === 200) {
         signinBtn.disabled = true;
         signinBtn.classList.add("hidden");
       } else {
@@ -17,7 +17,7 @@ const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
         signinBtn.disabled = false;
       }
     }
-  }, [isUserSet]);
+  }, [isUserSet, user]);
   //Event handler on signup button which changes the "state"
   const handleOnClick = (e) => {
     e.preventDefault();
@@ -39,7 +39,7 @@ const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
         className="navbar-ul-btn navbar-ul-signin-btn"
         onClick={(e) => handleOnClick(e)}
       >
-        {isUserSet === 0 ? "LogIn" : "LogOut"}
+        {isUserSet === 0 || user.status !== 200 ? "LogIn" : "LogOut"}
       </a>
     </li>
   );

@@ -3,6 +3,7 @@ import Navbar from "./Components/Navbar/Navbar";
 import Home from "./Home";
 import SignUpForm from "./Components/Registration/SignupForm";
 import LoginForm from "./Components/Registration/LoginForm";
+import UserBlocked from "./Components/Alerts/UserBlocked";
 
 // Styles
 import "./css/App.css";
@@ -18,6 +19,7 @@ const googleClientId = process.env.REACT_APP_GOOGLE_CLIENTID;
 // Stylings
 
 function App() {
+  let response;
   // HOOKS //
   //"useState"
 
@@ -32,6 +34,9 @@ function App() {
 
   // To hide login button when user signed in
   const [loginHidden, setHideLoginButton] = useState(false);
+
+  // To hide user blocked popup
+  const [showUserBlockedPopup, setUserBlockedPopup] = useState(false);
 
   //State to check if a user is logged in
   const [user, setUser] = useState({});
@@ -66,6 +71,9 @@ function App() {
     username: false,
     password: false,
   });
+
+  // State to show a user has been blocked
+  const [userBlocked, showUserBlocked] = useState(false);
 
   // "useEffect"
 
@@ -283,7 +291,7 @@ function App() {
     event.preventDefault();
 
     // Send data to server
-    const response = await fetch("http://localhost:8000", {
+    response = await fetch("http://localhost:8000", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -302,10 +310,9 @@ function App() {
 
   // To handle Login form submission
   const handleLoginFormSubmit = async (event) => {
-    console.log("login form submission", loginData);
     event.preventDefault();
 
-    const response = await fetch("http://localhost:8000/login", {
+    response = await fetch("http://localhost:8000/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -313,11 +320,29 @@ function App() {
       body: JSON.stringify(loginData),
     });
 
+    // Returns a JWT
     const responseData = await response.json();
+    console.log(responseData);
 
-    setUser(responseData);
+    // Check if backend response is invalid username/password
+    if (responseData.status === 400 || responseData.status === 429) {
+      const loginError = {
+        password: responseData.message,
+      };
 
-    setShowLoginForm(false);
+      setError(loginError);
+    } else if (responseData.status === 403) {
+      // Close the form
+      setShowLoginForm(false);
+      setUser(responseData);
+      showUserBlocked(true);
+      // To show popup
+      setUserBlockedPopup(true);
+    } else {
+      setUser(responseData);
+      setShowLoginForm(false);
+      showUserBlocked(false);
+    }
   };
 
   // To close the form
@@ -325,6 +350,7 @@ function App() {
     e.preventDefault();
     setShowForm(false);
     setShowLoginForm(false);
+    setUserBlockedPopup(false);
   };
 
   return (
@@ -351,12 +377,16 @@ function App() {
           error={error}
         />
       )}
+      {showUserBlockedPopup && (
+        <UserBlocked user={user} handleCloseForm={handleCloseForm} />
+      )}
       <div className="App">
         <header className="App-header">
           {/*Send in the setShowForm and user state as props to Navbar*/}
           <Navbar
             setShowForm={setShowForm}
             setShowLoginForm={setShowLoginForm}
+            userBlocked={userBlocked}
             user={user}
             setUser={setUser}
             setHideSignUpButton={setHideSignUpButton}
@@ -366,7 +396,7 @@ function App() {
           />
         </header>
         <main className="Main">
-          <Home user={user} />
+          <Home user={user} userBlocked={userBlocked} />
         </main>
       </div>
     </React.Fragment>

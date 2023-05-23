@@ -9,7 +9,7 @@ const SignUp = ({ setShowForm, user, setUser }) => {
   useEffect(() => {
     const loginBtn = document.querySelector(".navbar-ul-login-btn");
     if (loginBtn) {
-      if (isUserSet !== 0) {
+      if (isUserSet !== 0 && user.status === 200) {
         loginBtn.disabled = true;
         loginBtn.classList.add("hidden");
       } else {
@@ -17,7 +17,7 @@ const SignUp = ({ setShowForm, user, setUser }) => {
         loginBtn.disabled = false;
       }
     }
-  }, [isUserSet]);
+  }, [isUserSet, user]);
 
   //Event handler on signup button which changes the "state"
   const handleOnClick = (e) => {
@@ -40,7 +40,7 @@ const SignUp = ({ setShowForm, user, setUser }) => {
         className="navbar-ul-btn navbar-ul-signin-btn"
         onClick={(e) => handleOnClick(e)}
       >
-        {isUserSet === 0 ? "SignIn" : "LogOut"}
+        {isUserSet === 0 || user.status !== 200 ? "SignIn" : "LogOut"}
       </a>
     </li>
   );

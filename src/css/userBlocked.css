@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300&display=swap");
+
+/*Main container*/
+.popup-container {
+  position: fixed;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  z-index: 999;
+}
+
+/*Container for form elements*/
+.popup-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  border: 1px solid black;
+  padding: 2rem 1rem;
+}
+.popup-header {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.popup-icon {
+  align-self: center;
+}
+
+.popup-text {
+  color: black;
+  font-size: 1.5rem;
+}
+
+.form-close-btn-popup {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  /*Horizontal (positive to the right)
+    Vertical (positive to the down)
+  */
+  transition: transform 0.2s ease-in-out;
+  align-self: flex-start;
+  justify-self: flex-end;
+  top: -50%;
+  left: 98%;
+}
+.form-close-btn-popup:hover {
+  cursor: pointer;
+  transform: scale(1.2);
+}
