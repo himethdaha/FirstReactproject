@@ -49,7 +49,6 @@ const LoginForm = ({
   showPasswordResetForm,
   error,
 }) => {
-  console.log("errors", error);
   const showPasswordResetOnClick = (event) => {
     event.preventDefault();
     showPasswordResetForm(true);

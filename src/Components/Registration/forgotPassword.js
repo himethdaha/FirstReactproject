@@ -41,13 +41,13 @@ const ForgotPasswordForm = ({
           type="email"
           className="form-input password-reset-input"
           id="email"
-          name="passwordReset-email"
+          name="passwordResetEmail"
           placeholder="pain@gmail.com"
           required={true}
           onChange={handleInputOnPasswordChange}
         ></input>
-        {error?.passwordResetError?.email && (
-          <ErrorAlert message={error.passwordResetError.email} />
+        {error?.passwordResetError?.passwordResetEmail && (
+          <ErrorAlert message={error.passwordResetError.passwordResetEmail} />
         )}
         <button
           className="form-submit-btn password-reset-submit"

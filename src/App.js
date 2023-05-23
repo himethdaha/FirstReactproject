@@ -68,7 +68,7 @@ function App() {
 
   // State to save reset password form
   const [passwordResetData, setPasswordResetForm] = useState({
-    "passwordReset-email": "",
+    passwordResetEmail: "",
   });
 
   // State to see if every field has been validated in signup form
@@ -281,7 +281,10 @@ function App() {
       // Save form data
       setForm({ ...data, [eventName]: eventValue });
       // Empty the errors
-      setError({});
+      setError((prevError) => ({
+        ...prevError,
+        signUpError: {},
+      }));
     }
   };
 
@@ -327,7 +330,10 @@ function App() {
       // Save form data
       setLoginForm({ ...loginData, [eventName]: eventValue });
       // Empty the errors
-      setError({});
+      setError((prevError) => ({
+        ...prevError,
+        loginError: {},
+      }));
     }
   };
   const handleInputOnPasswordChange = (event) => {
@@ -336,7 +342,7 @@ function App() {
 
     let errors = {};
 
-    if (eventName === "passwordReset-email") {
+    if (eventName === "passwordResetEmail") {
       if (eventValue.length === 0) {
         errors.email = "Email address is required";
       } else if (
@@ -359,7 +365,10 @@ function App() {
       // Save form data
       setPasswordResetForm({ ...passwordResetData, [eventName]: eventValue });
       // Empty the errors
-      setError({});
+      setError((prevError) => ({
+        ...prevError,
+        passwordResetError: {},
+      }));
     }
   };
 
@@ -381,9 +390,21 @@ function App() {
     const responseData = await response.json();
     console.log(responseData);
 
-    setUser(responseData);
+    if (responseData.status >= 400) {
+      const signupError = {
+        passwordConfirm: responseData.message,
+      };
 
-    setShowForm(false);
+      setError((prevError) => ({
+        ...prevError,
+        signUpError: signupError,
+      }));
+    }
+    // once validated
+    else {
+      setUser(responseData);
+      setShowForm(false);
+    }
   };
 
   // To handle Login form submission
@@ -408,15 +429,33 @@ function App() {
         password: responseData.message,
       };
 
-      setError(loginError);
-    } else if (responseData.status === 403) {
+      setError((prevError) => ({
+        ...prevError,
+        loginError: loginError,
+      }));
+    }
+    // 403 for blocked users
+    else if (responseData.status === 403) {
       // Close the form
       setShowLoginForm(false);
       setUser(responseData);
       showUserBlocked(true);
       // To show popup
       setUserBlockedPopup(true);
-    } else {
+    }
+    // For server errors
+    else if (responseData.status >= 500) {
+      const loginError = {
+        password: responseData.message,
+      };
+
+      setError((prevError) => ({
+        ...prevError,
+        loginError: loginError,
+      }));
+    }
+    // Once validated
+    else {
       setUser(responseData);
       setShowLoginForm(false);
       showUserBlocked(false);
@@ -426,7 +465,7 @@ function App() {
   // To handle forgot password form submission
   const handlePasswordResetSubmit = async (event) => {
     event.preventDefault();
-
+    console.log("data send", passwordResetData);
     const response = await fetch("http://localhost:8000/forgot_password", {
       method: "POST",
       headers: {
@@ -434,15 +473,35 @@ function App() {
       },
       body: JSON.stringify(passwordResetData),
     });
+
+    const responseData = await response.json();
+    console.log(responseData);
+    if (responseData.status >= 400) {
+      console.log("error");
+      const passwordResetError = {
+        passwordResetEmail: responseData.message,
+      };
+
+      setError((prevError) => ({
+        ...prevError,
+        passwordResetError: passwordResetError,
+      }));
+    } else {
+      // setUser(responseData);
+      showPasswordResetForm(false);
+    }
   };
 
   // To close the form
   const handleCloseForm = (e) => {
+    console.log("closed event", e);
     e.preventDefault();
     setShowForm(false);
     setShowLoginForm(false);
     setUserBlockedPopup(false);
     showPasswordResetForm(false);
+    // Clear the error object
+    setError({});
   };
   return (
     <React.Fragment>
