@@ -84,7 +84,9 @@ const SignUpForm = ({
           required={true}
           onChange={handleInputOnChange}
         ></input>
-        {error?.email && <ErrorAlert message={error.email} />}
+        {error?.signUpError?.email && (
+          <ErrorAlert message={error.signUpError.email} />
+        )}
         <label className="form-label form-label-signup" htmlFor="username">
           Username
         </label>
@@ -97,7 +99,9 @@ const SignUpForm = ({
           required={true}
           onChange={handleInputOnChange}
         ></input>
-        {error?.username && <ErrorAlert message={error.username} />}
+        {error?.signUpError?.username && (
+          <ErrorAlert message={error.signUpError.username} />
+        )}
         <label className="form-label form-label-signup" htmlFor="password">
           Password
         </label>
@@ -109,7 +113,9 @@ const SignUpForm = ({
           required={true}
           onChange={handleInputOnChange}
         ></input>
-        {error?.password && <ErrorAlert message={error.password} />}
+        {error?.signUpError?.password && (
+          <ErrorAlert message={error.signUpError.password} />
+        )}
         <label
           className="form-label form-label-signup"
           htmlFor="passwordConfirm"
@@ -124,8 +130,8 @@ const SignUpForm = ({
           required={true}
           onChange={handleInputOnChange}
         ></input>
-        {error?.passwordConfirm && (
-          <ErrorAlert message={error.passwordConfirm} />
+        {error?.signUpError?.passwordConfirm && (
+          <ErrorAlert message={error.signUpError.passwordConfirm} />
         )}
         <div className="form-social-signup">
           {/* Login from Facebook */}

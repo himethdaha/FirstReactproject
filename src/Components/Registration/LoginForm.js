@@ -49,6 +49,7 @@ const LoginForm = ({
   showPasswordResetForm,
   error,
 }) => {
+  console.log("errors", error);
   const showPasswordResetOnClick = (event) => {
     event.preventDefault();
     showPasswordResetForm(true);
@@ -93,7 +94,9 @@ const LoginForm = ({
           required={true}
           onChange={handleInputOnLoginChange}
         ></input>
-        {error?.username && <ErrorAlert message={error.username} />}
+        {error?.loginError?.username && (
+          <ErrorAlert message={error.loginError.username} />
+        )}
         <label className="form-label form-label-signup" htmlFor="password">
           Password
         </label>
@@ -105,7 +108,9 @@ const LoginForm = ({
           required={true}
           onChange={handleInputOnLoginChange}
         ></input>
-        {error?.password && <ErrorAlert message={error.password} />}
+        {error?.loginError?.password && (
+          <ErrorAlert message={error.loginError.password} />
+        )}
         <div className="form-social-signup">
           {/* Login from Facebook */}
           <LoginSocialFacebook

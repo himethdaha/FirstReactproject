@@ -46,7 +46,11 @@ function App() {
   const [user, setUser] = useState({});
 
   //State to be triggered by errors in forms
-  const [error, setError] = useState({});
+  const [error, setError] = useState({
+    signUpError: {},
+    loginError: {},
+    passwordResetError: {},
+  });
 
   // State to save signup form data
   const [data, setForm] = useState({
@@ -161,18 +165,16 @@ function App() {
         return element === true ? true : false;
       }
     );
-
+    console.log(resetPassAllIsValid);
     const resetPassSubmitBtn = document.getElementById(
       "resetPassword-form-btn"
     );
 
     if (resetPassAllIsValid && resetPassSubmitBtn) {
-      console.log("VALID login");
       resetPassSubmitBtn.disabled = false;
       resetPassSubmitBtn.classList.add("enabled");
     }
     if (!resetPassAllIsValid && resetPassSubmitBtn) {
-      console.log("INVALID");
       resetPassSubmitBtn.disabled = true;
       resetPassSubmitBtn.classList.remove("enabled");
     }
@@ -219,7 +221,7 @@ function App() {
         errors.email = "Email address is required";
       } else if (
         !eventValue.match(
-          /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+          /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})$/g
         )
       ) {
         errors.email = "Email is invalid";
@@ -269,13 +271,18 @@ function App() {
         validateData({ ...validData, passwordConfirm: true });
       }
     }
-    console.log("errors", errors);
-    setError(errors);
-    // Save form data
-    setForm({ ...data, [eventName]: eventValue });
-
-    console.log("valid sign up data");
-    console.log(validData);
+    if (Object.keys(errors).length > 0) {
+      console.log("errors", errors);
+      setError((prevError) => ({
+        ...prevError,
+        signUpError: errors,
+      }));
+    } else {
+      // Save form data
+      setForm({ ...data, [eventName]: eventValue });
+      // Empty the errors
+      setError({});
+    }
   };
 
   // To handle login form inputs
@@ -311,15 +318,18 @@ function App() {
       }
     }
 
-    console.log("errors", errors);
-    setError(errors);
-    // Save form data
-    setLoginForm({ ...loginData, [eventName]: eventValue });
-
-    console.log("valid login data");
-    console.log(validLoginData);
+    if (Object.keys(errors).length > 0) {
+      setError((prevError) => ({
+        ...prevError,
+        loginError: errors,
+      }));
+    } else {
+      // Save form data
+      setLoginForm({ ...loginData, [eventName]: eventValue });
+      // Empty the errors
+      setError({});
+    }
   };
-
   const handleInputOnPasswordChange = (event) => {
     const eventName = event.target.name;
     const eventValue = event.target.value;
@@ -331,7 +341,7 @@ function App() {
         errors.email = "Email address is required";
       } else if (
         !eventValue.match(
-          /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+          /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})$/g
         )
       ) {
         errors.email = "Email is invalid";
@@ -339,13 +349,18 @@ function App() {
         validatedPasswordReset({ ...validPasswordReset, email: true });
       }
     }
-    console.log("errors", errors);
-    setError(errors);
-    // Save form data
-    setPasswordResetForm({ ...passwordResetData, [eventName]: eventValue });
-
-    console.log("valid reset data");
-    console.log(passwordResetData);
+    if (Object.keys(errors).length > 0) {
+      console.log("errors", errors);
+      setError((prevError) => ({
+        ...prevError,
+        passwordResetError: errors,
+      }));
+    } else {
+      // Save form data
+      setPasswordResetForm({ ...passwordResetData, [eventName]: eventValue });
+      // Empty the errors
+      setError({});
+    }
   };
 
   // To handle SignUp form submission
@@ -408,6 +423,19 @@ function App() {
     }
   };
 
+  // To handle forgot password form submission
+  const handlePasswordResetSubmit = async (event) => {
+    event.preventDefault();
+
+    const response = await fetch("http://localhost:8000/forgot_password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(passwordResetData),
+    });
+  };
+
   // To close the form
   const handleCloseForm = (e) => {
     e.preventDefault();
@@ -416,7 +444,6 @@ function App() {
     setUserBlockedPopup(false);
     showPasswordResetForm(false);
   };
-
   return (
     <React.Fragment>
       {/*If ShowForm state for signup is true*/}
@@ -449,7 +476,9 @@ function App() {
       {passwordResetForm && (
         <ForgotPasswordForm
           handleInputOnPasswordChange={handleInputOnPasswordChange}
+          handlePasswordResetSubmit={handlePasswordResetSubmit}
           handleCloseForm={handleCloseForm}
+          error={error}
         />
       )}
       <div className="App">

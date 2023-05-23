@@ -25,6 +25,9 @@
   border: 2px solid black;
   padding: 1rem 2rem;
 }
+.signUp-form {
+  top: 50%;
+}
 .password-reset-form {
   padding: 1rem 4rem;
 }

@@ -46,7 +46,9 @@ const ForgotPasswordForm = ({
           required={true}
           onChange={handleInputOnPasswordChange}
         ></input>
-        {error?.email && <ErrorAlert message={error.email} />}
+        {error?.passwordResetError?.email && (
+          <ErrorAlert message={error.passwordResetError.email} />
+        )}
         <button
           className="form-submit-btn password-reset-submit"
           id="resetPassword-form-btn"
