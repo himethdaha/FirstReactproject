@@ -4,7 +4,7 @@ import "../../css/Navbar.css";
 const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
   // Variables
   const isUserSet = Object.keys(user).length;
-  console.log("user", user.status);
+
   // When isUserSet is changed run the below hook to disable/enable signin btn
   useEffect(() => {
     const signinBtn = document.querySelector(".navbar-ul-signin-btn");

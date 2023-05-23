@@ -3,6 +3,7 @@ import Navbar from "./Components/Navbar/Navbar";
 import Home from "./Home";
 import SignUpForm from "./Components/Registration/SignupForm";
 import LoginForm from "./Components/Registration/LoginForm";
+import ForgotPasswordForm from "./Components/Registration/forgotPassword";
 import UserBlocked from "./Components/Alerts/UserBlocked";
 
 // Styles
@@ -38,6 +39,9 @@ function App() {
   // To hide user blocked popup
   const [showUserBlockedPopup, setUserBlockedPopup] = useState(false);
 
+  // To hide/show the password reset form
+  const [passwordResetForm, showPasswordResetForm] = useState(false);
+
   //State to check if a user is logged in
   const [user, setUser] = useState({});
 
@@ -58,6 +62,11 @@ function App() {
     "login-password": "",
   });
 
+  // State to save reset password form
+  const [passwordResetData, setPasswordResetForm] = useState({
+    "passwordReset-email": "",
+  });
+
   // State to see if every field has been validated in signup form
   const [validData, validateData] = useState({
     email: false,
@@ -70,6 +79,11 @@ function App() {
   const [validLoginData, validateLoginData] = useState({
     username: false,
     password: false,
+  });
+
+  // State to see if email is provided in forgot-password
+  const [validPasswordReset, validatedPasswordReset] = useState({
+    email: false,
   });
 
   // State to show a user has been blocked
@@ -111,12 +125,10 @@ function App() {
     const signupSubmitBtn = document.getElementById("submit-btn-signup");
 
     if (signupAllIsValid && signupSubmitBtn) {
-      console.log("VALID signup");
       signupSubmitBtn.disabled = false;
       signupSubmitBtn.classList.add("enabled");
     }
     if (!signupAllIsValid && signupSubmitBtn) {
-      console.log("INVALID");
       signupSubmitBtn.disabled = true;
       signupSubmitBtn.classList.remove("enabled");
     }
@@ -141,6 +153,30 @@ function App() {
       loginSubmitBtn.classList.remove("enabled");
     }
   }, [validLoginData]);
+
+  // Hook to enable submitting the reset password form
+  useEffect(() => {
+    const resetPassAllIsValid = Object.values(validPasswordReset).every(
+      (element) => {
+        return element === true ? true : false;
+      }
+    );
+
+    const resetPassSubmitBtn = document.getElementById(
+      "resetPassword-form-btn"
+    );
+
+    if (resetPassAllIsValid && resetPassSubmitBtn) {
+      console.log("VALID login");
+      resetPassSubmitBtn.disabled = false;
+      resetPassSubmitBtn.classList.add("enabled");
+    }
+    if (!resetPassAllIsValid && resetPassSubmitBtn) {
+      console.log("INVALID");
+      resetPassSubmitBtn.disabled = true;
+      resetPassSubmitBtn.classList.remove("enabled");
+    }
+  }, [validPasswordReset]);
 
   // Event handlers //
   //Callback for google login
@@ -245,7 +281,6 @@ function App() {
   // To handle login form inputs
   const handleInputOnLoginChange = (event) => {
     const eventName = event.target.name;
-    console.log(eventName);
     const eventValue = event.target.value;
 
     let errors = {};
@@ -283,6 +318,34 @@ function App() {
 
     console.log("valid login data");
     console.log(validLoginData);
+  };
+
+  const handleInputOnPasswordChange = (event) => {
+    const eventName = event.target.name;
+    const eventValue = event.target.value;
+
+    let errors = {};
+
+    if (eventName === "passwordReset-email") {
+      if (eventValue.length === 0) {
+        errors.email = "Email address is required";
+      } else if (
+        !eventValue.match(
+          /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+        )
+      ) {
+        errors.email = "Email is invalid";
+      } else {
+        validatedPasswordReset({ ...validPasswordReset, email: true });
+      }
+    }
+    console.log("errors", errors);
+    setError(errors);
+    // Save form data
+    setPasswordResetForm({ ...passwordResetData, [eventName]: eventValue });
+
+    console.log("valid reset data");
+    console.log(passwordResetData);
   };
 
   // To handle SignUp form submission
@@ -351,6 +414,7 @@ function App() {
     setShowForm(false);
     setShowLoginForm(false);
     setUserBlockedPopup(false);
+    showPasswordResetForm(false);
   };
 
   return (
@@ -374,11 +438,19 @@ function App() {
           handleInputOnLoginChange={handleInputOnLoginChange}
           handleLoginFormSubmit={handleLoginFormSubmit}
           handleCloseForm={handleCloseForm}
+          setShowLoginForm={setShowLoginForm}
+          showPasswordResetForm={showPasswordResetForm}
           error={error}
         />
       )}
       {showUserBlockedPopup && (
         <UserBlocked user={user} handleCloseForm={handleCloseForm} />
+      )}
+      {passwordResetForm && (
+        <ForgotPasswordForm
+          handleInputOnPasswordChange={handleInputOnPasswordChange}
+          handleCloseForm={handleCloseForm}
+        />
       )}
       <div className="App">
         <header className="App-header">

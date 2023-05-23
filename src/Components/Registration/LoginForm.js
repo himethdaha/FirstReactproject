@@ -45,8 +45,16 @@ const LoginForm = ({
   handleInputOnLoginChange,
   handleLoginFormSubmit,
   handleCloseForm,
+  setShowLoginForm,
+  showPasswordResetForm,
   error,
 }) => {
+  const showPasswordResetOnClick = (event) => {
+    event.preventDefault();
+    showPasswordResetForm(true);
+    // Close login form
+    setShowLoginForm(false);
+  };
   return (
     <div className="form-container">
       <form
@@ -54,12 +62,12 @@ const LoginForm = ({
         onSubmit={(e) => handleLoginFormSubmit(e)}
         method="POST"
       >
-        <div className="form-header-btn">
-          <h1 className="form-header">Welcome Back</h1>
+        <div className="form-header">
+          <h1 className="form-header-text">Welcome Back</h1>
           <img
             src={close}
             alt="Form close button"
-            className="form-close-btn"
+            className="form-close-btn form-login-close-btn"
             onClick={(e) => handleCloseForm(e)}
           ></img>
         </div>
@@ -123,6 +131,13 @@ const LoginForm = ({
         <button className="form-submit-btn" id="submit-btn-login" type="submit">
           <span>Login</span>
         </button>
+        <a
+          href="/"
+          className="forgot-password-link"
+          onClick={showPasswordResetOnClick}
+        >
+          Forgot Password
+        </a>
       </form>
     </div>
   );

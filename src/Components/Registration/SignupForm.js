@@ -53,16 +53,16 @@ const SignUpForm = ({
         onSubmit={(e) => handleFormSubmit(e)}
         method="POST"
       >
-        <div className="form-header-btn">
-          <h1 className="form-header">create an account</h1>
+        <div className="form-header">
+          <h1 className="form-header-text">create an account</h1>
           <img
             src={close}
             alt="Form close button"
-            className="form-close-btn"
+            className="form-close-btn form-signup-close-btn"
             onClick={(e) => handleCloseForm(e)}
           ></img>
         </div>
-        <span className="form-tns">
+        <span className="form-tns signup-tns ">
           By creating an account, you agree to our <br />
           <a className="form-tns-link" href="/">
             Terms Of Service
