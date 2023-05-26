@@ -31,6 +31,9 @@
 .password-reset-form {
   padding: 1rem 4rem;
 }
+.resetPassword-reset-form {
+  width: 40%;
+}
 /*Container for header and close btn*/
 .form-header {
   display: flex;
@@ -99,7 +102,8 @@
   border: none;
   border-radius: 0.2rem;
 }
-.password-reset-input {
+.password-reset-input,
+.form-input-resetPassword {
   width: 100%;
 }
 /*To remove the inside border when clicking on label*/
@@ -109,6 +113,7 @@
 .form-input:last-child {
   margin-bottom: 0;
 }
+
 /*Container for socials sign up*/
 .form-social-signup {
   display: flex;
