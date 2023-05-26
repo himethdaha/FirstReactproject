@@ -445,235 +445,6 @@ function App() {
     }
   };
 
-  // Form submission handlers
-
-  // To handle SignUp form submission
-  const handleFormSubmit = async (event) => {
-    setError({});
-    isSending(true);
-
-    try {
-      const responseData = await fetchData("http://localhost:8000", data);
-
-      if (responseData.status >= 400) {
-        const signupError = {
-          passwordConfirm: responseData.message,
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          signUpError: signupError,
-        }));
-      }
-      // once validated
-      else {
-        setUser(responseData);
-        setShowForm(false);
-        isSending(false);
-      }
-    } catch (error) {
-      isSending(false);
-      const message = error.message;
-
-      if (message === connFailedMessg) {
-        const signupError = {
-          passwordConfirm: "Connection to server failed",
-        };
-        setError((prevError) => ({
-          ...prevError,
-          signUpError: signupError,
-        }));
-      }
-    }
-  };
-
-  // To handle Login form submission
-  const handleLoginFormSubmit = async (event) => {
-    event.preventDefault();
-    setError({});
-    isSending(true);
-
-    try {
-      const responseData = await fetchData(
-        "http://localhost:8000/login",
-        loginData
-      );
-      isSending(false);
-
-      // Check if backend response is invalid username/password
-      if (responseData.status === 400 || responseData.status === 429) {
-        const loginError = {
-          password: responseData.message,
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          loginError: loginError,
-        }));
-      }
-      // 403 for blocked users
-      else if (responseData.status === 403) {
-        // Close the form
-        setShowLoginForm(false);
-        setUser(responseData);
-        showUserBlocked(true);
-        // To show popup
-        setUserBlockedPopup(true);
-      }
-      // For server errors
-      else if (responseData.status >= 500) {
-        const loginError = {
-          password: responseData.message,
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          loginError: loginError,
-        }));
-      }
-      // Once validated
-      else {
-        setUser(responseData);
-        setShowLoginForm(false);
-        showUserBlocked(false);
-        isSending(false);
-      }
-    } catch (error) {
-      isSending(false);
-
-      const message = error.message;
-
-      if (message === connFailedMessg) {
-        const loginError = {
-          password: "Connection to server failed",
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          loginError: loginError,
-        }));
-      }
-    }
-  };
-
-  // To handle forgot password form submission
-  const handlePasswordForgotSubmit = async (event) => {
-    event.preventDefault();
-    setError({});
-    // Set loading message
-    isSending(true);
-
-    try {
-      const responseData = await fetchData(
-        "http://localhost:8000/forgot_password",
-        passwordResetData
-      );
-
-      if (responseData.status >= 400) {
-        console.log("error");
-        const newPassworError = {
-          passwordResetEmail: responseData.message,
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          passwordResetError: newPassworError,
-        }));
-      } else {
-        // Close the password reset form
-        showPasswordResetForm(false);
-        // Show the form to add the new user password
-        showNewPasswordForm(true);
-        isSending(false);
-      }
-    } catch (error) {
-      isSending(false);
-
-      const message = error.message;
-
-      if (message === connFailedMessg) {
-        const networkError = {
-          passwordResetEmail: "Connection to server failed",
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          passwordResetError: networkError,
-        }));
-      }
-    }
-  };
-
-  // To handle new password creation
-  const handlePasswordResetSubmit = async function (event) {
-    event.preventDefault();
-    setError({});
-    isSending(true);
-    console.log("Data sent", newPasswordData);
-
-    try {
-      const responseData = await fetchData(
-        "http://localhost:8000/reset_password",
-        newPasswordData
-      );
-
-      if (responseData.status >= 400) {
-        console.log("error");
-        const newPasswordError = {
-          password: responseData.message,
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          newPasswordSubmit: newPasswordError,
-        }));
-      } else {
-        // Close the new password form
-        showNewPasswordForm(false);
-        // open the login form
-        setShowLoginForm(true);
-        isSending(false);
-      }
-    } catch (error) {
-      isSending(false);
-
-      const message = error.message;
-
-      if (message === connFailedMessg) {
-        const newPasswordError = {
-          password: "Connection to server failed",
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          newPasswordSubmit: newPasswordError,
-        }));
-      }
-    }
-  };
-  // To close the form
-  const handleCloseForm = (e) => {
-    e.preventDefault();
-
-    if (showForm) {
-      setShowForm(false);
-      setError({});
-    } else if (showLoginForm) {
-      setShowLoginForm(false);
-      setError({});
-    } else if (showUserBlockedPopup) {
-      setUserBlockedPopup(false);
-      setError({});
-    } else if (passwordResetForm) {
-      console.log("here");
-      showPasswordResetForm(false);
-      setError({});
-    } else if (newPasswordForm) {
-      showNewPasswordForm(false);
-    } else {
-      setError({});
-    }
-  };
   return (
     <React.Fragment>
       {/*If ShowForm state for signup is true*/}
@@ -682,10 +453,14 @@ function App() {
           handleFacebookCallbackResponse={handleFacebookCallbackResponse}
           handleInstagramCallbackResponse={handleInstagramCallbackResponse}
           handleInputOnChange={handleInputOnChange}
-          handleFormSubmit={handleFormSubmit}
-          handleCloseForm={handleCloseForm}
           error={error}
           sent={sent}
+          setError={setError}
+          isSending={isSending}
+          setUser={setUser}
+          setShowForm={setShowForm}
+          data={data}
+          connFailedMessg={connFailedMessg}
         />
       )}
       {/*If ShowForm state for login is true*/}
@@ -694,33 +469,47 @@ function App() {
           handleFacebookCallbackResponse={handleFacebookCallbackResponse}
           handleInstagramCallbackResponse={handleInstagramCallbackResponse}
           handleInputOnLoginChange={handleInputOnLoginChange}
-          handleLoginFormSubmit={handleLoginFormSubmit}
-          handleCloseForm={handleCloseForm}
           setShowLoginForm={setShowLoginForm}
           showPasswordResetForm={showPasswordResetForm}
           error={error}
           sent={sent}
+          setError={setError}
+          isSending={isSending}
+          setUser={setUser}
+          showUserBlocked={showUserBlocked}
+          setUserBlockedPopup={setUserBlockedPopup}
+          connFailedMessg={connFailedMessg}
+          loginData={loginData}
         />
       )}
       {showUserBlockedPopup && (
-        <UserBlocked user={user} handleCloseForm={handleCloseForm} />
+        <UserBlocked user={user} setUserBlockedPopup={setUserBlockedPopup} />
       )}
       {passwordResetForm && (
         <ForgotPasswordForm
           handleInputOnPasswordChange={handleInputOnPasswordChange}
-          handlePasswordForgotSubmit={handlePasswordForgotSubmit}
-          handleCloseForm={handleCloseForm}
           error={error}
           sent={sent}
+          setError={setError}
+          isSending={isSending}
+          setUser={setUser}
+          passwordResetData={passwordResetData}
+          showPasswordResetForm={showPasswordResetForm}
+          showNewPasswordForm={showNewPasswordForm}
+          connFailedMessg={connFailedMessg}
         />
       )}
       {newPasswordForm && (
         <ResetPasswordForm
           handleInputOnPasswordReset={handleInputOnPasswordReset}
-          handlePasswordResetSubmit={handlePasswordResetSubmit}
-          handleCloseForm={handleCloseForm}
           error={error}
           sent={sent}
+          setError={setError}
+          isSending={isSending}
+          showNewPasswordForm={showNewPasswordForm}
+          setShowLoginForm={setShowLoginForm}
+          newPasswordData={newPasswordData}
+          connFailedMessg={connFailedMessg}
         />
       )}
       <div className="App">

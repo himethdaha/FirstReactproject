@@ -1,5 +1,6 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
+import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // Styles
 import "../../css/Form.css";
@@ -7,12 +8,67 @@ import close from "../../logos/register/close.svg";
 
 const ResetPasswordForm = ({
   handleInputOnPasswordReset,
-  handlePasswordResetSubmit,
-  handleCloseForm,
   error,
   sent,
+  setError,
+  isSending,
+  showNewPasswordForm,
+  setShowLoginForm,
+  newPasswordData,
+  connFailedMessg,
 }) => {
-  console.log("error", error);
+  // New password setting form handler
+  const handlePasswordResetSubmit = async function (event) {
+    event.preventDefault();
+    setError({});
+    isSending(true);
+    console.log("Data sent", newPasswordData);
+
+    try {
+      const responseData = await fetchData(
+        "http://localhost:8000/reset_password",
+        newPasswordData
+      );
+
+      if (responseData.status >= 400) {
+        console.log("error");
+        const newPasswordError = {
+          password: responseData.message,
+        };
+
+        setError((prevError) => ({
+          ...prevError,
+          newPasswordSubmit: newPasswordError,
+        }));
+      } else {
+        // Close the new password form
+        showNewPasswordForm(false);
+        // open the login form
+        setShowLoginForm(true);
+        isSending(false);
+      }
+    } catch (error) {
+      isSending(false);
+
+      const message = error.message;
+
+      if (message === connFailedMessg) {
+        const newPasswordError = {
+          password: "Connection to server failed",
+        };
+
+        setError((prevError) => ({
+          ...prevError,
+          newPasswordSubmit: newPasswordError,
+        }));
+      }
+    }
+  };
+
+  // Close form event handler
+  const handleCloseForm = () => {
+    showNewPasswordForm(false);
+  };
   return (
     <div className="form-container">
       <form
@@ -26,7 +82,7 @@ const ResetPasswordForm = ({
             src={close}
             alt="Form close button"
             className="form-close-btn form-signup-close-btn"
-            onClick={(e) => handleCloseForm(e)}
+            onClick={(e) => handleCloseForm()}
           ></img>
         </div>
         <span className="form-tns signup-tns ">

@@ -2,12 +2,15 @@ import React from "react";
 import "../../css/userBlocked.css";
 import close from "../../logos/register/closePopup.svg";
 
-const UserBlocked = ({ user, handleCloseForm }) => {
+const UserBlocked = ({ user, setUserBlockedPopup }) => {
   const style = {
     width: "3rem",
     height: "3rem",
   };
 
+  const handleCloseForm = () => {
+    setUserBlockedPopup(false);
+  };
   return (
     <div className="popup-container" id="user-popup-block">
       <div className="popup-content">

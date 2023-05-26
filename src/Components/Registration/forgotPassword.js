@@ -1,5 +1,6 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
+import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // 3rd party libraries
 import React from "react";
@@ -10,11 +11,63 @@ import close from "../../logos/register/close.svg";
 
 const ForgotPasswordForm = ({
   handleInputOnPasswordChange,
-  handlePasswordForgotSubmit,
   handleCloseForm,
   error,
   sent,
+  setError,
+  isSending,
+  passwordResetData,
+  showPasswordResetForm,
+  showNewPasswordForm,
+  connFailedMessg,
 }) => {
+  const handlePasswordForgotSubmit = async (event) => {
+    event.preventDefault();
+    setError({});
+    // Set loading message
+    isSending(true);
+
+    try {
+      const responseData = await fetchData(
+        "http://localhost:8000/forgot_password",
+        passwordResetData
+      );
+
+      if (responseData.status >= 400) {
+        console.log("error");
+        const newPassworError = {
+          passwordResetEmail: responseData.message,
+        };
+
+        setError((prevError) => ({
+          ...prevError,
+          passwordResetError: newPassworError,
+        }));
+      } else {
+        // Close the password reset form
+        showPasswordResetForm(false);
+        // Show the form to add the new user password
+        showNewPasswordForm(true);
+        isSending(false);
+      }
+    } catch (error) {
+      isSending(false);
+
+      const message = error.message;
+
+      if (message === connFailedMessg) {
+        const networkError = {
+          passwordResetEmail: "Connection to server failed",
+        };
+
+        setError((prevError) => ({
+          ...prevError,
+          passwordResetError: networkError,
+        }));
+      }
+    }
+  };
+
   console.log("sent obj", sent);
   return (
     <div className="form-container">

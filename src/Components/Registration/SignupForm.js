@@ -1,5 +1,6 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
+import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // 3rd party libraries
 import React from "react";
@@ -42,11 +43,61 @@ const SignUpForm = ({
   handleFacebookCallbackResponse,
   handleInstagramCallbackResponse,
   handleInputOnChange,
-  handleFormSubmit,
-  handleCloseForm,
   error,
   sent,
+  setError,
+  isSending,
+  setUser,
+  setShowForm,
+  data,
+  connFailedMessg,
 }) => {
+  // Event handler for signup form
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    setError({});
+    isSending(true);
+
+    try {
+      const responseData = await fetchData("http://localhost:8000", data);
+
+      if (responseData.status >= 400) {
+        const signupError = {
+          passwordConfirm: responseData.message,
+        };
+
+        setError((prevError) => ({
+          ...prevError,
+          signUpError: signupError,
+        }));
+      }
+      // once validated
+      else {
+        setUser(responseData);
+        setShowForm(false);
+        isSending(false);
+      }
+    } catch (error) {
+      isSending(false);
+      const message = error.message;
+      console.log("err message", message);
+      if (message === connFailedMessg) {
+        const signupError = {
+          passwordConfirm: "Connection to server failed",
+        };
+        setError((prevError) => ({
+          ...prevError,
+          signUpError: signupError,
+        }));
+      }
+    }
+  };
+
+  // To close signup form
+  const handleCloseForm = () => {
+    setShowForm(false);
+  };
+
   return (
     <div className="form-container">
       <form

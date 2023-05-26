@@ -1,5 +1,6 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
+import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // 3rd party libraries
 import React from "react";
@@ -43,13 +44,92 @@ const LoginForm = ({
   handleFacebookCallbackResponse,
   handleInstagramCallbackResponse,
   handleInputOnLoginChange,
-  handleLoginFormSubmit,
-  handleCloseForm,
   setShowLoginForm,
   showPasswordResetForm,
   error,
   sent,
+  setError,
+  isSending,
+  setUser,
+  showUserBlocked,
+  setUserBlockedPopup,
+  connFailedMessg,
+  loginData,
 }) => {
+  // To handle Login form submission
+  const handleLoginFormSubmit = async (event) => {
+    event.preventDefault();
+    setError({});
+    isSending(true);
+
+    try {
+      const responseData = await fetchData(
+        "http://localhost:8000/login",
+        loginData
+      );
+      isSending(false);
+
+      // Check if backend response is invalid username/password
+      if (responseData.status === 400 || responseData.status === 429) {
+        const loginError = {
+          password: responseData.message,
+        };
+
+        setError((prevError) => ({
+          ...prevError,
+          loginError: loginError,
+        }));
+      }
+      // 403 for blocked users
+      else if (responseData.status === 403) {
+        // Close the form
+        setShowLoginForm(false);
+        setUser(responseData);
+        showUserBlocked(true);
+        // To show popup
+        setUserBlockedPopup(true);
+      }
+      // For server errors
+      else if (responseData.status >= 500) {
+        const loginError = {
+          password: responseData.message,
+        };
+
+        setError((prevError) => ({
+          ...prevError,
+          loginError: loginError,
+        }));
+      }
+      // Once validated
+      else {
+        setUser(responseData);
+        setShowLoginForm(false);
+        showUserBlocked(false);
+        isSending(false);
+      }
+    } catch (error) {
+      isSending(false);
+
+      const message = error.message;
+
+      if (message === connFailedMessg) {
+        const loginError = {
+          password: "Connection to server failed",
+        };
+
+        setError((prevError) => ({
+          ...prevError,
+          loginError: loginError,
+        }));
+      }
+    }
+  };
+
+  // To close the login form
+  const handleCloseForm = () => {
+    setShowLoginForm(false);
+  };
+  // To show the forgot password form
   const showPasswordResetOnClick = (event) => {
     event.preventDefault();
     showPasswordResetForm(true);
@@ -69,7 +149,7 @@ const LoginForm = ({
             src={close}
             alt="Form close button"
             className="form-close-btn form-login-close-btn"
-            onClick={(e) => handleCloseForm(e)}
+            onClick={(e) => handleCloseForm()}
           ></img>
         </div>
         <span className="form-tns login-tns">
