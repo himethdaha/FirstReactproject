@@ -48,6 +48,7 @@ const LoginForm = ({
   setShowLoginForm,
   showPasswordResetForm,
   error,
+  sent,
 }) => {
   const showPasswordResetOnClick = (event) => {
     event.preventDefault();
@@ -107,6 +108,7 @@ const LoginForm = ({
           required={true}
           onChange={handleInputOnLoginChange}
         ></input>
+        {sent && <ErrorAlert message={"Sending Info..."} status={200} />}
         {error?.loginError?.password && (
           <ErrorAlert message={error.loginError.password} />
         )}

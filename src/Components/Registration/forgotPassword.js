@@ -10,15 +10,17 @@ import close from "../../logos/register/close.svg";
 
 const ForgotPasswordForm = ({
   handleInputOnPasswordChange,
-  handlePasswordResetSubmit,
+  handlePasswordForgotSubmit,
   handleCloseForm,
   error,
+  sent,
 }) => {
+  console.log("sent obj", sent);
   return (
     <div className="form-container">
       <form
         className="form password-reset-form"
-        onSubmit={(e) => handlePasswordResetSubmit(e)}
+        onSubmit={(e) => handlePasswordForgotSubmit(e)}
         method="POST"
       >
         <div className="form-header">
@@ -46,8 +48,12 @@ const ForgotPasswordForm = ({
           required={true}
           onChange={handleInputOnPasswordChange}
         ></input>
+        {sent && <ErrorAlert message={"Sending Email..."} status={200} />}
         {error?.passwordResetError?.passwordResetEmail && (
-          <ErrorAlert message={error.passwordResetError.passwordResetEmail} />
+          <ErrorAlert
+            message={error?.passwordResetError?.passwordResetEmail}
+            status={error?.status}
+          />
         )}
         <button
           className="form-submit-btn password-reset-submit"

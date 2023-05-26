@@ -45,6 +45,7 @@ const SignUpForm = ({
   handleFormSubmit,
   handleCloseForm,
   error,
+  sent,
 }) => {
   return (
     <div className="form-container">
@@ -130,6 +131,7 @@ const SignUpForm = ({
           required={true}
           onChange={handleInputOnChange}
         ></input>
+        {sent && <ErrorAlert message={"Sending Info..."} status={200} />}
         {error?.signUpError?.passwordConfirm && (
           <ErrorAlert message={error.signUpError.passwordConfirm} />
         )}
