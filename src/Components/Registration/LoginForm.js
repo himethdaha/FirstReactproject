@@ -67,10 +67,10 @@ const LoginForm = ({
         "http://localhost:8000/login",
         loginData
       );
-      isSending(false);
 
       // Check if backend response is invalid username/password
       if (responseData.status === 400 || responseData.status === 429) {
+        isSending(false);
         const loginError = {
           password: responseData.message,
         };
@@ -82,6 +82,7 @@ const LoginForm = ({
       }
       // 403 for blocked users
       else if (responseData.status === 403) {
+        isSending(false);
         // Close the form
         setShowLoginForm(false);
         setUser(responseData);
@@ -91,6 +92,7 @@ const LoginForm = ({
       }
       // For server errors
       else if (responseData.status >= 500) {
+        isSending(false);
         const loginError = {
           password: responseData.message,
         };

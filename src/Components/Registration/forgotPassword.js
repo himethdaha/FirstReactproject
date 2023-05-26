@@ -11,14 +11,12 @@ import close from "../../logos/register/close.svg";
 
 const ForgotPasswordForm = ({
   handleInputOnPasswordChange,
-  handleCloseForm,
   error,
   sent,
   setError,
   isSending,
   passwordResetData,
   showPasswordResetForm,
-  showNewPasswordForm,
   connFailedMessg,
 }) => {
   const handlePasswordForgotSubmit = async (event) => {
@@ -46,8 +44,6 @@ const ForgotPasswordForm = ({
       } else {
         // Close the password reset form
         showPasswordResetForm(false);
-        // Show the form to add the new user password
-        showNewPasswordForm(true);
         isSending(false);
       }
     } catch (error) {
@@ -67,7 +63,10 @@ const ForgotPasswordForm = ({
       }
     }
   };
-
+  // To close the login form
+  const handleCloseForm = () => {
+    showPasswordResetForm(false);
+  };
   console.log("sent obj", sent);
   return (
     <div className="form-container">

@@ -62,6 +62,8 @@ const SignUpForm = ({
       const responseData = await fetchData("http://localhost:8000", data);
 
       if (responseData.status >= 400) {
+        isSending(false);
+
         const signupError = {
           passwordConfirm: responseData.message,
         };
