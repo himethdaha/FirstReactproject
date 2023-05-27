@@ -59,7 +59,11 @@ const SignUpForm = ({
     isSending(true);
 
     try {
-      const responseData = await fetchData("http://localhost:8000", data);
+      const responseData = await fetchData(
+        "http://localhost:8000",
+        data,
+        "POST"
+      );
 
       if (responseData.status >= 400) {
         isSending(false);

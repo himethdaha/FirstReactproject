@@ -1,7 +1,7 @@
-const fetchData = async (url, data) => {
+const fetchData = async (url, data, method) => {
   // Send data to server
   const response = await fetch(url, {
-    method: "POST",
+    method: method,
     headers: {
       "Content-Type": "application/json",
     },
@@ -9,7 +9,7 @@ const fetchData = async (url, data) => {
   });
   // Returns a JWT
   const responseData = await response.json();
-  console.log(responseData);
+  console.log("responseData", responseData);
   return responseData;
 };
 

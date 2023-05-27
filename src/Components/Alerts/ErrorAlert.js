@@ -1,6 +1,7 @@
 import React from "react";
 
 const ErrorAlert = ({ message, status }) => {
+  console.log("errstatus", status);
   return (
     <div
       style={{

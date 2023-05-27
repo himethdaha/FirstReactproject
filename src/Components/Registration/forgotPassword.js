@@ -3,7 +3,7 @@ import ErrorAlert from "../Alerts/ErrorAlert";
 import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // 3rd party libraries
-import React from "react";
+import { React, useState } from "react";
 
 // Styles
 import "../../css/Form.css";
@@ -19,6 +19,8 @@ const ForgotPasswordForm = ({
   showPasswordResetForm,
   connFailedMessg,
 }) => {
+  const [stateStatus, setStatus] = useState("");
+  console.log("stateStatus", stateStatus);
   const handlePasswordForgotSubmit = async (event) => {
     event.preventDefault();
     setError({});
@@ -28,9 +30,9 @@ const ForgotPasswordForm = ({
     try {
       const responseData = await fetchData(
         "http://localhost:8000/forgot_password",
-        passwordResetData
+        passwordResetData,
+        "POST"
       );
-
       if (responseData.status >= 400) {
         console.log("error");
         const newPassworError = {
@@ -42,9 +44,16 @@ const ForgotPasswordForm = ({
           passwordResetError: newPassworError,
         }));
       } else {
-        // Close the password reset form
-        showPasswordResetForm(false);
         isSending(false);
+        // Set status of success message to be shown becuase the user needs to know email is sent
+        setStatus(responseData.status);
+        const newPassworError = {
+          passwordResetEmail: responseData.message,
+        };
+        setError((prevError) => ({
+          ...prevError,
+          passwordResetError: newPassworError,
+        }));
       }
     } catch (error) {
       isSending(false);
@@ -66,8 +75,11 @@ const ForgotPasswordForm = ({
   // To close the login form
   const handleCloseForm = () => {
     showPasswordResetForm(false);
+    setError((prevError) => ({
+      ...prevError,
+      passwordResetError: {},
+    }));
   };
-  console.log("sent obj", sent);
   return (
     <div className="form-container">
       <form
@@ -104,7 +116,7 @@ const ForgotPasswordForm = ({
         {error?.passwordResetError?.passwordResetEmail && (
           <ErrorAlert
             message={error?.passwordResetError?.passwordResetEmail}
-            status={error?.status}
+            status={stateStatus}
           />
         )}
         <button

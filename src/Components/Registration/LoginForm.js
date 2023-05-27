@@ -65,7 +65,8 @@ const LoginForm = ({
     try {
       const responseData = await fetchData(
         "http://localhost:8000/login",
-        loginData
+        loginData,
+        "POST"
       );
 
       // Check if backend response is invalid username/password

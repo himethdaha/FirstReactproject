@@ -6,7 +6,6 @@ import LoginForm from "./Components/Registration/LoginForm";
 import ForgotPasswordForm from "./Components/Registration/forgotPassword";
 import ResetPasswordForm from "./Components/Registration/resetPassword";
 import UserBlocked from "./Components/Alerts/UserBlocked";
-import fetchData from "./utils/helperFunctions/returnFetchResponse";
 import useEnableSubmitBtn from "./utils/customHooks/submitBtnEnable";
 
 // Styles
@@ -14,8 +13,13 @@ import "./css/App.css";
 
 // 3rd party libraries
 import jwt_decode from "jwt-decode";
-
 import React, { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useParams,
+} from "react-router-dom";
 
 // Env variables
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENTID;
@@ -116,6 +120,8 @@ function App() {
 
   // State to show a user has been blocked
   const [userBlocked, showUserBlocked] = useState(false);
+
+  const [passToken, setPassToken] = useState("");
 
   // "useEffect"
 
@@ -371,6 +377,7 @@ function App() {
   const handleInputOnPasswordReset = function (event) {
     const eventName = event.target.name;
     const eventValue = event.target.value;
+    console.log(eventName, eventValue);
     let passwd;
     let currPasswd;
 
@@ -437,6 +444,7 @@ function App() {
     } else {
       // Save form data
       setNewPasswordData({ ...newPasswordData, [eventName]: eventValue });
+      console.log("after setting new password", newPasswordData);
       // Empty the errors
       setError((prevError) => ({
         ...prevError,
@@ -444,9 +452,21 @@ function App() {
       }));
     }
   };
+  // Function to get the token off the url
+  function ResetPass() {
+    const { token } = useParams();
+    useEffect(() => {
+      if (token) {
+        setPassToken(token);
+        console.log(passToken);
+        showNewPasswordForm(true);
+      }
+    }, [token]);
+  }
 
   return (
-    <React.Fragment>
+    <Router>
+      {/* <React.Fragment> */}
       {/*If ShowForm state for signup is true*/}
       {showForm && (
         <SignUpForm
@@ -463,6 +483,7 @@ function App() {
           connFailedMessg={connFailedMessg}
         />
       )}
+
       {/*If ShowForm state for login is true*/}
       {showLoginForm && (
         <LoginForm
@@ -495,10 +516,13 @@ function App() {
           setUser={setUser}
           passwordResetData={passwordResetData}
           showPasswordResetForm={showPasswordResetForm}
-          showNewPasswordForm={showNewPasswordForm}
+          passwordResetForm={passwordResetForm}
           connFailedMessg={connFailedMessg}
         />
       )}
+      <Routes>
+        <Route path="/reset_password/:token" element={<ResetPass />}></Route>
+      </Routes>
       {newPasswordForm && (
         <ResetPasswordForm
           handleInputOnPasswordReset={handleInputOnPasswordReset}
@@ -510,6 +534,7 @@ function App() {
           setShowLoginForm={setShowLoginForm}
           newPasswordData={newPasswordData}
           connFailedMessg={connFailedMessg}
+          passToken={passToken}
         />
       )}
       <div className="App">
@@ -531,7 +556,8 @@ function App() {
           <Home user={user} userBlocked={userBlocked} />
         </main>
       </div>
-    </React.Fragment>
+      {/* </React.Fragment> */}
+    </Router>
   );
 }
 

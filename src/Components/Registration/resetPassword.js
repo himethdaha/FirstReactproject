@@ -1,6 +1,8 @@
 // Imports
+import { useNavigate } from "react-router-dom";
 import ErrorAlert from "../Alerts/ErrorAlert";
 import fetchData from "../../utils/helperFunctions/returnFetchResponse";
+import { React, useState } from "react";
 
 // Styles
 import "../../css/Form.css";
@@ -13,27 +15,36 @@ const ResetPasswordForm = ({
   setError,
   isSending,
   showNewPasswordForm,
-  setShowLoginForm,
+  passwordResetForm,
   newPasswordData,
   connFailedMessg,
+  passToken,
 }) => {
+  // Hooks
+  const [stateStatus, setStatus] = useState("");
+
+  // Variables
+  const navigate = useNavigate();
   // New password setting form handler
   const handlePasswordResetSubmit = async function (event) {
     event.preventDefault();
     setError({});
     isSending(true);
-    console.log("Data sent", newPasswordData);
+    const dataToSend = { ...newPasswordData, token: passToken };
+    console.log("Data sent", dataToSend);
 
     try {
       const responseData = await fetchData(
         "http://localhost:8000/reset_password",
-        newPasswordData
+        dataToSend,
+        "PATCH"
       );
-
+      console.log("responseData", responseData);
       if (responseData.status >= 400) {
         console.log("error");
+        isSending(false);
         const newPasswordError = {
-          password: responseData.message,
+          passwordConfirm: responseData.message,
         };
 
         setError((prevError) => ({
@@ -41,11 +52,15 @@ const ResetPasswordForm = ({
           newPasswordSubmit: newPasswordError,
         }));
       } else {
-        // Close the new password form
-        showNewPasswordForm(false);
-        // open the login form
-        setShowLoginForm(true);
         isSending(false);
+        setStatus(responseData.status);
+        const newPasswordError = {
+          passwordConfirm: responseData.message,
+        };
+        setError((prevError) => ({
+          ...prevError,
+          newPasswordSubmit: newPasswordError,
+        }));
       }
     } catch (error) {
       isSending(false);
@@ -54,7 +69,7 @@ const ResetPasswordForm = ({
 
       if (message === connFailedMessg) {
         const newPasswordError = {
-          password: "Connection to server failed",
+          passwordConfirm: "Connection to server failed",
         };
 
         setError((prevError) => ({
@@ -66,8 +81,9 @@ const ResetPasswordForm = ({
   };
 
   // Close form event handler
-  const handleCloseForm = () => {
+  const handleCloseForm = (e) => {
     showNewPasswordForm(false);
+    navigate("/");
   };
   return (
     <div className="form-container">
@@ -82,7 +98,7 @@ const ResetPasswordForm = ({
             src={close}
             alt="Form close button"
             className="form-close-btn form-signup-close-btn"
-            onClick={(e) => handleCloseForm()}
+            onClick={(e) => handleCloseForm(e)}
           ></img>
         </div>
         <span className="form-tns signup-tns ">
@@ -100,7 +116,10 @@ const ResetPasswordForm = ({
           onChange={handleInputOnPasswordReset}
         ></input>
         {error?.newPasswordSubmit?.password && (
-          <ErrorAlert message={error.newPasswordSubmit.password} />
+          <ErrorAlert
+            message={error.newPasswordSubmit.password}
+            status={stateStatus}
+          />
         )}
         <label
           className="form-label form-label-signup"
@@ -118,7 +137,10 @@ const ResetPasswordForm = ({
         ></input>
         {sent && <ErrorAlert message={"Sending Info..."} status={200} />}
         {error?.newPasswordSubmit?.passwordConfirm && (
-          <ErrorAlert message={error.newPasswordSubmit.passwordConfirm} />
+          <ErrorAlert
+            message={error.newPasswordSubmit.passwordConfirm}
+            status={stateStatus}
+          />
         )}
         <button
           className="form-submit-btn"
