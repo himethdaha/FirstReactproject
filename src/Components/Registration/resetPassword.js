@@ -93,7 +93,7 @@ const ResetPasswordForm = ({
         method="POST"
       >
         <div className="form-header">
-          <h1 className="form-header-text">create an account</h1>
+          <h1 className="form-header-text">create new password</h1>
           <img
             src={close}
             alt="Form close button"

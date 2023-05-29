@@ -1,6 +1,7 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
 import fetchData from "../../utils/helperFunctions/returnFetchResponse";
+import forgotPasswordSend from "../../utils/helperFunctions/forgotPasswordSend";
 
 // 3rd party libraries
 import { React, useState } from "react";
@@ -20,57 +21,45 @@ const ForgotPasswordForm = ({
   connFailedMessg,
 }) => {
   const [stateStatus, setStatus] = useState("");
-  console.log("stateStatus", stateStatus);
+  const [resendVisible, resendHidden] = useState(false);
+
   const handlePasswordForgotSubmit = async (event) => {
     event.preventDefault();
+    resendHidden(true);
     setError({});
     // Set loading message
     isSending(true);
 
-    try {
-      const responseData = await fetchData(
-        "http://localhost:8000/forgot_password",
-        passwordResetData,
-        "POST"
-      );
-      if (responseData.status >= 400) {
-        console.log("error");
-        const newPassworError = {
-          passwordResetEmail: responseData.message,
-        };
+    await forgotPasswordSend(
+      "http://localhost:8000/forgot_password",
+      passwordResetData,
+      "POST",
+      setError,
+      isSending,
+      setStatus,
+      connFailedMessg
+    );
+  };
 
-        setError((prevError) => ({
-          ...prevError,
-          passwordResetError: newPassworError,
-        }));
-      } else {
-        isSending(false);
-        // Set status of success message to be shown becuase the user needs to know email is sent
-        setStatus(responseData.status);
-        const newPassworError = {
-          passwordResetEmail: responseData.message,
-        };
-        setError((prevError) => ({
-          ...prevError,
-          passwordResetError: newPassworError,
-        }));
-      }
-    } catch (error) {
-      isSending(false);
+  // To resend token in case user didn not receive the email
+  const resendToken = async (event) => {
+    event.preventDefault();
+    setError((prevError) => ({
+      ...prevError,
+      passwordResetError: {},
+    }));
+    // Set loading message
+    isSending(true);
 
-      const message = error.message;
-
-      if (message === connFailedMessg) {
-        const networkError = {
-          passwordResetEmail: "Connection to server failed",
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          passwordResetError: networkError,
-        }));
-      }
-    }
+    await forgotPasswordSend(
+      "http://localhost:8000/forgot_password",
+      passwordResetData,
+      "POST",
+      setError,
+      isSending,
+      setStatus,
+      connFailedMessg
+    );
   };
   // To close the login form
   const handleCloseForm = () => {
@@ -118,6 +107,11 @@ const ForgotPasswordForm = ({
             message={error?.passwordResetError?.passwordResetEmail}
             status={stateStatus}
           />
+        )}
+        {resendVisible && (
+          <a href="/" className="forgot-password-link" onClick={resendToken}>
+            Didn't Receive the email?. Resend email
+          </a>
         )}
         <button
           className="form-submit-btn password-reset-submit"
