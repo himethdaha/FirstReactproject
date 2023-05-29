@@ -4,6 +4,7 @@ import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // 3rd party libraries
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   LoginSocialFacebook,
   LoginSocialInstagram,
@@ -157,13 +158,13 @@ const LoginForm = ({
         </div>
         <span className="form-tns login-tns">
           By creating an account, you agree to our <br />
-          <a className="form-tns-link" href="/">
+          <Link className="form-tns-link" to={"/"}>
             Terms Of Service
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a className="form-tns-link" href="/">
+          <Link className="form-tns-link" to={"/"}>
             Privacy Policy
-          </a>
+          </Link>
         </span>
         <label className="form-label form-label-signup" htmlFor="username">
           Username
@@ -220,13 +221,13 @@ const LoginForm = ({
         <button className="form-submit-btn" id="submit-btn-login" type="submit">
           <span>Login</span>
         </button>
-        <a
-          href="/"
+        <Link
+          to={"/"}
           className="forgot-password-link"
           onClick={showPasswordResetOnClick}
         >
           Forgot Password
-        </a>
+        </Link>
       </form>
     </div>
   );

@@ -1,10 +1,10 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
-import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 import forgotPasswordSend from "../../utils/helperFunctions/forgotPasswordSend";
 
 // 3rd party libraries
 import { React, useState } from "react";
+import { Link } from "react-router-dom";
 
 // Styles
 import "../../css/Form.css";
@@ -109,9 +109,9 @@ const ForgotPasswordForm = ({
           />
         )}
         {resendVisible && (
-          <a href="/" className="forgot-password-link" onClick={resendToken}>
+          <Link to={"/"} className="forgot-password-link" onClick={resendToken}>
             Didn't Receive the email?. Resend email
-          </a>
+          </Link>
         )}
         <button
           className="form-submit-btn password-reset-submit"

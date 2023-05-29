@@ -1,7 +1,10 @@
-import "../../css/Navbar.css";
+// Imports
 import logo from "../../logos/navbar/logo.svg";
 import SignUp from "./signupNavbar";
 import LogIn from "./LogInNavbar";
+
+// styles
+import "../../css/Navbar.css";
 
 const Navbar = ({
   setShowForm,

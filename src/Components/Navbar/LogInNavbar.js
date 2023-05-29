@@ -1,4 +1,8 @@
+// 3rd party libraries
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+
+// Styles
 import "../../css/Navbar.css";
 
 const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
@@ -34,13 +38,13 @@ const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
   };
   return (
     <li className="navbar-ul-item">
-      <a
-        href="/"
+      <Link
+        to={"/"}
         className="navbar-ul-btn navbar-ul-signin-btn"
         onClick={(e) => handleOnClick(e)}
       >
         {isUserSet === 0 || user.status !== 200 ? "LogIn" : "LogOut"}
-      </a>
+      </Link>
     </li>
   );
 };

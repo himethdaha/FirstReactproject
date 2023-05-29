@@ -4,6 +4,8 @@ import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // 3rd party libraries
 import React from "react";
+import { Link } from "react-router-dom";
+
 import {
   LoginSocialFacebook,
   LoginSocialInstagram,
@@ -86,7 +88,6 @@ const SignUpForm = ({
     } catch (error) {
       isSending(false);
       const message = error.message;
-      console.log("err message", message);
       if (message === connFailedMessg) {
         const signupError = {
           passwordConfirm: "Connection to server failed",
@@ -122,13 +123,13 @@ const SignUpForm = ({
         </div>
         <span className="form-tns signup-tns ">
           By creating an account, you agree to our <br />
-          <a className="form-tns-link" href="/">
+          <Link className="form-tns-link" to={"/"}>
             Terms Of Service
-          </a>{" "}
+          </Link>{" "}
           and{" "}
-          <a className="form-tns-link" href="/">
+          <Link className="form-tns-link" to={"/"}>
             Privacy Policy
-          </a>
+          </Link>
         </span>
         <label className="form-label form-label-signup" htmlFor="email">
           Email
