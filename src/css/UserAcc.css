@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300&display=swap");
+
+/*Main container*/
+.userAcc-container {
+  display: flex;
+  flex-direction: column;
+  font-family: "Barlow Condensed", sans-serif;
+  width: 40%;
+  transform: translateX(75%);
+  gap: 2rem;
+}
+
+.userAcc-header {
+  font-size: 3rem;
+  text-align: left;
+  border-bottom: 1px solid rgb(204, 191, 191);
+  opacity: 0.8;
+  width: 100%;
+}
+/*Form for user info*/
+.userAcc-form {
+  border: 1px solid black;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/*Form for user payment info*/
+.userPayment-form {
+  border: 1px solid black;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/*Form grid structure*/
+.payment-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+/*Form labels*/
+.form-label-userAcc {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+/*Form inputs*/
+.form-input-userAcc {
+  border-bottom: 1px solid rgb(204, 191, 191);
+}
+
+.form-input-userAcc:focus {
+  border-bottom: 1px solid rgb(107, 106, 106);
+}
+
+.form-userAcc-dropdown {
+  border-radius: 0.3rem;
+  width: 40%;
+}
+
+.form-userAcc-dropdown:hover {
+  cursor: pointer;
+}
+
+.form-input-img {
+  width: 100%;
+}
+
+.cardExp-inp {
+  display: flex;
+  flex-direction: row;
+}
+
+.expMonth,
+.expYear {
+  width: 10%;
+}
+
+.cardExp-slash {
+  font-size: 2rem;
+  color: rgb(107, 106, 106);
+}

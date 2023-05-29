@@ -15,7 +15,9 @@ const Home = ({ user, userBlocked }) => {
 
   return (
     /* navbar header*/
-    <h1 className="title">{initialText}</h1>
+    <div className="Main">
+      <h1 className="title">{initialText}</h1>
+    </div>
   );
 };
 

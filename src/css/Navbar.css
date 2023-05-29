@@ -8,7 +8,7 @@
 }
 
 .navbarHeader {
-  font-size: 17px;
+  font-size: 1.7rem;
   display: flex;
   align-items: center;
 }
@@ -21,15 +21,25 @@
 }
 
 .navbar-ul-item {
-  margin-right: 25px;
+  color: #ffffff;
+}
+.navbar-ul-item {
+  margin-right: 1.5rem;
   transition: transform 0.3s ease-in-out;
+}
+.navLink {
+  color: #ffffff;
+}
+.navLink.active {
+  color: #61dafb;
 }
 
 .navbar-ul-item li:last-child {
   margin-right: 0;
 }
 
-.navbar-ul-item:hover {
+.navbar-ul-item:hover,
+.navLink:hover {
   cursor: pointer;
   color: #61dafb;
   transform: scale(1.1);

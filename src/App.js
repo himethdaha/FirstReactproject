@@ -1,8 +1,9 @@
-// My modules
+// Imports
 import Navbar from "./Components/Navbar/Navbar";
 import Home from "./Home";
 import SignUpForm from "./Components/Registration/SignupForm";
 import LoginForm from "./Components/Registration/LoginForm";
+import UserAccount from "./Components/User/UserAccount";
 import ForgotPasswordForm from "./Components/Registration/forgotPassword";
 import ResetPasswordForm from "./Components/Registration/resetPassword";
 import UserBlocked from "./Components/Alerts/UserBlocked";
@@ -43,6 +44,12 @@ function App() {
 
   // To hide login button when user signed in
   const [loginHidden, setHideLoginButton] = useState(false);
+
+  // To get the username from the url
+  const [urluserName, setUrlUserName] = useState("");
+
+  // To show the user profile link
+  const [profile, showProfile] = useState(false);
 
   // To hide user blocked popup
   const [showUserBlockedPopup, setUserBlockedPopup] = useState(false);
@@ -165,6 +172,7 @@ function App() {
   // Event handlers //
   //Callback for google login
   const handleGoogleCallbackResponse = (response) => {
+    console.log("google resp", response);
     const userObject = jwt_decode(response.credential);
     //Set user state
     setUser(userObject);
@@ -282,7 +290,6 @@ function App() {
     const eventValue = event.target.value;
     let errors = {};
 
-    console.log("loginData in app", loginData);
     // // Validate the username
     if (eventName === "login-username") {
       if (eventValue.length === 0) {
@@ -454,14 +461,25 @@ function App() {
   };
   // Function to get the token off the url
   function ResetPass() {
+    console.log("token");
     const { token } = useParams();
     useEffect(() => {
       if (token) {
+        console.log("token1");
         setPassToken(token);
-        console.log(passToken);
         showNewPasswordForm(true);
       }
     }, [token]);
+  }
+
+  // Function to get the username off the url
+  function GetUsername() {
+    const { userName } = useParams();
+    useEffect(() => {
+      if (userName) {
+        setUrlUserName(userName);
+      }
+    }, [userName]);
   }
 
   return (
@@ -501,6 +519,7 @@ function App() {
           setUserBlockedPopup={setUserBlockedPopup}
           connFailedMessg={connFailedMessg}
           loginData={loginData}
+          showProfile={showProfile}
         />
       )}
       {showUserBlockedPopup && (
@@ -522,21 +541,23 @@ function App() {
       )}
       <Routes>
         <Route path="/reset_password/:token" element={<ResetPass />}></Route>
+        {newPasswordForm && (
+          <ResetPasswordForm
+            handleInputOnPasswordReset={handleInputOnPasswordReset}
+            error={error}
+            sent={sent}
+            setError={setError}
+            isSending={isSending}
+            showNewPasswordForm={showNewPasswordForm}
+            setShowLoginForm={setShowLoginForm}
+            newPasswordData={newPasswordData}
+            connFailedMessg={connFailedMessg}
+            passToken={passToken}
+          />
+        )}
+        <Route path="/My_Account/:userName" element={<GetUsername />}></Route>
       </Routes>
-      {newPasswordForm && (
-        <ResetPasswordForm
-          handleInputOnPasswordReset={handleInputOnPasswordReset}
-          error={error}
-          sent={sent}
-          setError={setError}
-          isSending={isSending}
-          showNewPasswordForm={showNewPasswordForm}
-          setShowLoginForm={setShowLoginForm}
-          newPasswordData={newPasswordData}
-          connFailedMessg={connFailedMessg}
-          passToken={passToken}
-        />
-      )}
+
       <div className="App">
         <header className="App-header">
           {/*Send in the setShowForm and user state as props to Navbar*/}
@@ -550,12 +571,15 @@ function App() {
             setHideLoginButton={setHideLoginButton}
             signUpHidden={signUpHidden}
             loginHidden={loginHidden}
+            profile={profile}
           />
         </header>
-        <main className="Main">
+        <main>
           <Home user={user} userBlocked={userBlocked} />
+          {urluserName && <UserAccount urluserName={urluserName} />}
         </main>
       </div>
+
       {/* </React.Fragment> */}
     </Router>
   );

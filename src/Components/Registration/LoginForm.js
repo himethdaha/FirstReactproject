@@ -56,6 +56,7 @@ const LoginForm = ({
   setUserBlockedPopup,
   connFailedMessg,
   loginData,
+  showProfile,
 }) => {
   // To handle Login form submission
   const handleLoginFormSubmit = async (event) => {
@@ -110,6 +111,7 @@ const LoginForm = ({
         setShowLoginForm(false);
         showUserBlocked(false);
         isSending(false);
+        showProfile(true);
       }
     } catch (error) {
       isSending(false);
