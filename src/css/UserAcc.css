@@ -8,6 +8,7 @@
   width: 40%;
   transform: translateX(75%);
   gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .userAcc-header {
@@ -17,28 +18,22 @@
   opacity: 0.8;
   width: 100%;
 }
-/*Form for user info*/
-.userAcc-form {
-  border: 1px solid black;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-}
 
-/*Form for user payment info*/
-.userPayment-form {
+/*Form for user account/payment info*/
+.userPayment-form,
+.userAcc-form {
   border: 1px solid black;
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
 
 /*Form grid structure*/
-.payment-grid {
+.payment-grid,
+.userAcc-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 /*Form labels*/
@@ -65,10 +60,12 @@
   cursor: pointer;
 }
 
+/*For the user image uploads*/
 .form-input-img {
   width: 100%;
 }
 
+/*User card info*/
 .cardExp-inp {
   display: flex;
   flex-direction: row;
@@ -82,4 +79,13 @@
 .cardExp-slash {
   font-size: 2rem;
   color: rgb(107, 106, 106);
+}
+
+/*Form submit btn container*/
+.account-btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
 }
