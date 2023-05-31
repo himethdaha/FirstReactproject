@@ -70,7 +70,7 @@ const LoginForm = ({
         loginData,
         "POST"
       );
-
+      console.log("logged", responseData);
       // Check if backend response is invalid username/password
       if (responseData.status === 400 || responseData.status === 429) {
         isSending(false);

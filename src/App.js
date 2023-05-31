@@ -461,11 +461,9 @@ function App() {
   };
   // Function to get the token off the url
   function ResetPass() {
-    console.log("token");
     const { token } = useParams();
     useEffect(() => {
       if (token) {
-        console.log("token1");
         setPassToken(token);
         showNewPasswordForm(true);
       }
@@ -484,63 +482,65 @@ function App() {
 
   return (
     <Router>
-      {/* <React.Fragment> */}
-      {/*If ShowForm state for signup is true*/}
-      {showForm && (
-        <SignUpForm
-          handleFacebookCallbackResponse={handleFacebookCallbackResponse}
-          handleInstagramCallbackResponse={handleInstagramCallbackResponse}
-          handleInputOnChange={handleInputOnChange}
-          error={error}
-          sent={sent}
-          setError={setError}
-          isSending={isSending}
-          setUser={setUser}
-          setShowForm={setShowForm}
-          data={data}
-          connFailedMessg={connFailedMessg}
-        />
-      )}
-
-      {/*If ShowForm state for login is true*/}
-      {showLoginForm && (
-        <LoginForm
-          handleFacebookCallbackResponse={handleFacebookCallbackResponse}
-          handleInstagramCallbackResponse={handleInstagramCallbackResponse}
-          handleInputOnLoginChange={handleInputOnLoginChange}
-          setShowLoginForm={setShowLoginForm}
-          showPasswordResetForm={showPasswordResetForm}
-          error={error}
-          sent={sent}
-          setError={setError}
-          isSending={isSending}
-          setUser={setUser}
-          showUserBlocked={showUserBlocked}
-          setUserBlockedPopup={setUserBlockedPopup}
-          connFailedMessg={connFailedMessg}
-          loginData={loginData}
-          showProfile={showProfile}
-        />
-      )}
-      {showUserBlockedPopup && (
-        <UserBlocked user={user} setUserBlockedPopup={setUserBlockedPopup} />
-      )}
-      {passwordResetForm && (
-        <ForgotPasswordForm
-          handleInputOnPasswordChange={handleInputOnPasswordChange}
-          error={error}
-          sent={sent}
-          setError={setError}
-          isSending={isSending}
-          setUser={setUser}
-          passwordResetData={passwordResetData}
-          showPasswordResetForm={showPasswordResetForm}
-          passwordResetForm={passwordResetForm}
-          connFailedMessg={connFailedMessg}
-        />
-      )}
       <Routes>
         <Route path="/reset_password/:token" element={<ResetPass />}></Route>
+        <Route path="/My_Account/:userName" element={<GetUsername />}></Route>
+      </Routes>
+      <React.Fragment>
+        {/*If ShowForm state for signup is true*/}
+        {showForm && (
+          <SignUpForm
+            handleFacebookCallbackResponse={handleFacebookCallbackResponse}
+            handleInstagramCallbackResponse={handleInstagramCallbackResponse}
+            handleInputOnChange={handleInputOnChange}
+            error={error}
+            sent={sent}
+            setError={setError}
+            isSending={isSending}
+            setUser={setUser}
+            setShowForm={setShowForm}
+            data={data}
+            connFailedMessg={connFailedMessg}
+          />
+        )}
+
+        {/*If ShowForm state for login is true*/}
+        {showLoginForm && (
+          <LoginForm
+            handleFacebookCallbackResponse={handleFacebookCallbackResponse}
+            handleInstagramCallbackResponse={handleInstagramCallbackResponse}
+            handleInputOnLoginChange={handleInputOnLoginChange}
+            setShowLoginForm={setShowLoginForm}
+            showPasswordResetForm={showPasswordResetForm}
+            error={error}
+            sent={sent}
+            setError={setError}
+            isSending={isSending}
+            setUser={setUser}
+            showUserBlocked={showUserBlocked}
+            setUserBlockedPopup={setUserBlockedPopup}
+            connFailedMessg={connFailedMessg}
+            loginData={loginData}
+            showProfile={showProfile}
+          />
+        )}
+        {showUserBlockedPopup && (
+          <UserBlocked user={user} setUserBlockedPopup={setUserBlockedPopup} />
+        )}
+        {passwordResetForm && (
+          <ForgotPasswordForm
+            handleInputOnPasswordChange={handleInputOnPasswordChange}
+            error={error}
+            sent={sent}
+            setError={setError}
+            isSending={isSending}
+            setUser={setUser}
+            passwordResetData={passwordResetData}
+            showPasswordResetForm={showPasswordResetForm}
+            passwordResetForm={passwordResetForm}
+            connFailedMessg={connFailedMessg}
+          />
+        )}
         {newPasswordForm && (
           <ResetPasswordForm
             handleInputOnPasswordReset={handleInputOnPasswordReset}
@@ -555,32 +555,29 @@ function App() {
             passToken={passToken}
           />
         )}
-        <Route path="/My_Account/:userName" element={<GetUsername />}></Route>
-      </Routes>
 
-      <div className="App">
-        <header className="App-header">
-          {/*Send in the setShowForm and user state as props to Navbar*/}
-          <Navbar
-            setShowForm={setShowForm}
-            setShowLoginForm={setShowLoginForm}
-            userBlocked={userBlocked}
-            user={user}
-            setUser={setUser}
-            setHideSignUpButton={setHideSignUpButton}
-            setHideLoginButton={setHideLoginButton}
-            signUpHidden={signUpHidden}
-            loginHidden={loginHidden}
-            profile={profile}
-          />
-        </header>
-        <main>
-          <Home user={user} userBlocked={userBlocked} />
-          {urluserName && <UserAccount urluserName={urluserName} />}
-        </main>
-      </div>
-
-      {/* </React.Fragment> */}
+        <div className="App">
+          <header className="App-header">
+            {/*Send in the setShowForm and user state as props to Navbar*/}
+            <Navbar
+              setShowForm={setShowForm}
+              setShowLoginForm={setShowLoginForm}
+              userBlocked={userBlocked}
+              user={user}
+              setUser={setUser}
+              setHideSignUpButton={setHideSignUpButton}
+              setHideLoginButton={setHideLoginButton}
+              signUpHidden={signUpHidden}
+              loginHidden={loginHidden}
+              profile={profile}
+            />
+          </header>
+          <main>
+            <Home user={user} userBlocked={userBlocked} />
+            {urluserName && <UserAccount urluserName={urluserName} />}
+          </main>
+        </div>
+      </React.Fragment>
     </Router>
   );
 }

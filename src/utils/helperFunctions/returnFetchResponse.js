@@ -5,6 +5,7 @@ const fetchData = async (url, data, method) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(data),
   });
   // Returns a JWT

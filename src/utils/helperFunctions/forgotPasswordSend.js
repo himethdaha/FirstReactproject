@@ -11,9 +11,7 @@ const forgotPasswordSend = async (
 ) => {
   try {
     const responseData = await fetchData(url, data, "POST");
-    console.log("helper", url);
     if (responseData.status >= 400) {
-      console.log("error");
       const newPassworError = {
         passwordResetEmail: responseData.message,
       };

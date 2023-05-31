@@ -101,7 +101,12 @@ const ForgotPasswordForm = ({
           required={true}
           onChange={handleInputOnPasswordChange}
         ></input>
-        {sent && <ErrorAlert message={"Sending Email..."} status={200} />}
+        {sent && (
+          <ErrorAlert
+            message={"Sending email. Might take a few minutes"}
+            status={200}
+          />
+        )}
         {error?.passwordResetError?.passwordResetEmail && (
           <ErrorAlert
             message={error?.passwordResetError?.passwordResetEmail}
