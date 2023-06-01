@@ -1,58 +1,94 @@
+// Imports
+import fetchData from "../../utils/helperFunctions/returnFetchResponse";
+import ErrorAlert from "../Alerts/ErrorAlert";
+
+// 3rd party libraries
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+
 // styles
 import "../../css/UserAcc.css";
 import "../../css/Form.css";
 
-const UserAccount = ({ urluserName }) => {
+const UserAccount = ({
+  handleInputOnLoginChange,
+  handleInputOnChange,
+  handleUserInfoUpdate,
+  date,
+  error,
+}) => {
+  const handleUserInfoUpdateSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const responseData = await fetchData(
+        "http://localhost:8000/login",
+        "data",
+        "PATCH"
+      );
+      console.log("done");
+      return;
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="userAcc-container">
       <div className="userInfo-container">
         <h2 className="userAcc-header">Information</h2>
-        <form className="userAcc-form">
+        <form
+          className="userAcc-form"
+          onSubmit={(e) => handleUserInfoUpdateSubmit(e)}
+          method="POST"
+        >
           <div className="userAcc-grid">
             <label className="form-label form-label-userAcc" htmlFor="email">
               Email
             </label>
-            <input
-              type="email"
-              className="form-input form-input-userAcc"
-              id="email"
-              name="email"
-              placeholder="pain@gmail.com"
-              required={true}
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
+            <div className="emailErrorGrid">
+              <input
+                type="email"
+                className="form-input form-input-userAcc"
+                id="email"
+                name="email"
+                placeholder="pain@gmail.com"
+                required={true}
+                onChange={handleInputOnChange}
+              ></input>
+
+              {error?.signUpError?.email && (
+                <ErrorAlert message={error.signUpError.email} />
+              )}
+            </div>
+
             <label className="form-label form-label-userAcc" htmlFor="username">
               Username
             </label>
-            <input
-              type="text"
-              className="form-input form-input-userAcc"
-              id="username"
-              name="username"
-              placeholder="Kaiokenx10"
-              required={true}
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.username && (
-          <ErrorAlert message={error.signUpError.username} />
-        )} */}
-            <label className="form-label form-label-userAcc" htmlFor="age">
-              Age
+            <div className="emailErrorGrid">
+              <input
+                type="text"
+                className="form-input form-input-userAcc"
+                id="username"
+                name="username"
+                placeholder="Kaiokenx10"
+                required={true}
+                onChange={handleInputOnLoginChange}
+              ></input>
+              {error?.loginError?.username && (
+                <ErrorAlert message={error.loginError.username} />
+              )}
+            </div>
+            <label className="form-label form-label-userAcc">
+              Date Of Birth
             </label>
-            <input
-              type="text"
-              className="form-input form-input-userAcc"
-              id="userAge"
-              name="age"
-              placeholder="100"
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.username && (
-          <ErrorAlert message={error.signUpError.username} />
-        )} */}
+            <div className="emailErrorGrid datepicker">
+              <DatePicker
+                showIcon
+                selected={date}
+                onChange={handleUserInfoUpdate}
+                isClearable
+                placeholderText="I'm a ghost 👻"
+              />
+            </div>
             <label className="form-label form-label-userAcc" htmlFor="age">
               Proficiency
             </label>
@@ -60,6 +96,7 @@ const UserAccount = ({ urluserName }) => {
               className="form-userAcc-dropdown"
               id="level"
               name="proficiency"
+              required={true}
             >
               <option
                 value={"Beginner"}
@@ -80,63 +117,75 @@ const UserAccount = ({ urluserName }) => {
                 Advanced
               </option>
             </select>
-            {/* {error?.signUpError?.username && (
-          <ErrorAlert message={error.signUpError.username} />
-        )} */}
+            {error?.signUpError?.username && (
+              <ErrorAlert message={error.signUpError.username} />
+            )}
             <label className="form-label form-label-userAcc" htmlFor="address">
               Address
             </label>
-            <input
-              type="text"
-              className="form-input form-input-userAcc"
-              id="userAddress"
-              name="address"
-              placeholder="3000 Saiyan Street"
-              required={true}
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
+            <div className="emailErrorGrid">
+              <input
+                type="text"
+                className="form-input form-input-userAcc"
+                id="userAddress"
+                name="address"
+                placeholder="3000 Saiyan Street"
+                //   onChange={handleInputOnChange}
+              ></input>
+              {/* {error?.signUpError?.email && (
+              <ErrorAlert message={error.signUpError.email} />
+            )} */}
+            </div>
             <label className="form-label form-label-userAcc" htmlFor="city">
               City
             </label>
-            <input
-              type="text"
-              className="form-input form-input-userAcc"
-              id="userCity"
-              name="city"
-              placeholder="Toronto"
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
+            <div className="emailErrorGrid">
+              <input
+                type="text"
+                className="form-input form-input-userAcc"
+                id="userCity"
+                name="city"
+                placeholder="Toronto"
+                //   onChange={handleInputOnChange}
+              ></input>
+              {/* {error?.signUpError?.email && (
+              <ErrorAlert message={error.signUpError.email} />
+            )} */}
+            </div>
+
             <label className="form-label form-label-userAcc" htmlFor="province">
               Province
             </label>
-            <input
-              type="text"
-              className="form-input form-input-userAcc"
-              id="userProv"
-              name="province"
-              placeholder="Ontario"
-              //   onChange={handleInputOnChange}
-            ></input>
+            <div className="emailErrorGrid">
+              <input
+                type="text"
+                className="form-input form-input-userAcc"
+                id="userProv"
+                name="province"
+                placeholder="Ontario"
+                //   onChange={handleInputOnChange}
+              ></input>
+              {/* {error?.signUpError?.email && (
+              <ErrorAlert message={error.signUpError.email} />
+            )} */}
+            </div>
             <label className="form-label form-label-userAcc" htmlFor="country">
               Country
             </label>
-            <input
-              type="text"
-              className="form-input form-input-userAcc"
-              id="userCountry"
-              name="country"
-              placeholder="Canada"
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
+            <div className="emailErrorGrid">
+              <input
+                type="text"
+                className="form-input form-input-userAcc"
+                id="userCountry"
+                name="country"
+                placeholder="Canada"
+                //   onChange={handleInputOnChange}
+              ></input>
+              {/* {error?.signUpError?.email && (
+              <ErrorAlert message={error.signUpError.email} />
+            )} */}
+            </div>
+
             <label className="form-label form-label-userAcc" htmlFor="image">
               Profile Pic
             </label>

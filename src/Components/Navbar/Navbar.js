@@ -19,6 +19,7 @@ const Navbar = ({
   signUpHidden,
   loginHidden,
   profile,
+  showProfile,
 }) => {
   // Get the username if user exists
   let userName = "";
@@ -77,6 +78,7 @@ const Navbar = ({
             user={user}
             setUser={setUser}
             setHideSignUpButton={setHideSignUpButton}
+            showProfile={showProfile}
           />
         )}
         {!signUpHidden && (
@@ -85,6 +87,7 @@ const Navbar = ({
             user={user}
             setUser={setUser}
             setHideLoginButton={setHideLoginButton}
+            showProfile={showProfile}
           />
         )}
       </ul>

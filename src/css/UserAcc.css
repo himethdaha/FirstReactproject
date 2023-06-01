@@ -32,9 +32,106 @@
 .userAcc-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  /* grid-template-rows: repeat(9, auto); */
   grid-gap: 1rem;
   margin-bottom: 1rem;
 }
+/*Flex items for input and error*/
+.emailErrorGrid {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/*CALENDAR BEGIN*/
+
+/*main container*/
+.react-datepicker {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #aeaeae;
+  border-radius: 2px;
+}
+
+/*container for input*/
+.react-datepicker__input-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+/*date input box*/
+.react-datepicker__input-container > input {
+  padding-left: 2rem;
+  margin-left: -1.2rem;
+}
+
+/*input box icon*/
+.react-datepicker__calendar-icon {
+  width: 14.25px;
+  height: 16px;
+  margin-right: -0.2rem;
+  padding-left: 4px;
+  z-index: 99;
+}
+
+/*input close btn*/
+.react-datepicker__close-icon {
+  width: 1.8rem;
+  height: 2rem;
+  margin-left: 0.5rem;
+}
+.react-datepicker__close-icon:hover {
+  cursor: pointer;
+}
+.react-datepicker__close-icon::after {
+  content: "X";
+  margin-left: -2.5px;
+}
+
+/*calendar header containing month and week day names*/
+.react-datepicker__header {
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #aeaeae;
+  padding: 8px 0;
+  text-align: center;
+}
+
+.react-datepicker__aria-live {
+  visibility: hidden;
+  display: none;
+}
+
+/*Week names*/
+.react-datepicker__day-names {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  margin-top: 3px;
+  padding-left: 3px;
+}
+
+/*All dates within the month*/
+.react-datepicker__month {
+  display: grid;
+  grid-template-rows: auto;
+  grid-gap: 1rem;
+}
+
+/*Each row of weeks within the month*/
+.react-datepicker__week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+/*Single day*/
+.react-datepicker__day:hover {
+  cursor: pointer;
+  border-radius: 0.3rem;
+  background-color: #f0f0f0;
+}
+/*CALENDAR END*/
 
 /*Form labels*/
 .form-label-userAcc {

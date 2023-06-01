@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 // Styles
 import "../../css/Navbar.css";
 
-const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
+const LogIn = ({ setShowLoginForm, user, setUser, showProfile }) => {
   // Variables
   const isUserSet = Object.keys(user).length;
 
@@ -34,6 +34,7 @@ const LogIn = ({ setShowLoginForm, user, setUser, setHideSignUpButton }) => {
       setShowLoginForm(false);
       // When user object is the 'state' is empty the LogOut button text will change to SignIn because isUserSet === 0
       setUser({});
+      showProfile(false);
     }
   };
   return (

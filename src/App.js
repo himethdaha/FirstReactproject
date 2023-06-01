@@ -63,6 +63,9 @@ function App() {
   //State to check if a user is logged in
   const [user, setUser] = useState({});
 
+  // Set date in user update form
+  const [date, setDate] = useState(new Date());
+
   //State to be triggered by errors in forms
   const [error, setError] = useState({
     signUpError: {},
@@ -459,6 +462,11 @@ function App() {
       }));
     }
   };
+
+  // Handle input on user info update
+  const handleUserInfoUpdate = function (event) {
+    event.preventDefault();
+  };
   // Function to get the token off the url
   function ResetPass() {
     const { token } = useParams();
@@ -555,7 +563,6 @@ function App() {
             passToken={passToken}
           />
         )}
-
         <div className="App">
           <header className="App-header">
             {/*Send in the setShowForm and user state as props to Navbar*/}
@@ -570,11 +577,20 @@ function App() {
               signUpHidden={signUpHidden}
               loginHidden={loginHidden}
               profile={profile}
+              showProfile={showProfile}
             />
           </header>
           <main>
             <Home user={user} userBlocked={userBlocked} />
-            {urluserName && <UserAccount urluserName={urluserName} />}
+            {urluserName && (
+              <UserAccount
+                handleInputOnLoginChange={handleInputOnLoginChange}
+                handleInputOnChange={handleInputOnChange}
+                handleUserInfoUpdate={handleUserInfoUpdate}
+                date={date}
+                error={error}
+              />
+            )}
           </main>
         </div>
       </React.Fragment>
