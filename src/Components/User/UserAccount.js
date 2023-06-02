@@ -3,33 +3,70 @@ import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 import ErrorAlert from "../Alerts/ErrorAlert";
 
 // 3rd party libraries
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 
 // styles
 import "../../css/UserAcc.css";
 import "../../css/Form.css";
 
+// For the starting date in the calendar
+// const curr = new Date();
+// const pastMS = new Date().setFullYear(curr.getFullYear() - 70);
+// const pastDate = new Date(pastMS);
+
+// To get all years to show in the calendar
+// const years = [];
+// const current = new Date();
+// for (let year = pastDate.getFullYear(); year <= current.getFullYear(); year++) {
+//   years.push(year.toString());
+// }
+
+// To get the months to show in the calendar
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const UserAccount = ({
-  handleInputOnLoginChange,
-  handleInputOnChange,
   handleUserInfoUpdate,
-  date,
+  userUpdatedInfo,
+  startDate,
+  years,
+  countries,
+  currCountry,
+  states,
+  cities,
+  setCities,
+  urluserName,
   error,
 }) => {
+  // States
+  // const [startDate, setDate] = useState(new Date(pastDate));
   const handleUserInfoUpdateSubmit = async (event) => {
     event.preventDefault();
+    const dataSent = { ...userUpdatedInfo, userName: urluserName };
     try {
-      const responseData = await fetchData(
-        "http://localhost:8000/login",
-        "data",
+      const respons = await fetchData(
+        "http://localhost:8000/My_Account/Update",
+        dataSent,
         "PATCH"
       );
-      console.log("done");
+
+      const responseData = await respons.json();
+      console.log(responseData);
       return;
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
   return (
     <div className="userAcc-container">
@@ -39,6 +76,7 @@ const UserAccount = ({
           className="userAcc-form"
           onSubmit={(e) => handleUserInfoUpdateSubmit(e)}
           method="POST"
+          encType="multipart/form-data"
         >
           <div className="userAcc-grid">
             <label className="form-label form-label-userAcc" htmlFor="email">
@@ -52,11 +90,11 @@ const UserAccount = ({
                 name="email"
                 placeholder="pain@gmail.com"
                 required={true}
-                onChange={handleInputOnChange}
+                onChange={handleUserInfoUpdate}
               ></input>
 
-              {error?.signUpError?.email && (
-                <ErrorAlert message={error.signUpError.email} />
+              {error?.userUpdate?.email && (
+                <ErrorAlert message={error.userUpdate.email} />
               )}
             </div>
 
@@ -71,10 +109,10 @@ const UserAccount = ({
                 name="username"
                 placeholder="Kaiokenx10"
                 required={true}
-                onChange={handleInputOnLoginChange}
+                onChange={handleUserInfoUpdate}
               ></input>
-              {error?.loginError?.username && (
-                <ErrorAlert message={error.loginError.username} />
+              {error?.userUpdate?.username && (
+                <ErrorAlert message={error.userUpdate.username} />
               )}
             </div>
             <label className="form-label form-label-userAcc">
@@ -83,21 +121,90 @@ const UserAccount = ({
             <div className="emailErrorGrid datepicker">
               <DatePicker
                 showIcon
-                selected={date}
+                dateFormat={"yyyy/MM/dd"}
+                selected={startDate}
+                // onChange={(date) => setDate(date)}
                 onChange={handleUserInfoUpdate}
                 isClearable
                 placeholderText="I'm a ghost 👻"
+                renderCustomHeader={({
+                  date,
+                  changeYear,
+                  changeMonth,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled,
+                }) => (
+                  <div
+                    style={{
+                      margin: 10,
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <button
+                      onClick={decreaseMonth}
+                      disabled={prevMonthButtonDisabled}
+                    >
+                      {"<"}
+                    </button>
+                    <select
+                      value={date.getFullYear()}
+                      onChange={({ target: { value } }) =>
+                        changeYear(years[years.indexOf(value)])
+                      }
+                    >
+                      {years.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={months[new Date().getMonth()]}
+                      onChange={({ target: { value } }) =>
+                        changeMonth(months.indexOf(value))
+                      }
+                    >
+                      {months.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      onClick={increaseMonth}
+                      disabled={nextMonthButtonDisabled}
+                    >
+                      {">"}
+                    </button>
+                  </div>
+                )}
               />
             </div>
-            <label className="form-label form-label-userAcc" htmlFor="age">
+            <label
+              className="form-label form-label-userAcc"
+              htmlFor="proficiency"
+            >
               Proficiency
             </label>
             <select
               className="form-userAcc-dropdown"
               id="level"
               name="proficiency"
-              required={true}
+              onChange={handleUserInfoUpdate}
+              defaultValue={"Default"}
             >
+              <option
+                value={"Default"}
+                className="form-userAcc-dropdown-option"
+                disabled
+              >
+                Not Selected
+              </option>
               <option
                 value={"Beginner"}
                 className="form-userAcc-dropdown-option"
@@ -120,6 +227,87 @@ const UserAccount = ({
             {error?.signUpError?.username && (
               <ErrorAlert message={error.signUpError.username} />
             )}
+            <label className="form-label form-label-userAcc" htmlFor="country">
+              Country
+            </label>
+            <select
+              className="form-userAcc-dropdown"
+              onChange={handleUserInfoUpdate}
+              name="country"
+              defaultValue={"Default"}
+            >
+              <option
+                value={"Default"}
+                className="form-userAcc-dropdown-option"
+                disabled
+              >
+                Not Selected
+              </option>
+              {/*Adding key for 'reconciliation'. In case an item gets removed/updated/added React needs to keep track of it*/}
+              {countries.map((country, index) => (
+                <option
+                  key={index}
+                  value={country.countryName}
+                  className="form-userAcc-dropdown-option"
+                >
+                  {country.countryName}
+                </option>
+              ))}
+            </select>
+            <label className="form-label form-label-userAcc" htmlFor="province">
+              Province
+            </label>
+            <select
+              className="form-userAcc-dropdown"
+              onChange={handleUserInfoUpdate}
+              name="province"
+              defaultValue={"Default"}
+            >
+              <option
+                value={"Default"}
+                className="form-userAcc-dropdown-option"
+                disabled
+              >
+                Not Selected
+              </option>
+              {/*Adding key for 'reconciliation'. In case an item gets removed/updated/added React needs to keep track of it*/}
+              {states.map((state, index) => (
+                <option
+                  key={index}
+                  value={state.provinceName}
+                  className="form-userAcc-dropdown-option"
+                >
+                  {state.provinceName}
+                </option>
+              ))}
+            </select>
+            <label className="form-label form-label-userAcc" htmlFor="city">
+              City
+            </label>
+            <select
+              className="form-userAcc-dropdown"
+              name="city"
+              defaultValue={"Default"}
+              onChange={handleUserInfoUpdate}
+            >
+              <option
+                value={"Default"}
+                className="form-userAcc-dropdown-option"
+                disabled
+              >
+                Not Selected
+              </option>
+              {/*Adding key for 'reconciliation'. In case an item gets removed/updated/added React needs to keep track of it*/}
+              {cities.map((city, index) => (
+                <option
+                  key={index}
+                  value={city}
+                  className="form-userAcc-dropdown-option"
+                >
+                  {city}
+                </option>
+              ))}
+            </select>
             <label className="form-label form-label-userAcc" htmlFor="address">
               Address
             </label>
@@ -130,56 +318,7 @@ const UserAccount = ({
                 id="userAddress"
                 name="address"
                 placeholder="3000 Saiyan Street"
-                //   onChange={handleInputOnChange}
-              ></input>
-              {/* {error?.signUpError?.email && (
-              <ErrorAlert message={error.signUpError.email} />
-            )} */}
-            </div>
-            <label className="form-label form-label-userAcc" htmlFor="city">
-              City
-            </label>
-            <div className="emailErrorGrid">
-              <input
-                type="text"
-                className="form-input form-input-userAcc"
-                id="userCity"
-                name="city"
-                placeholder="Toronto"
-                //   onChange={handleInputOnChange}
-              ></input>
-              {/* {error?.signUpError?.email && (
-              <ErrorAlert message={error.signUpError.email} />
-            )} */}
-            </div>
-
-            <label className="form-label form-label-userAcc" htmlFor="province">
-              Province
-            </label>
-            <div className="emailErrorGrid">
-              <input
-                type="text"
-                className="form-input form-input-userAcc"
-                id="userProv"
-                name="province"
-                placeholder="Ontario"
-                //   onChange={handleInputOnChange}
-              ></input>
-              {/* {error?.signUpError?.email && (
-              <ErrorAlert message={error.signUpError.email} />
-            )} */}
-            </div>
-            <label className="form-label form-label-userAcc" htmlFor="country">
-              Country
-            </label>
-            <div className="emailErrorGrid">
-              <input
-                type="text"
-                className="form-input form-input-userAcc"
-                id="userCountry"
-                name="country"
-                placeholder="Canada"
-                //   onChange={handleInputOnChange}
+                onChange={handleUserInfoUpdate}
               ></input>
               {/* {error?.signUpError?.email && (
               <ErrorAlert message={error.signUpError.email} />
@@ -194,6 +333,7 @@ const UserAccount = ({
               className="form-input form-input-img"
               id="image"
               name="profilepic"
+              accept="image/jpeg,image/png,image/jpg"
             ></input>
           </div>
           <div className="account-btns">
@@ -205,9 +345,9 @@ const UserAccount = ({
               <span>Submit</span>
             </button>
             <button
-              className="form-submit-btn"
-              id="accounts-btn-clear"
-              type="submit"
+              className="form-submit-clear-btn"
+              id="accounts-clear"
+              type="reset"
             >
               <span>Clear</span>
             </button>
@@ -226,8 +366,8 @@ const UserAccount = ({
               className="form-input form-input-userAcc"
               id="nameOnCard"
               name="cardName"
-              placeholder="Amazing Cookie"
               required={true}
+              placeholder="Amazing Cookie"
               //   onChange={handleInputOnChange}
             ></input>
             {/* {error?.signUpError?.email && (
@@ -242,9 +382,9 @@ const UserAccount = ({
                 className="form-input form-input-userAcc expMonth"
                 id="expiryMonth"
                 name="cardExpMonth"
+                required={true}
                 placeholder="MM"
                 maxLength={2}
-                required={true}
                 //   onChange={handleInputOnChange}
               ></input>
               {/* {error?.signUpError?.email && (
@@ -256,9 +396,9 @@ const UserAccount = ({
                 className="form-input form-input-userAcc expYear"
                 id="expiryYear"
                 name="cardExpYear"
+                required={true}
                 placeholder="YY"
                 maxLength={2}
-                required={true}
                 //   onChange={handleInputOnChange}
               ></input>
               {/* {error?.signUpError?.email && (
@@ -273,8 +413,8 @@ const UserAccount = ({
               className="form-input form-input-userAcc"
               id="expiry"
               name="cardNo"
-              placeholder="4111 1111 1111 1111"
               required={true}
+              placeholder="4111 1111 1111 1111"
               //   onChange={handleInputOnChange}
             ></input>
             {/* {error?.signUpError?.email && (
@@ -299,15 +439,15 @@ const UserAccount = ({
           <div className="account-btns">
             <button
               className="form-submit-btn"
-              id="accounts-btn-submit"
+              id="payment-btn-submit"
               type="submit"
             >
               <span>Submit</span>
             </button>
             <button
-              className="form-submit-btn"
-              id="accounts-btn-clear"
-              type="submit"
+              className="form-submit-clear-btn"
+              id="payments-btn-clear"
+              type="reset"
             >
               <span>Clear</span>
             </button>

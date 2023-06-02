@@ -118,7 +118,10 @@
   grid-template-rows: auto;
   grid-gap: 1rem;
 }
-
+.react-datepicker__current-month {
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+}
 /*Each row of weeks within the month*/
 .react-datepicker__week {
   display: grid;

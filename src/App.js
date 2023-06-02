@@ -25,7 +25,15 @@ import {
 // Env variables
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENTID;
 
-// Stylings
+const curr = new Date();
+const pastMS = new Date().setFullYear(curr.getFullYear() - 70);
+const pastDate = new Date(pastMS);
+
+const years = [];
+const current = new Date();
+for (let year = pastDate.getFullYear(); year <= current.getFullYear(); year++) {
+  years.push(year.toString());
+}
 
 function App() {
   // Constants
@@ -60,11 +68,23 @@ function App() {
   // To hide/show password reset form
   const [newPasswordForm, showNewPasswordForm] = useState(false);
 
+  // To store all countries
+  const [countries, setCountries] = useState([]);
+
+  // To store all provinces
+  const [states, setStates] = useState([]);
+
+  // To store current country
+  const [currCountry, setCurrCountry] = useState([]);
+
+  // To store all cities in a province
+  const [cities, setCities] = useState([]);
+
+  // To store date of calander
+  const [startDate, setDate] = useState(new Date(pastDate));
+
   //State to check if a user is logged in
   const [user, setUser] = useState({});
-
-  // Set date in user update form
-  const [date, setDate] = useState(new Date());
 
   //State to be triggered by errors in forms
   const [error, setError] = useState({
@@ -72,6 +92,7 @@ function App() {
     loginError: {},
     passwordResetError: {},
     newPasswordSubmit: {},
+    userUpdate: {},
     status: 400,
   });
 
@@ -92,6 +113,18 @@ function App() {
   // State to save reset password form
   const [passwordResetData, setPasswordResetForm] = useState({
     passwordResetEmail: "",
+  });
+
+  // State to save user update info
+  const [userUpdatedInfo, updateUserInfo] = useState({
+    email: "",
+    username: "",
+    dob: "",
+    proficiency: "Default",
+    country: "Default",
+    province: "Default",
+    city: "Default",
+    address: "",
   });
 
   // State to show sending forgot password email
@@ -128,6 +161,19 @@ function App() {
     passwordConfirmation: false,
   });
 
+  // State to validate user update info
+  const [validatedUserUpdateInfo, validateUserUpdateInfo] = useState({
+    email: false,
+    username: false,
+    dateOfBirth: false,
+    Proficiency: false,
+    Country: false,
+    Province: false,
+    City: false,
+    Address: false,
+    ProfilePic: false,
+  });
+
   // State to show a user has been blocked
   const [userBlocked, showUserBlocked] = useState(false);
 
@@ -160,6 +206,23 @@ function App() {
     );
   });
 
+  useEffect(() => {
+    fetch("http://api.geonames.org/countryInfoJSON?username=himeth")
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
+        const mappedCountries = responseData.geonames.map((country) => {
+          return {
+            countryName: country.countryName,
+            countryId: country.geonameId,
+            countryCode: country.countryCode,
+          };
+        });
+        setCountries([...mappedCountries]);
+      });
+  }, []);
+
   // Hook for signup form to enable/disable submit button
   useEnableSubmitBtn(validData, "submit-btn-signup");
 
@@ -171,6 +234,9 @@ function App() {
 
   // Hook for newPassword form to enable/disable submit button
   useEnableSubmitBtn(validatedNewPassword, "newPassword-form-btn");
+
+  // Hook for userUpate form to enable/disable submit button
+  useEnableSubmitBtn(validatedUserUpdateInfo, "accounts-btn-submit");
 
   // Event handlers //
   //Callback for google login
@@ -464,9 +530,151 @@ function App() {
   };
 
   // Handle input on user info update
-  const handleUserInfoUpdate = function (event) {
-    event.preventDefault();
+  const handleUserInfoUpdate = async function (event) {
+    // For dob input
+    if (event instanceof Date) {
+      // Update date status
+      setDate(new Date(event));
+      const date = event.getDate();
+      const month = event.getMonth;
+      const year = event.getFullYear();
+
+      const dobString = `${year}-${month}-${date}`;
+
+      validateUserUpdateInfo({
+        ...validatedUserUpdateInfo,
+        dateOfBirth: true,
+      });
+
+      updateUserInfo({ ...validatedUserUpdateInfo, dob: dobString });
+    } else {
+      let eventName = event.target.name;
+      let eventValue = event.target.value;
+
+      let errors = {};
+
+      if (eventName === "email") {
+        if (eventValue.length === 0) {
+          validateUserUpdateInfo({ ...validatedUserUpdateInfo, email: false });
+          errors.email = "Email address is required";
+        } else if (
+          !eventValue.match(
+            /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})$/g
+          )
+        ) {
+          validateUserUpdateInfo({ ...validatedUserUpdateInfo, email: false });
+          errors.email = "Email is invalid";
+        } else {
+          validateUserUpdateInfo({ ...validatedUserUpdateInfo, email: true });
+        }
+      }
+      // Validate the username
+      else if (eventName === "username") {
+        if (eventValue.length === 0) {
+          validateUserUpdateInfo({
+            ...validatedUserUpdateInfo,
+            username: false,
+          });
+          errors.username = "Username is required";
+        } else if (eventValue.length > 10) {
+          validateUserUpdateInfo({
+            ...validatedUserUpdateInfo,
+            username: false,
+          });
+          errors.username = "Username can't be longer than 10 characters";
+        } else {
+          validateUserUpdateInfo({
+            ...validatedUserUpdateInfo,
+            username: true,
+          });
+        }
+      }
+      // Check for proficieny selected
+      else if (eventName === "proficiency") {
+        validateUserUpdateInfo({
+          ...validatedUserUpdateInfo,
+          Proficiency: true,
+        });
+      }
+      // Check if country is selected
+      else if (eventName === "country") {
+        // Get the countryId for country name
+        const countryObj = countries.filter((country) => {
+          return country.countryName === eventValue;
+        });
+
+        // Set the choosen country Obj
+        setCurrCountry([...countryObj]);
+
+        // Update country state
+        validateUserUpdateInfo({ ...validatedUserUpdateInfo, Country: true });
+
+        // Call the api
+        const response = await fetch(
+          `http://api.geonames.org/childrenJSON?geonameId=${countryObj[0].countryId}&username=himeth`
+        );
+
+        const responseData = await response.json();
+        // Get the states
+        const allStates = responseData.geonames.map((state) => {
+          return {
+            provinceName: state.toponymName,
+            adminCode: state.adminCode1,
+          };
+        });
+        // Update the states
+        setStates([...allStates]);
+      }
+      // Check if province is selected
+      else if (eventName === "province") {
+        const adminCode = states.filter((prov) => {
+          return prov.provinceName === eventValue;
+        });
+
+        const response = await fetch(
+          `http://api.geonames.org/searchJSON?country=${currCountry[0].countryCode}&adminCode1=${adminCode[0].adminCode}&username=himeth`
+        );
+
+        const responseData = await response.json();
+
+        // Update country state
+        validateUserUpdateInfo({ ...validatedUserUpdateInfo, Province: true });
+
+        // Get all cities
+        const allCities = responseData.geonames.map((city) => {
+          return city.toponymName;
+        });
+
+        // Set all cities for the specific province
+        setCities([...allCities]);
+      }
+      // Check if city is selected
+      else if (eventName === "city") {
+        validateUserUpdateInfo({
+          ...validatedUserUpdateInfo,
+          City: true,
+        });
+      }
+
+      // Set error state
+      if (Object.keys(errors).length > 0) {
+        console.log("errors", errors);
+        setError((prevError) => ({
+          ...prevError,
+          userUpdate: errors,
+        }));
+      } else {
+        // Save form data
+        updateUserInfo({ ...userUpdatedInfo, [eventName]: eventValue });
+        // Empty the errors
+        setError((prevError) => ({
+          ...prevError,
+          userUpdate: {},
+        }));
+      }
+    }
   };
+
   // Function to get the token off the url
   function ResetPass() {
     const { token } = useParams();
@@ -584,10 +792,16 @@ function App() {
             <Home user={user} userBlocked={userBlocked} />
             {urluserName && (
               <UserAccount
-                handleInputOnLoginChange={handleInputOnLoginChange}
-                handleInputOnChange={handleInputOnChange}
                 handleUserInfoUpdate={handleUserInfoUpdate}
-                date={date}
+                userUpdatedInfo={userUpdatedInfo}
+                startDate={startDate}
+                years={years}
+                countries={countries}
+                currCountry={currCountry}
+                states={states}
+                cities={cities}
+                setCities={setCities}
+                urluserName={urluserName}
                 error={error}
               />
             )}
