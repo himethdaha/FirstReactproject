@@ -13,6 +13,8 @@ import {
   FacebookLoginButton,
   InstagramLoginButton,
 } from "react-social-login-buttons";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Styles
 import "../../css/Form.css";
@@ -72,16 +74,14 @@ const LoginForm = ({
       );
       console.log("logged", responseData);
       // Check if backend response is invalid username/password
-      if (responseData.status === 400 || responseData.status === 429) {
-        isSending(false);
-        const loginError = {
-          password: responseData.message,
+      if (responseData.status >= 400 && responseData.status <= 500) {
+        throw responseData;
+      } else if (responseData.status >= 500) {
+        const err = {
+          status: responseData.status,
+          message: "Something went wrong on our side 🥹",
         };
-
-        setError((prevError) => ({
-          ...prevError,
-          loginError: loginError,
-        }));
+        throw err;
       }
       // 403 for blocked users
       else if (responseData.status === 403) {
@@ -93,18 +93,6 @@ const LoginForm = ({
         // To show popup
         setUserBlockedPopup(true);
       }
-      // For server errors
-      else if (responseData.status >= 500) {
-        isSending(false);
-        const loginError = {
-          password: responseData.message,
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          loginError: loginError,
-        }));
-      }
       // Once validated
       else {
         setUser(responseData);
@@ -115,19 +103,16 @@ const LoginForm = ({
       }
     } catch (error) {
       isSending(false);
-
-      const message = error.message;
-
-      if (message === connFailedMessg) {
-        const loginError = {
-          password: "Connection to server failed",
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          loginError: loginError,
-        }));
-      }
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
 

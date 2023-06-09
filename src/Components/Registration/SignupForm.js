@@ -5,6 +5,8 @@ import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 // 3rd party libraries
 import React from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {
   LoginSocialFacebook,
@@ -66,18 +68,14 @@ const SignUpForm = ({
         data,
         "POST"
       );
-      console.log(responseData);
-      if (responseData.status >= 400) {
-        isSending(false);
-
-        const signupError = {
-          passwordConfirm: responseData.message,
+      if (responseData.status >= 400 && responseData.status <= 500) {
+        throw responseData;
+      } else if (responseData.status >= 500) {
+        const err = {
+          status: responseData.status,
+          message: "Something went wrong on our side 🥹",
         };
-
-        setError((prevError) => ({
-          ...prevError,
-          signUpError: signupError,
-        }));
+        throw err;
       }
       // once validated
       else {
@@ -87,16 +85,16 @@ const SignUpForm = ({
       }
     } catch (error) {
       isSending(false);
-      const message = error.message;
-      if (message === connFailedMessg) {
-        const signupError = {
-          passwordConfirm: "Connection to server failed",
-        };
-        setError((prevError) => ({
-          ...prevError,
-          signUpError: signupError,
-        }));
-      }
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
 

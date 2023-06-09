@@ -1,4 +1,6 @@
 import fetchData from "./returnFetchResponse";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const forgotPasswordSend = async (
   url,
@@ -11,42 +13,40 @@ const forgotPasswordSend = async (
 ) => {
   try {
     const responseData = await fetchData(url, data, "POST");
-    if (responseData.status >= 400) {
-      const newPassworError = {
-        passwordResetEmail: responseData.message,
+    if (responseData.status >= 400 && responseData.status <= 500) {
+      throw responseData;
+    } else if (responseData.status >= 500) {
+      const err = {
+        status: responseData.status,
+        message: "Something went wrong on our side 🥹",
       };
-
-      setError((prevError) => ({
-        ...prevError,
-        passwordResetError: newPassworError,
-      }));
+      throw err;
     } else {
       isSending(false);
       // Set status of success message to be shown becuase the user needs to know email is sent
-      setStatus(responseData.status);
-      const newPassworError = {
-        passwordResetEmail: responseData.message,
-      };
-      setError((prevError) => ({
-        ...prevError,
-        passwordResetError: newPassworError,
-      }));
+      toast.success(`${responseData.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   } catch (error) {
     isSending(false);
-
-    const message = error.message;
-
-    if (message === connFailedMessg) {
-      const networkError = {
-        passwordResetEmail: "Connection to server failed",
-      };
-
-      setError((prevError) => ({
-        ...prevError,
-        passwordResetError: networkError,
-      }));
-    }
+    toast.error(`${error.message}`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   }
 };
 

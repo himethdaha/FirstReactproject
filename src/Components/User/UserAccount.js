@@ -3,24 +3,13 @@ import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 import ErrorAlert from "../Alerts/ErrorAlert";
 
 // 3rd party libraries
-import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // styles
 import "../../css/UserAcc.css";
 import "../../css/Form.css";
-
-// For the starting date in the calendar
-// const curr = new Date();
-// const pastMS = new Date().setFullYear(curr.getFullYear() - 70);
-// const pastDate = new Date(pastMS);
-
-// To get all years to show in the calendar
-// const years = [];
-// const current = new Date();
-// for (let year = pastDate.getFullYear(); year <= current.getFullYear(); year++) {
-//   years.push(year.toString());
-// }
 
 // To get the months to show in the calendar
 const months = [
@@ -57,16 +46,46 @@ const UserAccount = ({
     event.preventDefault();
     const dataSent = { ...userUpdatedInfo, userName: urluserName };
     try {
-      const respons = await fetchData(
+      const responseData = await fetchData(
         "http://localhost:8000/My_Account/Update",
         dataSent,
         "PATCH"
       );
 
-      const responseData = await respons.json();
       console.log(responseData);
-      return;
-    } catch (error) {}
+
+      if (responseData.status >= 400 && responseData.status <= 500) {
+        throw responseData;
+      } else if (responseData.status >= 500) {
+        const err = {
+          status: responseData.status,
+          message: "Something went wrong on our side 🥹",
+        };
+        throw err;
+      } else {
+        toast.success(`${responseData.message}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    } catch (error) {
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
   };
   return (
     <div className="userAcc-container">
@@ -89,7 +108,6 @@ const UserAccount = ({
                 id="email"
                 name="email"
                 placeholder="pain@gmail.com"
-                required={true}
                 onChange={handleUserInfoUpdate}
               ></input>
 
@@ -108,7 +126,6 @@ const UserAccount = ({
                 id="username"
                 name="username"
                 placeholder="Kaiokenx10"
-                required={true}
                 onChange={handleUserInfoUpdate}
               ></input>
               {error?.userUpdate?.username && (
@@ -123,7 +140,6 @@ const UserAccount = ({
                 showIcon
                 dateFormat={"yyyy/MM/dd"}
                 selected={startDate}
-                // onChange={(date) => setDate(date)}
                 onChange={handleUserInfoUpdate}
                 isClearable
                 placeholderText="I'm a ghost 👻"
@@ -163,7 +179,7 @@ const UserAccount = ({
                     </select>
 
                     <select
-                      value={months[new Date().getMonth()]}
+                      value={months[date.getMonth()]}
                       onChange={({ target: { value } }) =>
                         changeMonth(months.indexOf(value))
                       }

@@ -2,7 +2,9 @@
 import { useNavigate } from "react-router-dom";
 import ErrorAlert from "../Alerts/ErrorAlert";
 import fetchData from "../../utils/helperFunctions/returnFetchResponse";
-import { React, useState } from "react";
+import { React } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Styles
 import "../../css/Form.css";
@@ -20,9 +22,6 @@ const ResetPasswordForm = ({
   connFailedMessg,
   passToken,
 }) => {
-  // Hooks
-  const [stateStatus, setStatus] = useState("");
-
   // Variables
   const navigate = useNavigate();
   // New password setting form handler
@@ -31,7 +30,6 @@ const ResetPasswordForm = ({
     setError({});
     isSending(true);
     const dataToSend = { ...newPasswordData, token: passToken };
-    console.log("Data sent", dataToSend);
 
     try {
       const responseData = await fetchData(
@@ -40,43 +38,40 @@ const ResetPasswordForm = ({
         "PATCH"
       );
       console.log("responseData", responseData);
-      if (responseData.status >= 400) {
-        console.log("error");
-        isSending(false);
-        const newPasswordError = {
-          passwordConfirm: responseData.message,
+      if (responseData.status >= 400 && responseData.status <= 500) {
+        throw responseData;
+      } else if (responseData.status >= 500) {
+        const err = {
+          status: responseData.status,
+          message: "Something went wrong on our side 🥹",
         };
-
-        setError((prevError) => ({
-          ...prevError,
-          newPasswordSubmit: newPasswordError,
-        }));
+        throw err;
       } else {
         isSending(false);
-        setStatus(responseData.status);
-        const newPasswordError = {
-          passwordConfirm: responseData.message,
-        };
-        setError((prevError) => ({
-          ...prevError,
-          newPasswordSubmit: newPasswordError,
-        }));
+        toast.success(`${responseData.message}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       }
     } catch (error) {
       isSending(false);
 
-      const message = error.message;
-
-      if (message === connFailedMessg) {
-        const newPasswordError = {
-          passwordConfirm: "Connection to server failed",
-        };
-
-        setError((prevError) => ({
-          ...prevError,
-          newPasswordSubmit: newPasswordError,
-        }));
-      }
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
 
@@ -116,10 +111,7 @@ const ResetPasswordForm = ({
           onChange={handleInputOnPasswordReset}
         ></input>
         {error?.newPasswordSubmit?.password && (
-          <ErrorAlert
-            message={error.newPasswordSubmit.password}
-            status={stateStatus}
-          />
+          <ErrorAlert message={error.newPasswordSubmit.password} />
         )}
         <label
           className="form-label form-label-signup"
@@ -137,10 +129,7 @@ const ResetPasswordForm = ({
         ></input>
         {sent && <ErrorAlert message={"Sending Info..."} status={200} />}
         {error?.newPasswordSubmit?.passwordConfirm && (
-          <ErrorAlert
-            message={error.newPasswordSubmit.passwordConfirm}
-            status={stateStatus}
-          />
+          <ErrorAlert message={error.newPasswordSubmit.passwordConfirm} />
         )}
         <button
           className="form-submit-btn"

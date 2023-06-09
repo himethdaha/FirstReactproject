@@ -536,22 +536,23 @@ function App() {
       // Update date status
       setDate(new Date(event));
       const date = event.getDate();
-      const month = event.getMonth;
+      const month = event.getMonth();
       const year = event.getFullYear();
 
-      const dobString = `${year}-${month}-${date}`;
+      const dobString = `${year}-${month + 1}-${date}`;
+      console.log("dob string", dobString);
 
       validateUserUpdateInfo({
         ...validatedUserUpdateInfo,
         dateOfBirth: true,
       });
 
-      updateUserInfo({ ...validatedUserUpdateInfo, dob: dobString });
+      updateUserInfo({ ...userUpdatedInfo, dob: dobString });
     } else {
+      let errors = {};
+
       let eventName = event.target.name;
       let eventValue = event.target.value;
-
-      let errors = {};
 
       if (eventName === "email") {
         if (eventValue.length === 0) {
@@ -655,7 +656,6 @@ function App() {
           City: true,
         });
       }
-
       // Set error state
       if (Object.keys(errors).length > 0) {
         console.log("errors", errors);

@@ -245,3 +245,8 @@
   font-size: 1.2rem;
   align-self: center;
 }
+
+.Toastify__toast {
+  font-size: 1.2rem; /* Adjust the font size as per your preference */
+  margin-top: 7rem;
+}
