@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 // Styles
 import "../../css/Navbar.css";
 
-const LogIn = ({ setShowLoginForm, loggedIn }) => {
+const LogIn = ({ setShowLoginForm, loggedIn, setloggedIn }) => {
   // When isUserSet is changed run the below hook to disable/enable signin btn
   useEffect(() => {
     const signinBtn = document.querySelector(".navbar-ul-signin-btn");
@@ -33,6 +33,9 @@ const LogIn = ({ setShowLoginForm, loggedIn }) => {
     else {
       try {
         await fetchData("http://localhost:8000/logout", null, "POST");
+        // When user object in the 'state' is empty the LogOut button text will change to SignIn because isUserSet === 0
+        setloggedIn(false);
+        localStorage.removeItem("loggedIn");
       } catch (error) {
         toast.error(`${error.message}`, {
           position: "top-right",
@@ -45,8 +48,6 @@ const LogIn = ({ setShowLoginForm, loggedIn }) => {
           theme: "dark",
         });
       }
-      // When user object in the 'state' is empty the LogOut button text will change to SignIn because isUserSet === 0
-      localStorage.removeItem("loggedIn");
     }
   };
   return (

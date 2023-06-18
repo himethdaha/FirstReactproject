@@ -69,13 +69,13 @@ const Navbar = ({ setShowForm, setShowLoginForm, loggedIn, setloggedIn }) => {
             setloggedIn={setloggedIn}
           />
         )}
-        {!loggedIn && (
+        {
           <SignUp
             setShowForm={setShowForm}
             loggedIn={loggedIn}
             setloggedIn={setloggedIn}
           />
-        )}
+        }
       </ul>
     </nav>
   );
