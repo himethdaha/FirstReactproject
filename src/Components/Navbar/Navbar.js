@@ -4,28 +4,15 @@ import SignUp from "./signupNavbar";
 import LogIn from "./LogInNavbar";
 
 // 3rd party libraries
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 // styles
 import "../../css/Navbar.css";
 
-const Navbar = ({
-  setShowForm,
-  setShowLoginForm,
-  user,
-  setUser,
-  setHideSignUpButton,
-  setHideLoginButton,
-  signUpHidden,
-  loginHidden,
-  profile,
-  showProfile,
-}) => {
+const Navbar = ({ setShowForm, setShowLoginForm, loggedIn, setloggedIn }) => {
+  console.log("🚀 ~ file: Navbar.js:24 ~ loggedIn:", loggedIn);
   // Get the username if user exists
-  let userName = "";
-  if (Object.keys(user).length > 0) {
-    userName = user.userName || userName.name;
-  }
+  let userName = localStorage.getItem("userName");
   //Get the setShowForm prop to be sent to the signUp function
   return (
     <nav className="navbar">
@@ -67,27 +54,26 @@ const Navbar = ({
         </li>
       </ul>
       <ul className="navbar-ul-user navbar-ul" id="navbar-ul-user-registry">
-        {profile && (
-          <NavLink to={`/My_Account/${userName}`} className="navLink">
+        {loggedIn && (
+          <NavLink
+            to={`/My_Account/${userName}`}
+            className="navLink userAccountInfo"
+          >
             My Account
           </NavLink>
         )}
-        {!loginHidden && (
+        {!loggedIn && (
           <LogIn
             setShowLoginForm={setShowLoginForm}
-            user={user}
-            setUser={setUser}
-            setHideSignUpButton={setHideSignUpButton}
-            showProfile={showProfile}
+            loggedIn={loggedIn}
+            setloggedIn={setloggedIn}
           />
         )}
-        {!signUpHidden && (
+        {!loggedIn && (
           <SignUp
             setShowForm={setShowForm}
-            user={user}
-            setUser={setUser}
-            setHideLoginButton={setHideLoginButton}
-            showProfile={showProfile}
+            loggedIn={loggedIn}
+            setloggedIn={setloggedIn}
           />
         )}
       </ul>
