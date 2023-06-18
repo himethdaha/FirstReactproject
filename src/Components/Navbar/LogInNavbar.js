@@ -1,19 +1,19 @@
+import fetchData from "../../utils/helperFunctions/returnFetchResponse";
+
 // 3rd party libraries
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // Styles
 import "../../css/Navbar.css";
 
-const LogIn = ({ setShowLoginForm, user, setUser, showProfile }) => {
-  // Variables
-  const isUserSet = Object.keys(user).length;
-
+const LogIn = ({ setShowLoginForm, loggedIn }) => {
   // When isUserSet is changed run the below hook to disable/enable signin btn
   useEffect(() => {
     const signinBtn = document.querySelector(".navbar-ul-signin-btn");
     if (signinBtn) {
-      if (isUserSet !== 0 && user.status === 200) {
+      if (loggedIn) {
         signinBtn.disabled = true;
         signinBtn.classList.add("hidden");
       } else {
@@ -21,20 +21,32 @@ const LogIn = ({ setShowLoginForm, user, setUser, showProfile }) => {
         signinBtn.disabled = false;
       }
     }
-  }, [isUserSet, user]);
+  }, [loggedIn]);
   //Event handler on signup button which changes the "state"
-  const handleOnClick = (e) => {
+  const handleOnClick = async (e) => {
     e.preventDefault();
     //Set the state of the form visibility to true and this will propogate to App.js
-    if (isUserSet === 0) {
+    if (!loggedIn) {
       setShowLoginForm(true);
     }
     // This is when a user is signed in and clicks on the LogOut button
     else {
-      setShowLoginForm(false);
-      // When user object is the 'state' is empty the LogOut button text will change to SignIn because isUserSet === 0
-      setUser({});
-      showProfile(false);
+      try {
+        await fetchData("http://localhost:8000/logout", null, "POST");
+      } catch (error) {
+        toast.error(`${error.message}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+      // When user object in the 'state' is empty the LogOut button text will change to SignIn because isUserSet === 0
+      localStorage.removeItem("loggedIn");
     }
   };
   return (
@@ -44,7 +56,7 @@ const LogIn = ({ setShowLoginForm, user, setUser, showProfile }) => {
         className="navbar-ul-btn navbar-ul-signin-btn"
         onClick={(e) => handleOnClick(e)}
       >
-        {isUserSet === 0 || user.status !== 200 ? "LogIn" : "LogOut"}
+        {!loggedIn ? "LogIn" : "LogOut"}
       </Link>
     </li>
   );
