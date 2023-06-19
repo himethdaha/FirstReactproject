@@ -4,6 +4,7 @@ import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // 3rd party libraries
 import React from "react";
+
 import { Link } from "react-router-dom";
 import {
   LoginSocialFacebook,
@@ -53,12 +54,10 @@ const LoginForm = ({
   sent,
   setError,
   isSending,
-  setUser,
   showUserBlocked,
   setUserBlockedPopup,
-  connFailedMessg,
   loginData,
-  showProfile,
+  setloggedIn,
 }) => {
   // To handle Login form submission
   const handleLoginFormSubmit = async (event) => {
@@ -72,7 +71,6 @@ const LoginForm = ({
         loginData,
         "POST"
       );
-      console.log("logged", responseData);
       // Check if backend response is invalid username/password
       if (responseData.status >= 400 && responseData.status <= 500) {
         throw responseData;
@@ -88,18 +86,35 @@ const LoginForm = ({
         isSending(false);
         // Close the form
         setShowLoginForm(false);
-        setUser(responseData);
+        localStorage.setItem("userName", responseData.userName);
         showUserBlocked(true);
         // To show popup
         setUserBlockedPopup(true);
       }
       // Once validated
       else {
-        setUser(responseData);
+        // Set logged in state
+        setloggedIn(true);
+        localStorage.setItem("loggedIn", true);
+
+        // Store username
+        localStorage.setItem("userName", responseData.userName);
+
+        // Generate default user image
+        // First create a typed array of Uint8Array to access underlying ArrayBuffer
+        const arrayBuffer = new Uint8Array(responseData.image.data);
+        // Create the blob
+        const imageBlob = new Blob([arrayBuffer], { type: "image/jpeg" });
+        // Create the image url
+        const imageUrl = URL.createObjectURL(imageBlob);
+        localStorage.setItem("defaultImageUrl", imageUrl);
+
+        // Close form
         setShowLoginForm(false);
-        showUserBlocked(false);
         isSending(false);
-        showProfile(true);
+
+        // If max login attempts
+        showUserBlocked(false);
       }
     } catch (error) {
       isSending(false);

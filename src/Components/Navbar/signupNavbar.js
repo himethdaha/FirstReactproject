@@ -37,7 +37,7 @@ const SignUp = ({ setShowForm, loggedIn, setloggedIn }) => {
         await fetchData("http://localhost:8000/logout", null, "POST");
         // When user object in the 'state' is empty the LogOut button text will change to SignIn because isUserSet === 0
         setloggedIn(false);
-        localStorage.removeItem("loggedIn");
+        localStorage.clear();
       } catch (error) {
         toast.error(`${error.message}`, {
           position: "top-right",
