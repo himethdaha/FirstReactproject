@@ -17,9 +17,7 @@ const ResetPasswordForm = ({
   setError,
   isSending,
   showNewPasswordForm,
-  passwordResetForm,
   newPasswordData,
-  connFailedMessg,
   passToken,
 }) => {
   // Variables

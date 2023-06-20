@@ -1,15 +1,14 @@
 import "./css/Main.css";
-const Home = ({ user, userBlocked }) => {
+const Home = ({ userBlocked, loggedIn }) => {
   let initialText = "";
-  if (userBlocked || Object.keys(user).length === 0) {
+  if (userBlocked || !loggedIn) {
     initialText = "HOME";
   } else {
-    if (Object.keys(user).length !== 0) {
-      if (user.name) {
-        initialText = `WELCOME ${user.name.toUpperCase()}`;
-      } else if (user.userName) {
-        initialText = `WELCOME ${user.userName.toUpperCase()}`;
-      }
+    if (loggedIn) {
+      console.log("home loggedin");
+      // Get the name from localstorage
+      const userName = localStorage.getItem("userName");
+      initialText = `WELCOME ${userName.toUpperCase()}`;
     }
   }
 

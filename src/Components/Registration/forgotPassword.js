@@ -33,11 +33,7 @@ const ForgotPasswordForm = ({
     await forgotPasswordSend(
       "http://localhost:8000/forgot_password",
       passwordResetData,
-      "POST",
-      setError,
-      isSending,
-      setStatus,
-      connFailedMessg
+      isSending
     );
   };
 

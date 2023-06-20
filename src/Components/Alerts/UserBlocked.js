@@ -2,7 +2,7 @@ import React from "react";
 import "../../css/userBlocked.css";
 import close from "../../logos/register/closePopup.svg";
 
-const UserBlocked = ({ user, setUserBlockedPopup }) => {
+const UserBlocked = ({ setUserBlockedPopup }) => {
   const style = {
     width: "3rem",
     height: "3rem",
@@ -41,8 +41,8 @@ const UserBlocked = ({ user, setUserBlockedPopup }) => {
         </div>
         <div className="popup-text">
           <p>
-            User {user.userName} is blocked due to consecutive invalid
-            username/password attempts. Please contact{" "}
+            User {localStorage.getItem("userName")} is blocked due to
+            consecutive invalid username/password attempts. Please contact{" "}
             <a href="tel:1-888-888888">1-888-888888</a> or email{" "}
             <a href="mailto:test@gmail.com">test@gmail.com</a> to re-activate
             the account.

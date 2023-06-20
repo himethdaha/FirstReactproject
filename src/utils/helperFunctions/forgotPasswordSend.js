@@ -1,16 +1,8 @@
-import fetchData from "./returnFetchResponse";
+import fetchData from "./returnFetchUpdateResponse";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const forgotPasswordSend = async (
-  url,
-  data,
-  method,
-  setError,
-  isSending,
-  setStatus,
-  connFailedMessg
-) => {
+const forgotPasswordSend = async (url, data, isSending) => {
   try {
     const responseData = await fetchData(url, data, "POST");
     if (responseData.status >= 400 && responseData.status <= 500) {
