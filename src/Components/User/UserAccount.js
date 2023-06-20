@@ -1,5 +1,5 @@
 // Imports
-import fetchData from "../../utils/helperFunctions/returnFetchResponse";
+import fetchData from "../../utils/helperFunctions/returnFetchUpdateResponse";
 import ErrorAlert from "../Alerts/ErrorAlert";
 
 // 3rd party libraries
@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 // styles
 import "../../css/UserAcc.css";
 import "../../css/Form.css";
+import { useEffect, useState } from "react";
 
 // To get the months to show in the calendar
 const months = [
@@ -33,26 +34,30 @@ const UserAccount = ({
   startDate,
   years,
   countries,
-  currCountry,
   states,
   cities,
-  setCities,
   urluserName,
   error,
 }) => {
-  // States
-  // const [startDate, setDate] = useState(new Date(pastDate));
+  const [profilePic, setProfilePic] = useState();
+
+  // Re-render component with new profile picture or updated username
+  useEffect(() => {}, [profilePic]);
+
   const handleUserInfoUpdateSubmit = async (event) => {
     event.preventDefault();
-    const dataSent = { ...userUpdatedInfo, userName: urluserName };
+
+    const dataSent = { ...userUpdatedInfo, user: urluserName };
     try {
       const responseData = await fetchData(
         "http://localhost:8000/My_Account/Update",
         dataSent,
         "PATCH"
       );
-
-      console.log(responseData);
+      console.log(
+        "🚀 ~ file: UserAccount.js:51 ~ handleUserInfoUpdateSubmit ~ responseData:",
+        responseData
+      );
 
       if (responseData.status >= 400 && responseData.status <= 500) {
         throw responseData;
@@ -63,6 +68,11 @@ const UserAccount = ({
         };
         throw err;
       } else {
+        // Generate user image'
+        console.log("responsedata", responseData);
+        localStorage.setItem("encodedImage", responseData.image);
+        setProfilePic(responseData.image);
+
         toast.success(`${responseData.message}`, {
           position: "top-right",
           autoClose: 3000,
@@ -87,6 +97,7 @@ const UserAccount = ({
       });
     }
   };
+
   return (
     <div className="userAcc-container">
       <div className="userInfo-container">
@@ -98,15 +109,24 @@ const UserAccount = ({
           encType="multipart/form-data"
         >
           <div className="userAcc-grid">
-            <label className="form-label form-label-userAcc" htmlFor="email">
+            <img
+              src={localStorage.getItem("encodedImage")}
+              className="userAcc-profilepic"
+              alt="ProfilePic"
+            />
+            <div className="userAcc-Profile"></div>
+            <label
+              className="form-label form-label-userAcc"
+              htmlFor="emailAddress"
+            >
               Email
             </label>
             <div className="emailErrorGrid">
               <input
                 type="email"
                 className="form-input form-input-userAcc"
-                id="email"
-                name="email"
+                id="updateEmail"
+                name="emailAddress"
                 placeholder="pain@gmail.com"
                 onChange={handleUserInfoUpdate}
               ></input>
@@ -116,15 +136,15 @@ const UserAccount = ({
               )}
             </div>
 
-            <label className="form-label form-label-userAcc" htmlFor="username">
+            <label className="form-label form-label-userAcc" htmlFor="userName">
               Username
             </label>
             <div className="emailErrorGrid">
               <input
                 type="text"
                 className="form-input form-input-userAcc"
-                id="username"
-                name="username"
+                id="updateUserName"
+                name="userName"
                 placeholder="Kaiokenx10"
                 onChange={handleUserInfoUpdate}
               ></input>
@@ -336,12 +356,12 @@ const UserAccount = ({
                 placeholder="3000 Saiyan Street"
                 onChange={handleUserInfoUpdate}
               ></input>
-              {/* {error?.signUpError?.email && (
-              <ErrorAlert message={error.signUpError.email} />
-            )} */}
             </div>
 
-            <label className="form-label form-label-userAcc" htmlFor="image">
+            <label
+              className="form-label form-label-userAcc"
+              htmlFor="profilepic"
+            >
               Profile Pic
             </label>
             <input
@@ -350,6 +370,7 @@ const UserAccount = ({
               id="image"
               name="profilepic"
               accept="image/jpeg,image/png,image/jpg"
+              onChange={handleUserInfoUpdate}
             ></input>
           </div>
           <div className="account-btns">

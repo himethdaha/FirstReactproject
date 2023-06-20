@@ -71,6 +71,10 @@ const LoginForm = ({
         loginData,
         "POST"
       );
+      console.log(
+        "🚀 ~ file: LoginForm.js:74 ~ handleLoginFormSubmit ~ login responseData:",
+        responseData
+      );
       // Check if backend response is invalid username/password
       if (responseData.status >= 400 && responseData.status <= 500) {
         throw responseData;
@@ -101,13 +105,9 @@ const LoginForm = ({
         localStorage.setItem("userName", responseData.userName);
 
         // Generate default user image
-        // First create a typed array of Uint8Array to access underlying ArrayBuffer
-        const arrayBuffer = new Uint8Array(responseData.image.data);
-        // Create the blob
-        const imageBlob = new Blob([arrayBuffer], { type: "image/jpeg" });
-        // Create the image url
-        const imageUrl = URL.createObjectURL(imageBlob);
-        localStorage.setItem("defaultImageUrl", imageUrl);
+        // Store the base46 encoded string
+        const encodedImage = responseData.image;
+        localStorage.setItem("encodedImage", encodedImage);
 
         // Close form
         setShowLoginForm(false);
