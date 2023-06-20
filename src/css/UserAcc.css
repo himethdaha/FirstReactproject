@@ -165,6 +165,13 @@
   width: 100%;
 }
 
+/*For the user image*/
+.userAcc-profilepic {
+  width: 11rem;
+  height: 10rem;
+  margin-left: 1rem;
+}
+
 /*User card info*/
 .cardExp-inp {
   display: flex;

@@ -27,6 +27,9 @@
   margin-right: 1.5rem;
   transition: transform 0.3s ease-in-out;
 }
+.userAccountInfo {
+  margin-right: 2rem;
+}
 .navLink {
   color: #ffffff;
 }
