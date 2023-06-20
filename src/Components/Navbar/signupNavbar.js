@@ -2,6 +2,7 @@ import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 
 // 3rd party libraries
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -23,6 +24,8 @@ const SignUp = ({ setShowForm, loggedIn, setloggedIn }) => {
       }
     }
   }, [loggedIn]);
+
+  const navigate = useNavigate();
 
   //Event handler on signup button which changes the "state"
   const handleOnClick = async (e) => {
@@ -49,6 +52,10 @@ const SignUp = ({ setShowForm, loggedIn, setloggedIn }) => {
           progress: undefined,
           theme: "dark",
         });
+      }
+      if (window.location.pathname !== "/") {
+        console.log("NOOO");
+        navigate("/");
       }
     }
   };

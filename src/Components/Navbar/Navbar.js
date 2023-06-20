@@ -10,7 +10,6 @@ import { NavLink } from "react-router-dom";
 import "../../css/Navbar.css";
 
 const Navbar = ({ setShowForm, setShowLoginForm, loggedIn, setloggedIn }) => {
-  console.log("🚀 ~ file: Navbar.js:24 ~ loggedIn:", loggedIn);
   // Get the username if user exists
   let userName = localStorage.getItem("userName");
   //Get the setShowForm prop to be sent to the signUp function
