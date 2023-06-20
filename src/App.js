@@ -22,6 +22,8 @@ import {
   useParams,
 } from "react-router-dom";
 
+const formData = new FormData();
+
 // Env variables
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENTID;
 
@@ -37,7 +39,9 @@ for (let year = pastDate.getFullYear(); year <= current.getFullYear(); year++) {
 
 function App() {
   // Constants
+  //TODO: Maybe add a global variable field
   const connFailedMessg = "Failed to fetch";
+
   // HOOKS //
   //"useState"
 
@@ -47,17 +51,11 @@ function App() {
   // hook to open/close login form
   const [showLoginForm, setShowLoginForm] = useState(false);
 
-  // To hide signup button when user logged in
-  const [signUpHidden, setHideSignUpButton] = useState(false);
-
-  // To hide login button when user signed in
-  const [loginHidden, setHideLoginButton] = useState(false);
-
   // To get the username from the url
   const [urluserName, setUrlUserName] = useState("");
 
   // To show the user profile link
-  const [profile, showProfile] = useState(false);
+  const [loggedIn, setloggedIn] = useState(false);
 
   // To hide user blocked popup
   const [showUserBlockedPopup, setUserBlockedPopup] = useState(false);
@@ -82,9 +80,6 @@ function App() {
 
   // To store date of calander
   const [startDate, setDate] = useState(new Date(pastDate));
-
-  //State to check if a user is logged in
-  const [user, setUser] = useState({});
 
   //State to be triggered by errors in forms
   const [error, setError] = useState({
@@ -116,16 +111,7 @@ function App() {
   });
 
   // State to save user update info
-  const [userUpdatedInfo, updateUserInfo] = useState({
-    email: "",
-    username: "",
-    dob: "",
-    proficiency: "Default",
-    country: "Default",
-    province: "Default",
-    city: "Default",
-    address: "",
-  });
+  const [userUpdatedInfo, updateUserInfo] = useState({});
 
   // State to show sending forgot password email
   const [sent, isSending] = useState(false);
@@ -135,6 +121,8 @@ function App() {
     newPassword: "",
     newPasswordConfirmation: "",
   });
+
+  const [imgUrl, setImgUrl] = useState("");
 
   // State to see if every field has been validated in signup form
   const [validData, validateData] = useState({
@@ -163,8 +151,8 @@ function App() {
 
   // State to validate user update info
   const [validatedUserUpdateInfo, validateUserUpdateInfo] = useState({
-    email: false,
-    username: false,
+    emailAddress: false,
+    userName: false,
     dateOfBirth: false,
     Proficiency: false,
     Country: false,
@@ -192,7 +180,7 @@ function App() {
   // hook to initialize one-tamp prompt and render google button
   useEffect(() => {
     // One-tap prompt
-    if (Object.keys(user).length === 0) {
+    if (!loggedIn) {
       window.google.accounts.id.prompt();
     }
 
@@ -223,6 +211,15 @@ function App() {
       });
   }, []);
 
+  useEffect(() => {
+    const logged = localStorage.getItem("loggedIn");
+    if (logged) {
+      setloggedIn(true);
+    } else {
+      setloggedIn(false);
+    }
+  }, []);
+
   // Hook for signup form to enable/disable submit button
   useEnableSubmitBtn(validData, "submit-btn-signup");
 
@@ -243,16 +240,14 @@ function App() {
   const handleGoogleCallbackResponse = (response) => {
     console.log("google resp", response);
     const userObject = jwt_decode(response.credential);
-    //Set user state
-    setUser(userObject);
+    //TODO: must save username to local storage
   };
 
   //Callback for facebook login
   const handleFacebookCallbackResponse = (response) => {
     console.log("response " + response);
     //Decode the JWT from the response
-    //Set user state
-    setUser(response);
+    //TODO: must save username to local storage
     // Close form
     setShowForm(false);
   };
@@ -540,53 +535,61 @@ function App() {
       const year = event.getFullYear();
 
       const dobString = `${year}-${month + 1}-${date}`;
-      console.log("dob string", dobString);
 
       validateUserUpdateInfo({
         ...validatedUserUpdateInfo,
         dateOfBirth: true,
       });
 
-      updateUserInfo({ ...userUpdatedInfo, dob: dobString });
+      updateUserInfo({ ...userUpdatedInfo, dateOfBirth: dobString });
     } else {
       let errors = {};
 
       let eventName = event.target.name;
       let eventValue = event.target.value;
 
-      if (eventName === "email") {
+      if (eventName === "emailAddress") {
         if (eventValue.length === 0) {
-          validateUserUpdateInfo({ ...validatedUserUpdateInfo, email: false });
+          validateUserUpdateInfo({
+            ...validatedUserUpdateInfo,
+            emailAddress: false,
+          });
           errors.email = "Email address is required";
         } else if (
           !eventValue.match(
             /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})$/g
           )
         ) {
-          validateUserUpdateInfo({ ...validatedUserUpdateInfo, email: false });
+          validateUserUpdateInfo({
+            ...validatedUserUpdateInfo,
+            emailAddress: false,
+          });
           errors.email = "Email is invalid";
         } else {
-          validateUserUpdateInfo({ ...validatedUserUpdateInfo, email: true });
+          validateUserUpdateInfo({
+            ...validatedUserUpdateInfo,
+            emailAddress: true,
+          });
         }
       }
       // Validate the username
-      else if (eventName === "username") {
+      else if (eventName === "userName") {
         if (eventValue.length === 0) {
           validateUserUpdateInfo({
             ...validatedUserUpdateInfo,
-            username: false,
+            userName: false,
           });
           errors.username = "Username is required";
         } else if (eventValue.length > 10) {
           validateUserUpdateInfo({
             ...validatedUserUpdateInfo,
-            username: false,
+            userName: false,
           });
           errors.username = "Username can't be longer than 10 characters";
         } else {
           validateUserUpdateInfo({
             ...validatedUserUpdateInfo,
-            username: true,
+            userName: true,
           });
         }
       }
@@ -656,6 +659,43 @@ function App() {
           City: true,
         });
       }
+      // Check if city is selected
+      else if (eventName === "address") {
+        validateUserUpdateInfo({
+          ...validatedUserUpdateInfo,
+          Address: true,
+        });
+      } else if (eventName === "profilepic") {
+        //Get the file
+        const file = event.target.files[0];
+
+        // Get the image name
+        const filePath = eventValue;
+        const imageName = filePath.substring(filePath.lastIndexOf("\\") + 1);
+
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+
+        reader.onload = function (e) {
+          // Get file data
+          const fileData = e.target.result;
+          // Append filedata
+          const fileBlob = new Blob([fileData], {
+            type: file.type,
+          });
+          formData.append("profilepic", fileBlob, imageName);
+          return updateUserInfo({
+            ...userUpdatedInfo,
+            profilepic: file,
+          });
+        };
+
+        validateUserUpdateInfo({
+          ...validatedUserUpdateInfo,
+          ProfilePic: true,
+        });
+      }
+
       // Set error state
       if (Object.keys(errors).length > 0) {
         console.log("errors", errors);
@@ -713,10 +753,10 @@ function App() {
             sent={sent}
             setError={setError}
             isSending={isSending}
-            setUser={setUser}
             setShowForm={setShowForm}
+            setImgUrl={setImgUrl}
             data={data}
-            connFailedMessg={connFailedMessg}
+            setloggedIn={setloggedIn}
           />
         )}
 
@@ -732,16 +772,14 @@ function App() {
             sent={sent}
             setError={setError}
             isSending={isSending}
-            setUser={setUser}
             showUserBlocked={showUserBlocked}
             setUserBlockedPopup={setUserBlockedPopup}
-            connFailedMessg={connFailedMessg}
             loginData={loginData}
-            showProfile={showProfile}
+            setloggedIn={setloggedIn}
           />
         )}
         {showUserBlockedPopup && (
-          <UserBlocked user={user} setUserBlockedPopup={setUserBlockedPopup} />
+          <UserBlocked setUserBlockedPopup={setUserBlockedPopup} />
         )}
         {passwordResetForm && (
           <ForgotPasswordForm
@@ -750,10 +788,8 @@ function App() {
             sent={sent}
             setError={setError}
             isSending={isSending}
-            setUser={setUser}
             passwordResetData={passwordResetData}
             showPasswordResetForm={showPasswordResetForm}
-            passwordResetForm={passwordResetForm}
             connFailedMessg={connFailedMessg}
           />
         )}
@@ -767,7 +803,6 @@ function App() {
             showNewPasswordForm={showNewPasswordForm}
             setShowLoginForm={setShowLoginForm}
             newPasswordData={newPasswordData}
-            connFailedMessg={connFailedMessg}
             passToken={passToken}
           />
         )}
@@ -778,30 +813,23 @@ function App() {
               setShowForm={setShowForm}
               setShowLoginForm={setShowLoginForm}
               userBlocked={userBlocked}
-              user={user}
-              setUser={setUser}
-              setHideSignUpButton={setHideSignUpButton}
-              setHideLoginButton={setHideLoginButton}
-              signUpHidden={signUpHidden}
-              loginHidden={loginHidden}
-              profile={profile}
-              showProfile={showProfile}
+              loggedIn={loggedIn}
+              setloggedIn={setloggedIn}
             />
           </header>
           <main>
-            <Home user={user} userBlocked={userBlocked} />
-            {urluserName && (
+            <Home userBlocked={userBlocked} loggedIn={loggedIn} />
+            {urluserName && loggedIn && (
               <UserAccount
                 handleUserInfoUpdate={handleUserInfoUpdate}
                 userUpdatedInfo={userUpdatedInfo}
                 startDate={startDate}
                 years={years}
                 countries={countries}
-                currCountry={currCountry}
                 states={states}
                 cities={cities}
-                setCities={setCities}
                 urluserName={urluserName}
+                imgUrl={imgUrl}
                 error={error}
               />
             )}
