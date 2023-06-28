@@ -1,9 +1,12 @@
 // Imports
 import fetchData from "../../utils/helperFunctions/returnFetchUpdateResponse";
 import ErrorAlert from "../Alerts/ErrorAlert";
+import { handleUserInfoUpdate } from "../../utils/eventHandlers/eventHandler";
+import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
 
 // 3rd party libraries
 import DatePicker from "react-datepicker";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -28,21 +31,87 @@ const months = [
   "December",
 ];
 
-const UserAccount = ({
-  handleUserInfoUpdate,
-  userUpdatedInfo,
-  startDate,
-  years,
-  countries,
-  states,
-  cities,
-  urluserName,
-  error,
-}) => {
-  const [profilePic, setProfilePic] = useState();
+const UserAccount = ({ years, pastDate, urluserName }) => {
+  console.log(
+    "🚀 ~ file: UserAccount.js:35 ~ UserAccount ~ pastDate:",
+    pastDate
+  );
+  // Variables
+  const formData = new FormData();
 
+  // States
+  const [profilePic, setProfilePic] = useState();
+  const [userName, setuserName] = useState();
+  const navigate = useNavigate();
+
+  // State to validate user update info
+  const [validatedUserUpdateInfo, validateUserUpdateInfo] = useState({
+    emailAddress: false,
+    userName: false,
+    dateOfBirth: false,
+    Proficiency: false,
+    Country: false,
+    Province: false,
+    City: false,
+    Address: false,
+    ProfilePic: false,
+  });
+
+  // To store date of calander
+  const [startDate, setDate] = useState(new Date(pastDate));
+
+  // To store all countries
+  const [countries, setCountries] = useState([]);
+
+  // To store all provinces
+  const [states, setStates] = useState([]);
+
+  // To store current country
+  const [currCountry, setCurrCountry] = useState([]);
+
+  // To store all cities in a province
+  const [cities, setCities] = useState([]);
+
+  // State to save user update info
+  const [userUpdatedInfo, updateUserInfo] = useState({});
+
+  //State to be triggered by errors in forms
+  const [error, setError] = useState({
+    signUpError: {},
+    loginError: {},
+    passwordResetError: {},
+    newPasswordSubmit: {},
+    userUpdate: {},
+    status: 400,
+  });
+
+  // Hook for userUpate form to enable/disable submit button
+  useEnableSubmitBtn(validatedUserUpdateInfo, "accounts-btn-submit");
   // Re-render component with new profile picture or updated username
   useEffect(() => {}, [profilePic]);
+
+  // Re-render component if username is changed
+  useEffect(() => {
+    console.log("setting", userName);
+  }, [userName]);
+
+  // To get all countries
+  useEffect(() => {
+    fetch("http://api.geonames.org/countryInfoJSON?username=himeth")
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
+        const mappedCountries = responseData.geonames.map((country) => {
+          return {
+            countryName: country.countryName,
+            countryId: country.geonameId,
+            countryCode: country.countryCode,
+          };
+        });
+        setCountries([...mappedCountries]);
+      });
+  }, []);
 
   const handleUserInfoUpdateSubmit = async (event) => {
     event.preventDefault();
@@ -54,10 +123,6 @@ const UserAccount = ({
         dataSent,
         "PATCH"
       );
-      console.log(
-        "🚀 ~ file: UserAccount.js:51 ~ handleUserInfoUpdateSubmit ~ responseData:",
-        responseData
-      );
 
       if (responseData.status >= 400 && responseData.status <= 500) {
         throw responseData;
@@ -68,10 +133,20 @@ const UserAccount = ({
         };
         throw err;
       } else {
-        // Generate user image'
-        console.log("responsedata", responseData);
-        localStorage.setItem("encodedImage", responseData.image);
-        setProfilePic(responseData.image);
+        // Store username if it's changed
+        if (responseData.userName) {
+          // Set username in ls
+          localStorage.setItem("userName", responseData.userName);
+          setuserName(responseData.userName);
+
+          // Change url
+          navigate(`/My_Account/${responseData.userName}`);
+        }
+        // Store user image if it's changed
+        if (responseData.image) {
+          localStorage.setItem("encodedImage", responseData.image);
+          setProfilePic(responseData.image);
+        }
 
         toast.success(`${responseData.message}`, {
           position: "top-right",
@@ -128,7 +203,24 @@ const UserAccount = ({
                 id="updateEmail"
                 name="emailAddress"
                 placeholder="pain@gmail.com"
-                onChange={handleUserInfoUpdate}
+                onChange={(event) =>
+                  handleUserInfoUpdate(
+                    event,
+                    setDate,
+                    validateUserUpdateInfo,
+                    validatedUserUpdateInfo,
+                    updateUserInfo,
+                    userUpdatedInfo,
+                    countries,
+                    setCurrCountry,
+                    currCountry,
+                    setStates,
+                    states,
+                    setCities,
+                    formData,
+                    setError
+                  )
+                }
               ></input>
 
               {error?.userUpdate?.email && (
@@ -146,7 +238,24 @@ const UserAccount = ({
                 id="updateUserName"
                 name="userName"
                 placeholder="Kaiokenx10"
-                onChange={handleUserInfoUpdate}
+                onChange={(event) =>
+                  handleUserInfoUpdate(
+                    event,
+                    setDate,
+                    validateUserUpdateInfo,
+                    validatedUserUpdateInfo,
+                    updateUserInfo,
+                    userUpdatedInfo,
+                    countries,
+                    setCurrCountry,
+                    currCountry,
+                    setStates,
+                    states,
+                    setCities,
+                    formData,
+                    setError
+                  )
+                }
               ></input>
               {error?.userUpdate?.username && (
                 <ErrorAlert message={error.userUpdate.username} />
@@ -160,7 +269,24 @@ const UserAccount = ({
                 showIcon
                 dateFormat={"yyyy/MM/dd"}
                 selected={startDate}
-                onChange={handleUserInfoUpdate}
+                onChange={(event) =>
+                  handleUserInfoUpdate(
+                    event,
+                    setDate,
+                    validateUserUpdateInfo,
+                    validatedUserUpdateInfo,
+                    updateUserInfo,
+                    userUpdatedInfo,
+                    countries,
+                    setCurrCountry,
+                    currCountry,
+                    setStates,
+                    states,
+                    setCities,
+                    formData,
+                    setError
+                  )
+                }
                 isClearable
                 placeholderText="I'm a ghost 👻"
                 renderCustomHeader={({
@@ -231,7 +357,24 @@ const UserAccount = ({
               className="form-userAcc-dropdown"
               id="level"
               name="proficiency"
-              onChange={handleUserInfoUpdate}
+              onChange={(event) =>
+                handleUserInfoUpdate(
+                  event,
+                  setDate,
+                  validateUserUpdateInfo,
+                  validatedUserUpdateInfo,
+                  updateUserInfo,
+                  userUpdatedInfo,
+                  countries,
+                  setCurrCountry,
+                  currCountry,
+                  setStates,
+                  states,
+                  setCities,
+                  formData,
+                  setError
+                )
+              }
               defaultValue={"Default"}
             >
               <option
@@ -268,7 +411,24 @@ const UserAccount = ({
             </label>
             <select
               className="form-userAcc-dropdown"
-              onChange={handleUserInfoUpdate}
+              onChange={(event) =>
+                handleUserInfoUpdate(
+                  event,
+                  setDate,
+                  validateUserUpdateInfo,
+                  validatedUserUpdateInfo,
+                  updateUserInfo,
+                  userUpdatedInfo,
+                  countries,
+                  setCurrCountry,
+                  currCountry,
+                  setStates,
+                  states,
+                  setCities,
+                  formData,
+                  setError
+                )
+              }
               name="country"
               defaultValue={"Default"}
             >
@@ -295,7 +455,24 @@ const UserAccount = ({
             </label>
             <select
               className="form-userAcc-dropdown"
-              onChange={handleUserInfoUpdate}
+              onChange={(event) =>
+                handleUserInfoUpdate(
+                  event,
+                  setDate,
+                  validateUserUpdateInfo,
+                  validatedUserUpdateInfo,
+                  updateUserInfo,
+                  userUpdatedInfo,
+                  countries,
+                  setCurrCountry,
+                  currCountry,
+                  setStates,
+                  states,
+                  setCities,
+                  formData,
+                  setError
+                )
+              }
               name="province"
               defaultValue={"Default"}
             >
@@ -324,7 +501,24 @@ const UserAccount = ({
               className="form-userAcc-dropdown"
               name="city"
               defaultValue={"Default"}
-              onChange={handleUserInfoUpdate}
+              onChange={(event) =>
+                handleUserInfoUpdate(
+                  event,
+                  setDate,
+                  validateUserUpdateInfo,
+                  validatedUserUpdateInfo,
+                  updateUserInfo,
+                  userUpdatedInfo,
+                  countries,
+                  setCurrCountry,
+                  currCountry,
+                  setStates,
+                  states,
+                  setCities,
+                  formData,
+                  setError
+                )
+              }
             >
               <option
                 value={"Default"}
@@ -354,7 +548,24 @@ const UserAccount = ({
                 id="userAddress"
                 name="address"
                 placeholder="3000 Saiyan Street"
-                onChange={handleUserInfoUpdate}
+                onChange={(event) =>
+                  handleUserInfoUpdate(
+                    event,
+                    setDate,
+                    validateUserUpdateInfo,
+                    validatedUserUpdateInfo,
+                    updateUserInfo,
+                    userUpdatedInfo,
+                    countries,
+                    setCurrCountry,
+                    currCountry,
+                    setStates,
+                    states,
+                    setCities,
+                    formData,
+                    setError
+                  )
+                }
               ></input>
             </div>
 
@@ -370,7 +581,24 @@ const UserAccount = ({
               id="image"
               name="profilepic"
               accept="image/jpeg,image/png,image/jpg"
-              onChange={handleUserInfoUpdate}
+              onChange={(event) =>
+                handleUserInfoUpdate(
+                  event,
+                  setDate,
+                  validateUserUpdateInfo,
+                  validatedUserUpdateInfo,
+                  updateUserInfo,
+                  userUpdatedInfo,
+                  countries,
+                  setCurrCountry,
+                  currCountry,
+                  setStates,
+                  states,
+                  setCities,
+                  formData,
+                  setError
+                )
+              }
             ></input>
           </div>
           <div className="account-btns">
@@ -384,106 +612,6 @@ const UserAccount = ({
             <button
               className="form-submit-clear-btn"
               id="accounts-clear"
-              type="reset"
-            >
-              <span>Clear</span>
-            </button>
-          </div>
-        </form>
-      </div>
-      <div className="userPayment-container">
-        <h2 className="userAcc-header">Payment</h2>
-        <form className="userPayment-form">
-          <div className="payment-grid">
-            <label className="form-label form-label-userAcc" htmlFor="cardName">
-              Name on Card
-            </label>
-            <input
-              type="text"
-              className="form-input form-input-userAcc"
-              id="nameOnCard"
-              name="cardName"
-              required={true}
-              placeholder="Amazing Cookie"
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
-            <label className="form-label form-label-userAcc" htmlFor="cardExp">
-              Expiry
-            </label>
-            <div className="cardExp-inp">
-              <input
-                type="text"
-                className="form-input form-input-userAcc expMonth"
-                id="expiryMonth"
-                name="cardExpMonth"
-                required={true}
-                placeholder="MM"
-                maxLength={2}
-                //   onChange={handleInputOnChange}
-              ></input>
-              {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
-              <span className="cardExp-slash">/</span>
-              <input
-                type="text"
-                className="form-input form-input-userAcc expYear"
-                id="expiryYear"
-                name="cardExpYear"
-                required={true}
-                placeholder="YY"
-                maxLength={2}
-                //   onChange={handleInputOnChange}
-              ></input>
-              {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
-            </div>
-            <label className="form-label form-label-userAcc" htmlFor="cardNo">
-              Card Number
-            </label>
-            <input
-              type="text"
-              className="form-input form-input-userAcc"
-              id="expiry"
-              name="cardNo"
-              required={true}
-              placeholder="4111 1111 1111 1111"
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
-            <label className="form-label form-label-userAcc" htmlFor="cvv">
-              CVV
-            </label>
-            <input
-              type="password"
-              className="form-input form-input-userAcc"
-              id="cardCvv"
-              name="cvv"
-              required={true}
-              placeholder="***"
-              //   onChange={handleInputOnChange}
-            ></input>
-            {/* {error?.signUpError?.email && (
-          <ErrorAlert message={error.signUpError.email} />
-        )} */}
-          </div>
-          <div className="account-btns">
-            <button
-              className="form-submit-btn"
-              id="payment-btn-submit"
-              type="submit"
-            >
-              <span>Submit</span>
-            </button>
-            <button
-              className="form-submit-clear-btn"
-              id="payments-btn-clear"
               type="reset"
             >
               <span>Clear</span>

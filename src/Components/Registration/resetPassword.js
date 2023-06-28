@@ -1,8 +1,12 @@
 // Imports
-import { useNavigate } from "react-router-dom";
 import ErrorAlert from "../Alerts/ErrorAlert";
 import fetchData from "../../utils/helperFunctions/returnFetchResponse";
-import { React } from "react";
+import { handleInputOnPasswordReset } from "../../utils/eventHandlers/eventHandler";
+import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
+
+// 3rd party libraries
+import { React, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,15 +15,37 @@ import "../../css/Form.css";
 import close from "../../logos/register/close.svg";
 
 const ResetPasswordForm = ({
-  handleInputOnPasswordReset,
-  error,
   sent,
-  setError,
   isSending,
   showNewPasswordForm,
-  newPasswordData,
   passToken,
 }) => {
+  // States
+  // State to validate the new password form
+  const [validatedNewPassword, validateNewPassword] = useState({
+    password: false,
+    passwordConfirmation: false,
+  });
+
+  // State to save the new password reset form
+  const [newPasswordData, setNewPasswordData] = useState({
+    newPassword: "",
+    newPasswordConfirmation: "",
+  });
+
+  //State to be triggered by errors in forms
+  const [error, setError] = useState({
+    signUpError: {},
+    loginError: {},
+    passwordResetError: {},
+    newPasswordSubmit: {},
+    userUpdate: {},
+    status: 400,
+  });
+
+  // Hook for newPassword form to enable/disable submit button
+  useEnableSubmitBtn(validatedNewPassword, "newPassword-form-btn");
+
   // Variables
   const navigate = useNavigate();
   // New password setting form handler
@@ -106,7 +132,16 @@ const ResetPasswordForm = ({
           id="newPassword"
           name="newPassword"
           required={true}
-          onChange={handleInputOnPasswordReset}
+          onChange={(event) =>
+            handleInputOnPasswordReset(
+              event,
+              validateNewPassword,
+              validatedNewPassword,
+              setError,
+              setNewPasswordData,
+              newPasswordData
+            )
+          }
         ></input>
         {error?.newPasswordSubmit?.password && (
           <ErrorAlert message={error.newPasswordSubmit.password} />
@@ -123,7 +158,16 @@ const ResetPasswordForm = ({
           id="passwordConfirm"
           name="newPasswordConfirmation"
           required={true}
-          onChange={handleInputOnPasswordReset}
+          onChange={(event) =>
+            handleInputOnPasswordReset(
+              event,
+              validateNewPassword,
+              validatedNewPassword,
+              setError,
+              setNewPasswordData,
+              newPasswordData
+            )
+          }
         ></input>
         {sent && <ErrorAlert message={"Sending Info..."} status={200} />}
         {error?.newPasswordSubmit?.passwordConfirm && (

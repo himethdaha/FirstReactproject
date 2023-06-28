@@ -1,9 +1,11 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
 import fetchData from "../../utils/helperFunctions/returnFetchResponse";
+import { handleInputOnLoginChange } from "../../utils/eventHandlers/eventHandler";
+import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
 
 // 3rd party libraries
-import React from "react";
+import { React, useState } from "react";
 
 import { Link } from "react-router-dom";
 import {
@@ -47,18 +49,39 @@ const instagramClientSecret = process.env.REACT_APP_INSTAGRAM_CLIENTSECRET;
 const LoginForm = ({
   handleFacebookCallbackResponse,
   handleInstagramCallbackResponse,
-  handleInputOnLoginChange,
   setShowLoginForm,
   showPasswordResetForm,
-  error,
   sent,
-  setError,
   isSending,
   showUserBlocked,
   setUserBlockedPopup,
-  loginData,
   setloggedIn,
 }) => {
+  // State to see if every field has been validated in login form
+  const [validLoginData, validateLoginData] = useState({
+    username: false,
+    password: false,
+  });
+
+  //State to be triggered by errors in forms
+  const [error, setError] = useState({
+    signUpError: {},
+    loginError: {},
+    passwordResetError: {},
+    newPasswordSubmit: {},
+    userUpdate: {},
+    status: 400,
+  });
+
+  // State to save login form data
+  const [loginData, setLoginForm] = useState({
+    "login-username": "",
+    "login-password": "",
+  });
+
+  // Hook for login form to enable/disable submit button
+  useEnableSubmitBtn(validLoginData, "submit-btn-login");
+
   // To handle Login form submission
   const handleLoginFormSubmit = async (event) => {
     event.preventDefault();
@@ -155,7 +178,7 @@ const LoginForm = ({
             src={close}
             alt="Form close button"
             className="form-close-btn form-login-close-btn"
-            onClick={(e) => handleCloseForm()}
+            onClick={(e) => handleCloseForm(e)}
           ></img>
         </div>
         <span className="form-tns login-tns">
@@ -178,7 +201,16 @@ const LoginForm = ({
           name="login-username"
           placeholder="Kaiokenx10"
           required={true}
-          onChange={handleInputOnLoginChange}
+          onChange={(event) =>
+            handleInputOnLoginChange(
+              event,
+              validateLoginData,
+              validLoginData,
+              setError,
+              setLoginForm,
+              loginData
+            )
+          }
         ></input>
         {error?.loginError?.username && (
           <ErrorAlert message={error.loginError.username} />
@@ -192,7 +224,16 @@ const LoginForm = ({
           id="login-password"
           name="login-password"
           required={true}
-          onChange={handleInputOnLoginChange}
+          onChange={(event) =>
+            handleInputOnLoginChange(
+              event,
+              validateLoginData,
+              validLoginData,
+              setError,
+              setLoginForm,
+              loginData
+            )
+          }
         ></input>
         {sent && <ErrorAlert message={"Sending Info..."} status={200} />}
         {error?.loginError?.password && (

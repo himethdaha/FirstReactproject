@@ -1,9 +1,11 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
 import fetchData from "../../utils/helperFunctions/returnFetchResponse";
+import { handleInputOnChange } from "../../utils/eventHandlers/eventHandler";
+import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
 
 // 3rd party libraries
-import React from "react";
+import { React, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -46,16 +48,40 @@ const instagramClientSecret = process.env.REACT_APP_INSTAGRAM_CLIENTSECRET;
 const SignUpForm = ({
   handleFacebookCallbackResponse,
   handleInstagramCallbackResponse,
-  handleInputOnChange,
-  error,
   sent,
-  setError,
   isSending,
   setShowForm,
-  setImgUrl,
-  data,
-  setloggedIn,
 }) => {
+  // States
+  // State to see if every field has been validated in signup form
+  const [validData, validateData] = useState({
+    email: false,
+    username: false,
+    password: false,
+    passwordConfirm: false,
+  });
+
+  //State to be triggered by errors in forms
+  const [error, setError] = useState({
+    signUpError: {},
+    loginError: {},
+    passwordResetError: {},
+    newPasswordSubmit: {},
+    userUpdate: {},
+    status: 400,
+  });
+
+  // State to save signup form data
+  const [data, setForm] = useState({
+    email: "",
+    username: "",
+    password: "",
+    passwordConfirm: "",
+  });
+
+  // Hook for signup form to enable/disable submit button
+  useEnableSubmitBtn(validData, "submit-btn-signup");
+
   // Event handler for signup form
   const handleFormSubmit = async (event) => {
     event.preventDefault();
@@ -81,18 +107,17 @@ const SignUpForm = ({
       // once validated
       else {
         // Set logged in state
-        setloggedIn(true);
-        localStorage.setItem("loggedIn", true);
+        toast.success(`${responseData.message}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
 
-        // Store username
-        localStorage.setItem("userName", responseData.userName);
-
-        // Generate default user image
-        // Store the base46 encoded string
-        const encodedImage = responseData.image;
-        localStorage.setItem("encodedImage", encodedImage);
-
-        // Close form
         setShowForm(false);
         isSending(false);
       }
@@ -152,7 +177,16 @@ const SignUpForm = ({
           name="email"
           placeholder="pain@gmail.com"
           required={true}
-          onChange={handleInputOnChange}
+          onChange={(event) =>
+            handleInputOnChange(
+              event,
+              validateData,
+              validData,
+              setError,
+              setForm,
+              data
+            )
+          }
         ></input>
         {error?.signUpError?.email && (
           <ErrorAlert message={error.signUpError.email} />
@@ -167,7 +201,16 @@ const SignUpForm = ({
           name="username"
           placeholder="Kaiokenx10"
           required={true}
-          onChange={handleInputOnChange}
+          onChange={(event) =>
+            handleInputOnChange(
+              event,
+              validateData,
+              validData,
+              setError,
+              setForm,
+              data
+            )
+          }
         ></input>
         {error?.signUpError?.username && (
           <ErrorAlert message={error.signUpError.username} />
@@ -181,7 +224,16 @@ const SignUpForm = ({
           id="password"
           name="password"
           required={true}
-          onChange={handleInputOnChange}
+          onChange={(event) =>
+            handleInputOnChange(
+              event,
+              validateData,
+              validData,
+              setError,
+              setForm,
+              data
+            )
+          }
         ></input>
         {error?.signUpError?.password && (
           <ErrorAlert message={error.signUpError.password} />
@@ -198,7 +250,16 @@ const SignUpForm = ({
           id="passwordConfirm"
           name="passwordConfirm"
           required={true}
-          onChange={handleInputOnChange}
+          onChange={(event) =>
+            handleInputOnChange(
+              event,
+              validateData,
+              validData,
+              setError,
+              setForm,
+              data
+            )
+          }
         ></input>
         {sent && <ErrorAlert message={"Sending Info..."} status={200} />}
         {error?.signUpError?.passwordConfirm && (

@@ -1,8 +1,8 @@
-import fetchData from "./returnFetchUpdateResponse";
+import fetchData from "./returnFetchResponse";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const forgotPasswordSend = async (url, data, isSending) => {
+const forgotPasswordSend = async (url, data) => {
   try {
     const responseData = await fetchData(url, data, "POST");
     if (responseData.status >= 400 && responseData.status <= 500) {
@@ -14,7 +14,6 @@ const forgotPasswordSend = async (url, data, isSending) => {
       };
       throw err;
     } else {
-      isSending(false);
       // Set status of success message to be shown becuase the user needs to know email is sent
       toast.success(`${responseData.message}`, {
         position: "top-right",
@@ -28,7 +27,6 @@ const forgotPasswordSend = async (url, data, isSending) => {
       });
     }
   } catch (error) {
-    isSending(false);
     toast.error(`${error.message}`, {
       position: "top-right",
       autoClose: 3000,
@@ -39,6 +37,7 @@ const forgotPasswordSend = async (url, data, isSending) => {
       progress: undefined,
       theme: "dark",
     });
+    throw error;
   }
 };
 

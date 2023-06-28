@@ -1,6 +1,8 @@
 // Imports
 import ErrorAlert from "../Alerts/ErrorAlert";
 import forgotPasswordSend from "../../utils/helperFunctions/forgotPasswordSend";
+import { handleInputOnPasswordChange } from "../../utils/eventHandlers/eventHandler";
+import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
 
 // 3rd party libraries
 import { React, useState } from "react";
@@ -10,31 +12,51 @@ import { Link } from "react-router-dom";
 import "../../css/Form.css";
 import close from "../../logos/register/close.svg";
 
-const ForgotPasswordForm = ({
-  handleInputOnPasswordChange,
-  error,
-  sent,
-  setError,
-  isSending,
-  passwordResetData,
-  showPasswordResetForm,
-  connFailedMessg,
-}) => {
+const ForgotPasswordForm = ({ sent, isSending, showPasswordResetForm }) => {
+  // States
   const [stateStatus, setStatus] = useState("");
   const [resendVisible, resendHidden] = useState(false);
 
+  // State to see if email is provided in forgot-password
+  const [validPasswordReset, validatedPasswordReset] = useState({
+    email: false,
+  });
+
+  // State to save reset password form
+  const [passwordResetData, setPasswordResetForm] = useState({
+    passwordResetEmail: "",
+  });
+
+  //State to be triggered by errors in forms
+  const [error, setError] = useState({
+    signUpError: {},
+    loginError: {},
+    passwordResetError: {},
+    newPasswordSubmit: {},
+    userUpdate: {},
+    status: 400,
+  });
+
+  // Hook for forgotPassword form to enable/disable submit button
+  useEnableSubmitBtn(validPasswordReset, "resetPassword-form-btn");
+
   const handlePasswordForgotSubmit = async (event) => {
     event.preventDefault();
-    resendHidden(true);
     setError({});
     // Set loading message
     isSending(true);
 
-    await forgotPasswordSend(
-      "http://localhost:8000/forgot_password",
-      passwordResetData,
-      isSending
-    );
+    try {
+      await forgotPasswordSend(
+        "http://localhost:8000/forgot_password",
+        passwordResetData
+      );
+
+      isSending(false);
+      resendHidden(true);
+    } catch (error) {
+      isSending(false);
+    }
   };
 
   // To resend token in case user didn not receive the email
@@ -47,15 +69,15 @@ const ForgotPasswordForm = ({
     // Set loading message
     isSending(true);
 
-    await forgotPasswordSend(
-      "http://localhost:8000/forgot_password",
-      passwordResetData,
-      "POST",
-      setError,
-      isSending,
-      setStatus,
-      connFailedMessg
-    );
+    try {
+      await forgotPasswordSend(
+        "http://localhost:8000/forgot_password",
+        passwordResetData
+      );
+      isSending(false);
+    } catch (error) {
+      isSending(false);
+    }
   };
   // To close the login form
   const handleCloseForm = () => {
@@ -95,11 +117,22 @@ const ForgotPasswordForm = ({
           name="passwordResetEmail"
           placeholder="pain@gmail.com"
           required={true}
-          onChange={handleInputOnPasswordChange}
+          onChange={(event) =>
+            handleInputOnPasswordChange(
+              event,
+              validatedPasswordReset,
+              validPasswordReset,
+              setError,
+              setPasswordResetForm,
+              passwordResetData
+            )
+          }
         ></input>
         {sent && (
           <ErrorAlert
-            message={"Sending email. Might take a few minutes"}
+            message={
+              "Sending email. Might take a few minutes. Feel free to close form"
+            }
             status={200}
           />
         )}
