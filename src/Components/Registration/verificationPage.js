@@ -7,32 +7,49 @@ import "../../css/verifierPage.css";
 // 3rd party libraries
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-const VerificationPage = ({ verifierToken }) => {
+const VerificationPage = () => {
   // Variables
-  const dataToSend = { token: verifierToken };
+  const { verifierToken } = useParams();
+  console.log(
+    "🚀 ~ file: verificationPage.js:16 ~ VerificationPage ~ verifierToken:",
+    verifierToken
+  );
 
+  const [signUpVerificationToken, setSignUpVerificationToken] = useState();
+  console.log(
+    "🚀 ~ file: verificationPage.js:19 ~ VerificationPage ~ signUpVerificationToken:",
+    signUpVerificationToken
+  );
+
+  // Get the verification token
   useEffect(() => {
-    console.log("counting");
-    (async () => {
-      try {
-        const responseData = await fetchData(
-          "http://localhost:8000/verifyme",
-          dataToSend,
-          "POST"
-        );
-        console.log(
-          "🚀 ~ file: verificationPage.js:124 ~ handleUserVerification ~ responseData:",
-          responseData
-        );
-        return responseData;
-      } catch (error) {
-        console.error(error);
-        return error;
-      }
-    })();
-  }, []);
+    if (verifierToken) {
+      setSignUpVerificationToken(verifierToken);
+    }
+  }, [verifierToken]);
+
+  // Call backend
+  useEffect(() => {
+    if (signUpVerificationToken) {
+      (async () => {
+        try {
+          const responseData = await fetchData(
+            "http://localhost:8000/verifyme",
+            { token: signUpVerificationToken },
+            "POST"
+          );
+
+          return responseData;
+        } catch (error) {
+          console.error(error);
+          return error;
+        }
+      })();
+    }
+  }, [signUpVerificationToken]);
 
   return (
     <div className="verifier-container" id="verifier-container-id">

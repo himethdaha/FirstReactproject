@@ -34,9 +34,8 @@ const current = new Date();
 for (let year = pastDate.getFullYear(); year <= current.getFullYear(); year++) {
   years.push(year.toString());
 }
-console.log("🚀 ~ file: App.js:34 ~ years after:", years);
 
-function App() {
+const App = () => {
   // HOOKS //
   //hook to open/close sign up form
   const [showForm, setShowForm] = useState(false);
@@ -44,14 +43,9 @@ function App() {
   // hook to open/close login form
   const [showLoginForm, setShowLoginForm] = useState(false);
 
-  // To get the username from the url
-  const [urluserName, setUrlUserName] = useState("");
-
-  // To get the verification token from the url
-  const [signUpVerificationToken, setSignUpVerificationToken] = useState("");
-
   // To show the user profile link
   const [loggedIn, setloggedIn] = useState(false);
+  console.log("🚀 ~ file: App.js:48 ~ AppLayout ~ loggedIn:", loggedIn);
 
   // To hide user blocked popup
   const [showUserBlockedPopup, setUserBlockedPopup] = useState(false);
@@ -62,13 +56,16 @@ function App() {
   // To hide/show password reset form
   const [newPasswordForm, showNewPasswordForm] = useState(false);
 
+  // To hide/show user account  form
+  const [userForm, showUserForm] = useState(false);
+
+  // To hide/show user verification page
+  const [showVerificationPage, setVerificationPage] = useState(false);
   // State to show sending forgot password email
   const [sent, isSending] = useState(false);
 
   // State to show a user has been blocked
   const [userBlocked, showUserBlocked] = useState(false);
-
-  const [passToken, setPassToken] = useState("");
 
   // "useEffect"
 
@@ -106,6 +103,36 @@ function App() {
     }
   }, []);
 
+  // Hook to get the token off the url
+  function ResetPassword() {
+    const { token } = useParams();
+    console.log("🚀 ~ file: App.js:109 ~ AppLayout ~ token:", token);
+    useEffect(() => {
+      if (token) {
+        showNewPasswordForm(true);
+      }
+    }, [token]);
+  }
+
+  // Hook to show user account
+  function ShowUserAccount() {
+    const { urluserName } = useParams();
+    useEffect(() => {
+      if (urluserName) {
+        showUserForm(true);
+      }
+    });
+  }
+
+  function Verification() {
+    const { verifierToken } = useParams();
+    useEffect(() => {
+      if (verifierToken) {
+        setVerificationPage(true);
+      }
+    }, [verifierToken]);
+  }
+
   // Event handlers //
   //Callback for google login
   const handleGoogleCallbackResponse = (response) => {
@@ -130,43 +157,21 @@ function App() {
     setShowForm(false);
   };
 
-  // Function to get the token off the url
-  function ResetPass() {
-    const { token } = useParams();
-    useEffect(() => {
-      if (token) {
-        setPassToken(token);
-        showNewPasswordForm(true);
-      }
-    }, [token]);
-  }
-
-  // Function to get the username off the url
-  function GetUsername() {
-    const { userName } = useParams();
-    useEffect(() => {
-      if (userName) {
-        setUrlUserName(userName);
-      }
-    }, [userName]);
-  }
-
-  // To get the verification token off the url
-  function Verifier() {
-    const { verifierToken } = useParams();
-    useEffect(() => {
-      if (verifierToken) {
-        setSignUpVerificationToken(verifierToken);
-      }
-    }, [verifierToken]);
-  }
-
   return (
     <Router>
       <Routes>
-        <Route path="/reset_password/:token" element={<ResetPass />}></Route>
-        <Route path="/My_Account/:userName" element={<GetUsername />}></Route>
-        <Route path="/verifyme/:verifierToken" element={<Verifier />}></Route>
+        <Route
+          path="/reset_password/:token"
+          element={<ResetPassword />}
+        ></Route>
+        <Route
+          path="/my_account/:urluserName"
+          element={<ShowUserAccount />}
+        ></Route>
+        <Route
+          path="/verifyme/:verifierToken"
+          element={<Verification />}
+        ></Route>
       </Routes>
       <React.Fragment>
         {/*If ShowForm state for signup is true*/}
@@ -209,7 +214,6 @@ function App() {
             sent={sent}
             isSending={isSending}
             showNewPasswordForm={showNewPasswordForm}
-            passToken={passToken}
           />
         )}
 
@@ -226,21 +230,19 @@ function App() {
           </header>
           <main>
             <Home userBlocked={userBlocked} loggedIn={loggedIn} />
-            {urluserName && loggedIn && (
+            {userForm && loggedIn && (
               <UserAccount
                 years={years}
                 pastDate={pastDate}
-                urluserName={urluserName}
+                loggedIn={loggedIn}
               />
             )}
-            {signUpVerificationToken && (
-              <VerificationPage verifierToken={signUpVerificationToken} />
-            )}
+            {showVerificationPage && <VerificationPage />}
           </main>
         </div>
       </React.Fragment>
     </Router>
   );
-}
+};
 
 export default App;

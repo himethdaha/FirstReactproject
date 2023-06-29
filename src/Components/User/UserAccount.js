@@ -6,7 +6,7 @@ import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
 
 // 3rd party libraries
 import DatePicker from "react-datepicker";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -31,7 +31,14 @@ const months = [
   "December",
 ];
 
-const UserAccount = ({ years, pastDate, urluserName }) => {
+const UserAccount = ({ years, pastDate, loggedIn }) => {
+  console.log(
+    "🚀 ~ file: UserAccount.js:35 ~ UserAccount ~ loggedIn:",
+    loggedIn
+  );
+  // Variables
+  const { urluserName } = useParams();
+
   console.log(
     "🚀 ~ file: UserAccount.js:35 ~ UserAccount ~ pastDate:",
     pastDate
