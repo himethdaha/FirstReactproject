@@ -8,28 +8,16 @@ import "../../css/verifierPage.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
-const VerificationPage = () => {
-  // Variables
-  const { verifierToken } = useParams();
-  console.log(
-    "🚀 ~ file: verificationPage.js:16 ~ VerificationPage ~ verifierToken:",
-    verifierToken
-  );
-
+const VerificationPage = ({ verificationToken }) => {
   const [signUpVerificationToken, setSignUpVerificationToken] = useState();
-  console.log(
-    "🚀 ~ file: verificationPage.js:19 ~ VerificationPage ~ signUpVerificationToken:",
-    signUpVerificationToken
-  );
 
   // Get the verification token
   useEffect(() => {
-    if (verifierToken) {
-      setSignUpVerificationToken(verifierToken);
+    if (verificationToken) {
+      setSignUpVerificationToken(verificationToken);
     }
-  }, [verifierToken]);
+  }, [verificationToken]);
 
   // Call backend
   useEffect(() => {
@@ -41,11 +29,42 @@ const VerificationPage = () => {
             { token: signUpVerificationToken },
             "POST"
           );
+          if (responseData.status >= 400 && responseData.status <= 500) {
+            throw responseData;
+          } else if (responseData.status >= 500) {
+            const err = {
+              status: responseData.status,
+              message: "Something went wrong on our side 🥹",
+            };
+            throw err;
+          }
+          // once validated
+          else {
+            // Set logged in state
+            toast.success(`${responseData.message}`, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+            });
+          }
 
           return responseData;
         } catch (error) {
-          console.error(error);
-          return error;
+          toast.error(`${error.message}`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
         }
       })();
     }
@@ -54,8 +73,8 @@ const VerificationPage = () => {
   return (
     <div className="verifier-container" id="verifier-container-id">
       <p className="verifier-text">
-        Thank you for verifying your email!. Click on that moving ball to begin
-        the verification process
+        Thank you for verifying your email!. We're currently verifying you.
+        Please wait a moment
       </p>
       {/* <div className="verifier-image" id="verifier-image-id"></div> */}
       <p className="verifier-text verifier-timer" id="verificationStatus">

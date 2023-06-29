@@ -123,12 +123,17 @@ const App = () => {
       }
     });
   }
-
+  const [verificationToken, setVerificationToken] = useState();
   function Verification() {
     const { verifierToken } = useParams();
+    console.log(
+      "🚀 ~ file: App.js:129 ~ Verification ~ verifierToken:",
+      verifierToken
+    );
     useEffect(() => {
       if (verifierToken) {
         setVerificationPage(true);
+        setVerificationToken(verifierToken);
       }
     }, [verifierToken]);
   }
@@ -237,7 +242,9 @@ const App = () => {
                 loggedIn={loggedIn}
               />
             )}
-            {showVerificationPage && <VerificationPage />}
+            {showVerificationPage && (
+              <VerificationPage verificationToken={verificationToken} />
+            )}
           </main>
         </div>
       </React.Fragment>
