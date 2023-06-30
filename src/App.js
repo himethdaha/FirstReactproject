@@ -45,7 +45,6 @@ const App = () => {
 
   // To show the user profile link
   const [loggedIn, setloggedIn] = useState(false);
-  console.log("🚀 ~ file: App.js:48 ~ AppLayout ~ loggedIn:", loggedIn);
 
   // To hide user blocked popup
   const [showUserBlockedPopup, setUserBlockedPopup] = useState(false);
@@ -104,22 +103,26 @@ const App = () => {
   }, []);
 
   // Hook to get the token off the url
+  const [resetToken, setResetToken] = useState();
   function ResetPassword() {
     const { token } = useParams();
     console.log("🚀 ~ file: App.js:109 ~ AppLayout ~ token:", token);
     useEffect(() => {
       if (token) {
         showNewPasswordForm(true);
+        setResetToken(resetToken);
       }
     }, [token]);
   }
 
   // Hook to show user account
+  const [getUserName, setUserName] = useState();
   function ShowUserAccount() {
     const { urluserName } = useParams();
     useEffect(() => {
       if (urluserName) {
         showUserForm(true);
+        setUserName(urluserName);
       }
     });
   }
@@ -219,6 +222,7 @@ const App = () => {
             sent={sent}
             isSending={isSending}
             showNewPasswordForm={showNewPasswordForm}
+            resetToken={resetToken}
           />
         )}
 
@@ -240,10 +244,15 @@ const App = () => {
                 years={years}
                 pastDate={pastDate}
                 loggedIn={loggedIn}
+                getUserName={getUserName}
               />
             )}
             {showVerificationPage && (
-              <VerificationPage verificationToken={verificationToken} />
+              <VerificationPage
+                verificationToken={verificationToken}
+                setVerificationPage={setVerificationPage}
+                setloggedIn={setloggedIn}
+              />
             )}
           </main>
         </div>

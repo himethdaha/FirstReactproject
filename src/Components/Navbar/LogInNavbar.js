@@ -54,7 +54,6 @@ const LogIn = ({ setShowLoginForm, loggedIn, setloggedIn }) => {
       }
 
       if (window.location.pathname !== "/") {
-        console.log("NOOO");
         navigate("/");
       }
     }

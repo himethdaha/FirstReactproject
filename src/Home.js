@@ -5,7 +5,6 @@ const Home = ({ userBlocked, loggedIn }) => {
     initialText = "HOME";
   } else {
     if (loggedIn) {
-      console.log("home loggedin");
       // Get the name from localstorage
       const userName = localStorage.getItem("userName");
       initialText = `WELCOME ${userName.toUpperCase()}`;

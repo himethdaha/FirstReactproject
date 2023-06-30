@@ -6,7 +6,7 @@ import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
 
 // 3rd party libraries
 import { React, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,13 +14,12 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../css/Form.css";
 import close from "../../logos/register/close.svg";
 
-const ResetPasswordForm = ({ sent, isSending, showNewPasswordForm }) => {
-  // Variables
-  const { token } = useParams();
-  console.log(
-    "🚀 ~ file: resetPassword.js:20 ~ ResetPasswordForm ~ passToken:",
-    token
-  );
+const ResetPasswordForm = ({
+  sent,
+  isSending,
+  showNewPasswordForm,
+  resetToken,
+}) => {
   // States
   // State to validate the new password form
   const [validatedNewPassword, validateNewPassword] = useState({
@@ -54,7 +53,7 @@ const ResetPasswordForm = ({ sent, isSending, showNewPasswordForm }) => {
     event.preventDefault();
     setError({});
     isSending(true);
-    const dataToSend = { ...newPasswordData, token: token };
+    const dataToSend = { ...newPasswordData, token: resetToken };
 
     try {
       const responseData = await fetchData(

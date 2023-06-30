@@ -31,13 +31,11 @@ const months = [
   "December",
 ];
 
-const UserAccount = ({ years, pastDate, loggedIn }) => {
+const UserAccount = ({ years, pastDate, loggedIn, getUserName }) => {
   console.log(
     "🚀 ~ file: UserAccount.js:35 ~ UserAccount ~ loggedIn:",
     loggedIn
   );
-  // Variables
-  const { urluserName } = useParams();
 
   console.log(
     "🚀 ~ file: UserAccount.js:35 ~ UserAccount ~ pastDate:",
@@ -123,7 +121,7 @@ const UserAccount = ({ years, pastDate, loggedIn }) => {
   const handleUserInfoUpdateSubmit = async (event) => {
     event.preventDefault();
 
-    const dataSent = { ...userUpdatedInfo, user: urluserName };
+    const dataSent = { ...userUpdatedInfo, user: getUserName };
     try {
       const responseData = await fetchData(
         "http://localhost:8000/My_Account/Update",
