@@ -244,6 +244,7 @@ const App = () => {
                 years={years}
                 pastDate={pastDate}
                 loggedIn={loggedIn}
+                setloggedIn={setloggedIn}
                 getUserName={getUserName}
               />
             )}
