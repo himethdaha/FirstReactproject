@@ -5,7 +5,7 @@ import fetchData from "../../utils/helperFunctions/returnFetchResponse";
 import "../../css/verifierPage.css";
 
 // 3rd party libraries
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,6 +21,7 @@ const VerificationPage = ({
 
   // State to capture the verification token
   const [signUpVerificationToken, setSignUpVerificationToken] = useState();
+  const [showMessage, setShowMessage] = useState(false);
 
   // Get the verification token
   useEffect(() => {
@@ -50,6 +51,8 @@ const VerificationPage = ({
           }
           // once validated
           else {
+            // Set state to show the message
+            setShowMessage(true);
             // Change text to show user verified
             const textToChange = document.getElementById("verifier-text-id");
             const showTimer = document.getElementById("verificationStatus");
@@ -97,17 +100,21 @@ const VerificationPage = ({
   }, [signUpVerificationToken]);
 
   return (
-    <div className="verifier-container" id="verifier-container-id">
-      <p className="verifier-text" id="verifier-text-id">
-        Thank you for verifying your email!. We're currently verifying you.
-        Please wait a moment
-      </p>
-      {/* <div className="verifier-image" id="verifier-image-id"></div> */}
-      <p className="verifier-text verifier-timer" id="verificationStatus">
-        You will be taken back to our home page in{" "}
-        <span id="verification-timer">5</span> seconds
-      </p>
-    </div>
+    <React.Fragment>
+      {showMessage && (
+        <div className="verifier-container" id="verifier-container-id">
+          <p className="verifier-text" id="verifier-text-id">
+            Thank you for verifying your email!. We're currently verifying you.
+            Please wait a moment
+          </p>
+          {/* <div className="verifier-image" id="verifier-image-id"></div> */}
+          <p className="verifier-text verifier-timer" id="verificationStatus">
+            You will be taken back to our home page in{" "}
+            <span id="verification-timer">5</span> seconds
+          </p>
+        </div>
+      )}
+    </React.Fragment>
   );
 };
 
