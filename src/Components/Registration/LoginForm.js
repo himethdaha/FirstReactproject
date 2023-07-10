@@ -6,7 +6,6 @@ import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
 
 // 3rd party libraries
 import { React, useState } from "react";
-
 import { Link } from "react-router-dom";
 import {
   LoginSocialFacebook,
@@ -99,7 +98,7 @@ const LoginForm = ({
         responseData
       );
       // Check if backend response is invalid username/password
-      if (responseData.status >= 400 && responseData.status <= 500) {
+      if (responseData.status >= 400 && responseData.status < 500) {
         throw responseData;
       } else if (responseData.status >= 500) {
         const err = {

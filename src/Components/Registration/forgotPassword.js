@@ -7,6 +7,8 @@ import useEnableSubmitBtn from "../../utils/customHooks/submitBtnEnable";
 // 3rd party libraries
 import { React, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Styles
 import "../../css/Form.css";
@@ -47,15 +49,42 @@ const ForgotPasswordForm = ({ sent, isSending, showPasswordResetForm }) => {
     isSending(true);
 
     try {
-      await forgotPasswordSend(
+      const responseData = await forgotPasswordSend(
         "http://localhost:8000/forgot_password",
         passwordResetData
       );
+      if (responseData.status >= 500) {
+        const err = {
+          status: responseData.status,
+          message: "Something went wrong on our side 🥹",
+        };
+        throw err;
+      }
 
       isSending(false);
       resendHidden(true);
+      toast.success(`${responseData.message}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (error) {
       isSending(false);
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
 
@@ -70,13 +99,42 @@ const ForgotPasswordForm = ({ sent, isSending, showPasswordResetForm }) => {
     isSending(true);
 
     try {
-      await forgotPasswordSend(
+      const responseData = await forgotPasswordSend(
         "http://localhost:8000/forgot_password",
         passwordResetData
       );
+      if (responseData.status >= 500) {
+        const err = {
+          status: responseData.status,
+          message: "Something went wrong on our side 🥹",
+        };
+        throw err;
+      }
+
       isSending(false);
+      resendHidden(true);
+      toast.success(`${responseData.message}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (error) {
       isSending(false);
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     }
   };
   // To close the login form

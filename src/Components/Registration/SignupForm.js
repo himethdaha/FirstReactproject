@@ -95,7 +95,7 @@ const SignUpForm = ({
         "POST"
       );
       console.log("responseData", responseData);
-      if (responseData.status >= 400 && responseData.status <= 500) {
+      if (responseData.status >= 400 && responseData.status < 500) {
         throw responseData;
       } else if (responseData.status >= 500) {
         const err = {
