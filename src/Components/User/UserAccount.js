@@ -124,7 +124,7 @@ const UserAccount = ({ years, pastDate, loggedIn, getUserName }) => {
     const dataSent = { ...userUpdatedInfo, user: getUserName };
     try {
       const responseData = await fetchData(
-        "http://localhost:8000/My_Account/Update",
+        "http://localhost:8000/my_Account/update",
         dataSent,
         "PATCH"
       );
@@ -153,6 +153,10 @@ const UserAccount = ({ years, pastDate, loggedIn, getUserName }) => {
           setProfilePic(responseData.image);
         }
 
+        // Clear form
+        const form = document.getElementById("userAcc-form-id");
+        form.reset();
+
         toast.success(`${responseData.message}`, {
           position: "top-right",
           autoClose: 3000,
@@ -178,22 +182,71 @@ const UserAccount = ({ years, pastDate, loggedIn, getUserName }) => {
     }
   };
 
+  const deleteAccount = async (e) => {
+    e.preventDefault();
+    const toDelete = window.confirm(
+      "Are you sure you want to delete your account?"
+    );
+    if (toDelete) {
+      try {
+        const responseData = await fetchData(
+          "http://localhost:8000/my_Account/delete",
+          { toDelete: toDelete },
+          "POST"
+        );
+        if (responseData.status >= 400 && responseData.status <= 500) {
+          throw responseData;
+        } else if (responseData.status >= 500) {
+          const err = {
+            status: responseData.status,
+            message: "Something went wrong on our side 🥹",
+          };
+          throw err;
+        }
+      } catch (error) {
+        toast.error(`${error.message}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+      }
+    } else {
+      return;
+    }
+  };
+
   return (
     <div className="userAcc-container">
       <div className="userInfo-container">
         <h2 className="userAcc-header">Information</h2>
         <form
           className="userAcc-form"
+          id="userAcc-form-id"
           onSubmit={(e) => handleUserInfoUpdateSubmit(e)}
           method="POST"
           encType="multipart/form-data"
         >
           <div className="userAcc-grid">
-            <img
-              src={localStorage.getItem("encodedImage")}
-              className="userAcc-profilepic"
-              alt="ProfilePic"
-            />
+            <div className="profile-and-delete-flex">
+              <img
+                src={localStorage.getItem("encodedImage")}
+                className="userAcc-profilepic"
+                alt="ProfilePic"
+              />
+              <button
+                className="form-submit-btn form-submit-delete-btn"
+                id="accounts-clear"
+                type="submit"
+                onClick={deleteAccount}
+              >
+                <span>Delete</span>
+              </button>
+            </div>
             <div className="userAcc-Profile"></div>
             <label
               className="form-label form-label-userAcc"
@@ -615,7 +668,7 @@ const UserAccount = ({ years, pastDate, loggedIn, getUserName }) => {
               <span>Submit</span>
             </button>
             <button
-              className="form-submit-clear-btn"
+              className="form-submit-btn form-submit-clear-btn"
               id="accounts-clear"
               type="reset"
             >

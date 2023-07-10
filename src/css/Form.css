@@ -205,8 +205,7 @@
 }
 
 /*Form Submit btn*/
-.form-submit-btn,
-.form-submit-clear-btn {
+.form-submit-btn {
   margin-top: 1.4rem;
   position: relative;
   width: 20%;
@@ -220,8 +219,7 @@
 }
 
 /*Pseudo element for submit-btn*/
-.form-submit-btn::before,
-.form-submit-clear-btn::before {
+.form-submit-btn::before {
   content: "";
   position: absolute;
   top: 0;
@@ -234,7 +232,8 @@
 }
 
 .form-submit-btn.enabled:hover::before,
-.form-submit-clear-btn:hover::before {
+.form-submit-clear-btn:hover::before,
+.form-submit-delete-btn:hover::before {
   width: 98%;
   border: 2px solid aqua;
   cursor: pointer;

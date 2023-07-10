@@ -4,7 +4,7 @@ const ErrorAlert = ({ message, status }) => {
   return (
     <div
       style={{
-        color: status === 200 ? "#FFFFFF" : "#721c24",
+        color: status === 200 ? "#1e4820" : "#721c24",
         backgroundColor: status === 200 ? "#a2d9a6" : "#f8d7da",
         borderColor: "#f5c6cb",
         padding: ".75rem 1.25rem",

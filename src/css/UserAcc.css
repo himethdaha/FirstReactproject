@@ -20,7 +20,6 @@
 }
 
 /*Form for user account/payment info*/
-.userPayment-form,
 .userAcc-form {
   border: 1px solid black;
   padding-top: 1rem;
@@ -28,7 +27,6 @@
 }
 
 /*Form grid structure*/
-.payment-grid,
 .userAcc-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -172,20 +170,10 @@
   margin-left: 1rem;
 }
 
-/*User card info*/
-.cardExp-inp {
+.profile-and-delete-flex {
   display: flex;
   flex-direction: row;
-}
-
-.expMonth,
-.expYear {
-  width: 10%;
-}
-
-.cardExp-slash {
-  font-size: 2rem;
-  color: rgb(107, 106, 106);
+  justify-content: space-between;
 }
 
 /*Form submit btn container*/
