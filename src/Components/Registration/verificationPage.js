@@ -22,6 +22,31 @@ const VerificationPage = ({
   // State to capture the verification token
   const [signUpVerificationToken, setSignUpVerificationToken] = useState();
   const [showMessage, setShowMessage] = useState(false);
+  useEffect(() => {
+    const textToChange = document.getElementById("verifier-text-id");
+    const showTimer = document.getElementById("verificationStatus");
+
+    if (textToChange && showTimer) {
+      showTimer.style.visibility = "visible";
+      textToChange.textContent = "Verified Successfully";
+      textToChange.style.color = "#61dafb";
+
+      // Show timer
+      const timer = document.getElementById("verification-timer");
+      const timerId = setInterval(() => {
+        if (count === 0) {
+          clearInterval(timerId);
+          // Send user to home page
+          setloggedIn(true);
+          setVerificationPage(false);
+          navigate("/");
+          return;
+        }
+        timer.textContent = count;
+        --count;
+      }, 1000);
+    }
+  }, [showMessage, count]);
 
   // Get the verification token
   useEffect(() => {
@@ -53,33 +78,11 @@ const VerificationPage = ({
           else {
             // Set state to show the message
             setShowMessage(true);
-            // Change text to show user verified
-            const textToChange = document.getElementById("verifier-text-id");
-            const showTimer = document.getElementById("verificationStatus");
-            showTimer.style.visibility = "visible";
-            textToChange.textContent = "Verified Successfully";
-            textToChange.style.color = "#61dafb";
 
-            // Show timer
-            const timer = document.getElementById("verification-timer");
-            const timerId = setInterval(() => {
-              if (count === 0) {
-                clearInterval(timerId);
-
-                // Set username and default image
-                localStorage.setItem("loggedIn", true);
-                localStorage.setItem("userName", responseData.userName);
-                localStorage.setItem("encodedImage", responseData.image);
-
-                // Send user to home page
-                setloggedIn(true);
-                setVerificationPage(false);
-                navigate("/");
-                return;
-              }
-              timer.textContent = count;
-              --count;
-            }, 1000);
+            // Set username and default image
+            localStorage.setItem("loggedIn", true);
+            localStorage.setItem("userName", responseData.userName);
+            localStorage.setItem("encodedImage", responseData.image);
           }
 
           return responseData;
@@ -107,7 +110,6 @@ const VerificationPage = ({
             Thank you for verifying your email!. We're currently verifying you.
             Please wait a moment
           </p>
-          {/* <div className="verifier-image" id="verifier-image-id"></div> */}
           <p className="verifier-text verifier-timer" id="verificationStatus">
             You will be taken back to our home page in{" "}
             <span id="verification-timer">5</span> seconds
