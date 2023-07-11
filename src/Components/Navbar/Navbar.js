@@ -9,7 +9,13 @@ import { NavLink } from "react-router-dom";
 // styles
 import "../../css/Navbar.css";
 
-const Navbar = ({ setShowForm, setShowLoginForm, loggedIn, setloggedIn }) => {
+const Navbar = ({
+  setShowForm,
+  setShowLoginForm,
+  loggedIn,
+  setloggedIn,
+  showUserForm,
+}) => {
   // Get the username if user exists
   let userName = localStorage.getItem("userName");
   //Get the setShowForm prop to be sent to the signUp function
@@ -66,6 +72,7 @@ const Navbar = ({ setShowForm, setShowLoginForm, loggedIn, setloggedIn }) => {
             setShowLoginForm={setShowLoginForm}
             loggedIn={loggedIn}
             setloggedIn={setloggedIn}
+            showUserForm={showUserForm}
           />
         )}
         {
@@ -73,6 +80,7 @@ const Navbar = ({ setShowForm, setShowLoginForm, loggedIn, setloggedIn }) => {
             setShowForm={setShowForm}
             loggedIn={loggedIn}
             setloggedIn={setloggedIn}
+            showUserForm={showUserForm}
           />
         }
       </ul>

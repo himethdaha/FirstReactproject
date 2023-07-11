@@ -119,12 +119,16 @@ const App = () => {
   const [getUserName, setUserName] = useState();
   function ShowUserAccount() {
     const { urluserName } = useParams();
+    console.log(
+      "🚀 ~ file: App.js:122 ~ ShowUserAccount ~ urluserName:",
+      urluserName
+    );
     useEffect(() => {
       if (urluserName) {
         showUserForm(true);
         setUserName(urluserName);
       }
-    });
+    }, [urluserName]);
   }
   const [verificationToken, setVerificationToken] = useState();
   function Verification() {
@@ -164,6 +168,7 @@ const App = () => {
     // Close form
     setShowForm(false);
   };
+  console.log("🚀 ~ file: App.js:60 ~ App ~ userForm:", userForm);
 
   return (
     <Router>
@@ -235,6 +240,7 @@ const App = () => {
               userBlocked={userBlocked}
               loggedIn={loggedIn}
               setloggedIn={setloggedIn}
+              showUserForm={showUserForm}
             />
           </header>
           <main>
