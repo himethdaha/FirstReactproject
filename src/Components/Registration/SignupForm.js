@@ -118,7 +118,8 @@ const SignUpForm = ({
           theme: "dark",
         });
 
-        setShowForm(false);
+        // TODO: uncomment once done
+        // setShowForm(false);
         isSending(false);
       }
     } catch (error) {
@@ -261,7 +262,14 @@ const SignUpForm = ({
             )
           }
         ></input>
-        {sent && <ErrorAlert message={"Sending Info..."} status={200} />}
+        {sent && (
+          <ErrorAlert
+            message={
+              "Sending Info...Might take some time. Feel free to close the form"
+            }
+            status={200}
+          />
+        )}
         {error?.signUpError?.passwordConfirm && (
           <ErrorAlert message={error.signUpError.passwordConfirm} />
         )}

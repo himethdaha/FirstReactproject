@@ -218,6 +218,12 @@
   color: #ffffff;
 }
 
+.form-submit-delete-btn {
+  position: absolute;
+  right: 1.5%;
+  top: 13%;
+}
+
 /*Pseudo element for submit-btn*/
 .form-submit-btn::before {
   content: "";
