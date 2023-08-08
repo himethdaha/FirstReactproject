@@ -8,3 +8,61 @@
   margin-top: -2rem;
   text-align: center;
 }
+
+.body-title {
+  text-align: center;
+  margin-left: 2rem;
+  text-transform: uppercase;
+  font-size: 4rem;
+  font-weight: 400;
+  position: relative;
+
+  /* for the text gradient */
+  background: linear-gradient(to right, #61dafb, #007bff);
+  /* This is to control the area within an element to which the background is applied*/
+  background-clip: text;
+  /* This is for browser compatability*/
+  -webkit-background-clip: text;
+  /* To hide the actual text color*/
+  color: transparent;
+}
+
+/* For the text underline */
+.body-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 85%;
+  transform: translate(-50%, -50%);
+  width: 20%;
+  height: 0.15rem;
+  /* background: black; */
+  background: linear-gradient(to right, #61dafb, #007bff);
+}
+
+/* Content */
+.body-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 2rem;
+}
+
+.body-secondary-title {
+  font-size: 1.7rem;
+  font-weight: 400;
+  text-decoration: underline;
+}
+
+.content-points {
+  margin-top: -1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.content-points-items {
+  font-size: 1.2rem;
+  margin: 0;
+}
