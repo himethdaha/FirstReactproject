@@ -1,0 +1,15 @@
+.interior-points {
+  list-style-type: circle;
+}
+
+.list-item-no-deco {
+  list-style: none;
+}
+
+.light-heavy {
+  font-weight: 400;
+}
+
+.margin-b-light {
+  margin-bottom: 0.75rem;
+}
